@@ -1,4 +1,5 @@
 import mysql from "mysql2/promise";
+import { createPool } from "mysql2/promise";
 import { config } from "dotenv";
 config();
 
@@ -8,6 +9,8 @@ const dbConfig = {
 	password: `${process.env.DB_PASSWORD}`,
 	database: `${process.env.DB_DATABASE}`,
 };
+
+export const pool = createPool(dbConfig);
 
 const connect = async () => {
 	try {

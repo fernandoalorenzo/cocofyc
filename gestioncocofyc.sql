@@ -32,6 +32,15 @@ CREATE TABLE IF NOT EXISTS `tb_establecimientos` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
+CREATE TABLE IF NOT EXISTS `tb_estados_matriculas` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `estado` varchar(30) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+INSERT IGNORE INTO `tb_estados_matriculas` (`id`, `estado`) VALUES
+	(1, 'Retiró');
+
 CREATE TABLE IF NOT EXISTS `tb_expedientes` (
   `id` bigint(20) NOT NULL DEFAULT 0,
   `profesional_id` bigint(20) NOT NULL,
@@ -82,12 +91,18 @@ CREATE TABLE IF NOT EXISTS `tb_profesionales` (
   `fecha_nacimiento` date DEFAULT NULL,
   `imagen` varchar(255) DEFAULT NULL,
   `activo` bit(1) DEFAULT NULL,
+  `estado_matricula` bigint(20) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE KEY `profesional_DNI` (`DNI`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
+  UNIQUE KEY `profesional_DNI` (`DNI`) USING BTREE,
+  KEY `FK_tb_profesionales_tb_estados_matriculas` (`estado_matricula`),
+  CONSTRAINT `FK_tb_profesionales_tb_estados_matriculas` FOREIGN KEY (`estado_matricula`) REFERENCES `tb_estados_matriculas` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC;
 
+INSERT IGNORE INTO `tb_profesionales` (`id`, `nombre`, `DNI`, `CUIT`, `email`, `matricula`, `domicilio`, `localidad`, `fecha_nacimiento`, `imagen`, `activo`, `estado_matricula`, `created_at`, `updated_at`) VALUES
+	(5, 'PROFESIONAL 1', '88888888', '99-88888888-9', 'mail@mail.com', '9-99999', 'Calle 1', 'Rosario', '0000-00-00', '', b'1', 1, '2024-02-14 19:11:51', '2024-02-14 19:11:51'),
+	(8, 'PROFESIONAL 9999999', '999999999', '99-99999999-9', 'mail@mail.com', '9-99999', 'Calle 1', 'Rosario', '0000-00-00', '', b'1', 1, '2024-02-14 19:49:10', '2024-02-14 19:55:34');
 
 CREATE TABLE IF NOT EXISTS `tb_profesionales_establecimientos` (
   `id` bigint(20) NOT NULL DEFAULT 0,
