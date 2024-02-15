@@ -5,7 +5,7 @@ import {
 	getProfesionalById,
 	getProfesionales,
 	updateProfesional,
-} from "../controllers/profesionalController.js";
+} from "../controllers/profesionalesController.js";
 import authenticateToken from "../functions/tokenVerify.js";
 
 const profesionalesRouter = express.Router();

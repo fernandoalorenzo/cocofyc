@@ -1,21 +1,21 @@
-import User from "../models/userModel.js";
+// import User from "../models/userModel.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { config } from "dotenv";
 config();
 
 // Crear un nuevo usuario
-const createUser = async (request, response) => {
+const createUsuario = async (request, response) => {
 	try {
 		// verifica si el correo que intenta registrar existe
-		const existUser = await User.findOne({ email: request.body.email });
-		if (existUser) {
+		const existUsuario = await Usuario.findOne({ email: request.body.email });
+		if (existUsuario) {
 			return response
 				.status(400)
 				.json({ message: "El correo ya está registrado." });
 		}
 
-		const user = await User.create(request.body);
+		const user = await Usuario.create(request.body);
 
 		return response.status(201).send({
 			message: "El usuario fue creado exitosamente!",
@@ -28,9 +28,9 @@ const createUser = async (request, response) => {
 };
 
 // Obtener todos los usuarios
-const getUsers = async (req, res) => {
+const getUsuarios = async (req, res) => {
 	try {
-		const users = await User.find();
+		const users = await Usuario.find();
 		res.status(200).json(users);
 	} catch (error) {
 		res.status(500).json({ message: error.message });
@@ -38,10 +38,10 @@ const getUsers = async (req, res) => {
 };
 
 // Obtener un usuario por Id
-const getUserById = async (request, response) => {
+const getUsuarioById = async (request, response) => {
 	try {
 		const { id } = request.params;
-		const user = await User.findById(id);
+		const user = await Usuario.findById(id);
 		return response.status(200).json(user);
 	} catch (error) {
 		console.log(error.message);
@@ -50,7 +50,7 @@ const getUserById = async (request, response) => {
 };
 
 // Actualizar usuarios
-const updateUser = async (request, response) => {
+const updateUsuario = async (request, response) => {
 	try {
 		const { id } = request.params;
 		const { newPassword, ...updateData } = request.body;
@@ -61,7 +61,7 @@ const updateUser = async (request, response) => {
 			updateData.password = hashedPassword;
 		}
 
-		const result = await User.findByIdAndUpdate(id, updateData);
+		const result = await Usuario.findByIdAndUpdate(id, updateData);
 
 		if (!result) {
 			return response
@@ -78,10 +78,10 @@ const updateUser = async (request, response) => {
 };
 
 // Eliminar un usuario
-const deleteUser = async (request, response) => {
+const deleteUsuario = async (request, response) => {
 	try {
 		const { id } = request.params;
-		const result = await User.findByIdAndDelete(id);
+		const result = await Usuario.findByIdAndDelete(id);
 		if (!result) {
 			return response
 				.status(404)
@@ -97,13 +97,13 @@ const deleteUser = async (request, response) => {
 };
 
 // Login
-const loginUser = async (req, res) => {
+const loginUsuario = async (req, res) => {
 	const secret = process.env.SECRET;
 	try {
 		const { email, password, id, nombre, apellido, rol } = req.body;
 
 		// Verificar si el usuario existe en la base de datos
-		const user = await User.findOne({ email });
+		const user = await Usuario.findOne({ email });
 		if (!user) {
 			return res
 				.status(401)
@@ -155,7 +155,7 @@ const validatePassword = async (request, response) => {
 		const { id } = request.params;
 		const { currentPassword } = request.body;
 
-		const user = await User.findById(id);
+		const user = await Usuario.findById(id);
 
 		if (!user) {
 			return response.status(404).json({ message: "Usuario no encontrado" });
@@ -191,7 +191,7 @@ const updatePassword = async (request, response) => {
 		const hashedNewPassword = await bcrypt.hash(newPassword, 10);
 
 		// Realizar la actualización de la contraseña en la base de datos
-		const result = await User.findByIdAndUpdate(id, {
+		const result = await Usuario.findByIdAndUpdate(id, {
 			password: hashedNewPassword,
 		});
 
@@ -213,12 +213,12 @@ const updatePassword = async (request, response) => {
 
 // Exportamos todas las rutas
 export {
-	createUser,
-	getUsers,
-	getUserById,
-	updateUser,
-	deleteUser,
-	loginUser,
+	createUsuario,
+	getUsuarios,
+	getUsuarioById,
+	updateUsuario,
+	deleteUsuario,
+	loginUsuario,
 	validatePassword,
 	updatePassword,
 };
