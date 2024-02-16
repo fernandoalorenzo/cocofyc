@@ -1,0 +1,23 @@
+.img404 {
+    max-width: 40%;
+    /* height: auto; */
+    margin-block: 2rem;
+}
+
+.title404 {
+    font-size: 6rem !important;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif !important;
+}
+
+@media screen and (max-width: 768px) {
+    .img404 {
+        max-width: 30%;
+        /* height: 40%; */
+        margin-block: 1rem;
+    }
+
+    .title404 {
+        font-size: 1.2rem !important;
+    }
+}

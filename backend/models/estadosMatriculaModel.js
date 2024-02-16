@@ -1,13 +1,11 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../config/sequelizeConfig.js";
+import Profesional from "./profesionalesModel.js";
 
 const Estado = sequelize.define(
 	"tb_estados_matricula",
 	{
 		id: {
-			// type: DataTypes.BIGINT,
-			// primaryKey: true,
-			// autoIncrement: true,
 			type: DataTypes.UUID, // Tipo UUID
 			defaultValue: DataTypes.UUIDV4, // Valor por defecto generado por la función UUIDV4
 			primaryKey: true,
@@ -23,4 +21,12 @@ const Estado = sequelize.define(
 	}
 );
 
-export default Estado
+// Definir la asociación con Profesional
+Estado.associate = (models) => {
+	Estado.hasMany(models.Profesional, {
+		foreignKey: "estado_matricula_id",
+		as: "profesionales",
+	});
+};
+
+export default Estado;

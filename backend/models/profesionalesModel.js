@@ -1,15 +1,11 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../config/sequelizeConfig.js";
-import { v4 as uuidv4 } from "uuid";
-
+import Estado from "./estadosMatriculaModel.js";
 
 const Profesional = sequelize.define(
 	"tb_profesionales",
 	{
 		id: {
-			// type: DataTypes.INTEGER,
-			// primaryKey: true,
-			// autoIncrement: true,
 			type: DataTypes.UUID, // Tipo UUID
 			defaultValue: DataTypes.UUIDV4, // Valor por defecto generado por la función UUIDV4
 			primaryKey: true,
@@ -25,17 +21,20 @@ const Profesional = sequelize.define(
 		fecha_nacimiento: DataTypes.DATE,
 		imagen: DataTypes.STRING,
 		activo: DataTypes.BOOLEAN,
-		estado_matricula: DataTypes.INTEGER,
+		estado_matricula_id: DataTypes.CHAR(36),
 	},
 	{
 		timestamps: true,
-		underscored: true
+		underscored: true,
 	}
 );
 
-// (async () => {
-// 	await sequelize.sync(); // Esto sincroniza los modelos con la base de datos
-// 	console.log("Tablas sincronizadas con éxito");
-// })();
+// Definir la asociación con Estado
+Profesional.associate = (models) => {
+	Profesional.belongsTo(models.Estado, {
+		foreignKey: "estado_matricula_id",
+		as: "estadoMatricula",
+	});
+};
 
 export default Profesional;

@@ -1,0 +1,29 @@
+.card-border {
+    border: 5px solid #0088ff;
+    border-radius: 1rem;
+}
+.card-size {
+    min-width: 24rem;
+    max-width: 24rem;
+    min-height: 24rem;
+    max-height: 24rem;
+}
+.card-img {
+    min-height: 12rem;
+    max-height: 12rem;
+    object-fit: cover;
+    object-position: center;
+    width: 100%
+}
+
+.card-img-modal-info {
+    object-fit: cover;
+    object-position: center;
+    width: 100%
+}
+
+.card-img-modal-agregar {
+    object-fit: cover;
+    object-position: center;
+    width: 100%
+}

@@ -5,9 +5,6 @@ const Establecimiento = sequelize.define(
 	"tb_establecimientos",
 	{
 		id: {
-			// type: DataTypes.BIGINT,
-			// primaryKey: true,
-			// autoIncrement: true,
 			type: DataTypes.UUID, // Tipo UUID
 			defaultValue: DataTypes.UUIDV4, // Valor por defecto generado por la función UUIDV4
 			primaryKey: true,

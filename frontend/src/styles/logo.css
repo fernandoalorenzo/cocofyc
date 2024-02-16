@@ -1,0 +1,52 @@
+.logo-img {
+    width: 8rem;
+    height: 5rem;
+    margin-top: .5rem;
+    align-content: center;
+    align-items: center;
+}
+
+.logo-titulo {
+    font-size: 2.8rem;
+    color: #0088ff;
+    padding-left: 1.8rem;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    font-weight: 700;
+}
+
+@media screen and (max-width: 768px) {
+    .logo-img {
+        width: 4rem;
+        height: 1.8rem;
+        margin-top: .5rem;
+        align-content: center;
+        align-items: center;
+        padding-right: 0;
+        margin-right: 0;
+    }
+
+    .logo-titulo {
+        font-size: 1.5rem;
+        color: #0088ff;
+        font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+        font-weight: 700;
+        margin-left: 0;
+        padding-left: 0;
+    }
+
+    /* .logo-img {
+        width: 3rem;
+        height: 1.5rem;
+        margin-top: .5rem;
+        align-content: center;
+        align-items: center;
+    }
+    
+    .logo-titulo {
+        font-size: 1.2rem;
+        color: #0088ff;
+        padding-left: 0.8rem;
+        font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+        font-weight: 700;
+    } */
+}

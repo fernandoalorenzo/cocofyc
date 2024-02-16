@@ -1,0 +1,31 @@
+.nav-item {
+    font-size: 1.8rem;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.nav-link {
+    color: #3a3d3a !important;
+    text-decoration: none !important;
+    padding: .5rem !important;
+    border-radius: .5rem !important;
+    border: 1 !important;
+}
+
+.nav-link:hover {
+    color: rgb(255, 221, 0) !important;
+    /* background-color: rgb(0, 0, 0) !important; */
+    background-color: #0088ff !important;
+    text-decoration: none !important;
+    padding: .5rem !important;
+    border-radius: .5rem !important;
+    border: 1 !important;
+}
+
+@media screen and (max-width: 768px) {
+    .nav-item {
+        font-size: 1.2rem;
+        font-weight: 600;
+        text-decoration: none;
+    }
+}
