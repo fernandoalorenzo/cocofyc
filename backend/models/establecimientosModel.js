@@ -5,22 +5,29 @@ const Establecimiento = sequelize.define(
 	"tb_establecimientos",
 	{
 		id: {
-			type: DataTypes.BIGINT,
+			// type: DataTypes.BIGINT,
+			// primaryKey: true,
+			// autoIncrement: true,
+			type: DataTypes.UUID, // Tipo UUID
+			defaultValue: DataTypes.UUIDV4, // Valor por defecto generado por la función UUIDV4
 			primaryKey: true,
-			autoIncrement: true,
 		},
 		establecimiento: {
 			type: DataTypes.STRING,
 			allowNull: false,
-        },
-        titular: DataTypes.STRING, allowNull: false,
-        telefono: DataTypes.STRING,
+		},
+		titular: DataTypes.STRING,
+		allowNull: false,
+		telefono: DataTypes.STRING,
 		email: DataTypes.STRING,
 		cuit: DataTypes.STRING,
 		domicilio: DataTypes.STRING,
 		localidad: DataTypes.STRING,
 	},
-	{ timestamps: false }
+	{
+		timestamps: true,
+		underscored: true,
+	}
 );
 
 export default Establecimiento
