@@ -8,8 +8,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Footer from "./components/footer/Footer";
 import Home from "./components/home/Home";
 import Header from "./components/header/Header";
-import SideNav from "./components/sidenav/SideNav";
-
+import SideBar from "./components/sidebar/SideBar";
 import Profesionales from "./components/profesionales/profesionales";
 import { useState } from "react";
 
@@ -34,10 +33,9 @@ const App = () => {
 			<div className="wrapper">
 				<Router>
 					{/* <SideNav updateUser={updateUser} /> */}
-					<SideNav />
+					<SideBar />
 					<Header />
 					<Routes>
-						{/* <Home /> */}
 						<Route path="/" element={<Home />} />
 						<Route
 							path="/profesionales"

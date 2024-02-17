@@ -1,12 +1,15 @@
-const apiConnection = async (endpoint, direction, method, body, headers) => {
-    try {
-		const url = new URL(endpoint);
-		url.pathname += direction;
+const apiConnection = async (endpoint, filter, method, body, headers) => {
+	try {
+		const port = process.env.PORT || 5000;
+		const url = new URL(process.env.DB_HOST || "http://127.0.0.1" +":" + port + "/" + endpoint);
+		url.pathname += filter;
+
+		console.log(url.href);
 
 		// Verifica si existe la propiedad 'Authorization' en el objeto de headers
-		if (!headers || !headers.Authorization) {
-			throw new Error("Token no encontrado en los encabezados");
-		}
+		// if (!headers || !headers.Authorization) {
+		// 	throw new Error("Token no encontrado en los encabezados");
+		// }
 
 		const response = await fetch(url.href, {
 			method,
@@ -37,7 +40,7 @@ export default apiConnection;
 // const fetchUserInfo = async (postUserId) => {
 // 	try {
 // 		const endpoint = "http://127.0.0.1:5000/users/";
-// 		const direction = props.usuario; // "" si es para POST
+// 		const filter = props.usuario; // "" si es para POST
 // 		const method = "GET";
 
 // ******** ELEGIR CASO SEGUN CORRESPONDA ********
@@ -57,7 +60,7 @@ export default apiConnection;
 
 // 		const userData = await apiConnection(
 // 			endpoint,
-// 			direction,
+// 			filter,
 // 			method,
 // 			body,
 // 			headers

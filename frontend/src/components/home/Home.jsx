@@ -1,6 +1,5 @@
 /* eslint-disable no-unused-vars */
 import { Link, useNavigate } from "react-router-dom";
-import { Logo } from "../logo/logo";
 
 export default function Home() {
 	const navigate = useNavigate();
