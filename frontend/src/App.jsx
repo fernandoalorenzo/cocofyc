@@ -9,7 +9,7 @@ import Footer from "./components/footer/Footer";
 import Home from "./components/home/Home";
 import Header from "./components/header/Header";
 import SideBar from "./components/sidebar/SideBar";
-import Profesionales from "./components/profesionales/profesionales";
+import Profesionales from "./components/profesionales/profesionales.jsx";
 import { useState } from "react";
 
 const App = () => {

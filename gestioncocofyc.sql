@@ -97,17 +97,17 @@ CREATE TABLE IF NOT EXISTS `tb_profesionales` (
   `fecha_nacimiento` datetime DEFAULT NULL,
   `imagen` varchar(255) DEFAULT NULL,
   `activo` tinyint(1) DEFAULT NULL,
-  `estado_matricula` int(11) DEFAULT NULL,
+  `estado_matricula_id` int(11) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `dni` (`dni`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-INSERT IGNORE INTO `tb_profesionales` (`id`, `nombre`, `dni`, `cuit`, `telefono`, `email`, `matricula`, `domicilio`, `localidad`, `fecha_nacimiento`, `imagen`, `activo`, `estado_matricula`, `created_at`, `updated_at`) VALUES
+INSERT IGNORE INTO `tb_profesionales` (`id`, `nombre`, `dni`, `cuit`, `telefono`, `email`, `matricula`, `domicilio`, `localidad`, `fecha_nacimiento`, `imagen`, `activo`, `estado_matricula_id`, `created_at`, `updated_at`) VALUES
 	('438db041-caff-4eee-b3ac-2bac1fa749eb', 'PROFESIONAL 1', '11111111', '11-11111111-1', '111111111', '1mail@mail.com', '11111-1', 'Calle 1', 'Rosario', '0000-00-00 00:00:00', '', 1, 1, NULL, NULL),
 	('947978b3-a61c-428a-82d9-5adcba181d9e', 'PROFESIONAL 3', '33333333', '33-33333333-3', '333-3333333', '3mail@mail.com', '33333-3', 'Calle 3', 'Rosario', '0000-00-00 00:00:00', '', 1, 1, '2024-02-16 00:01:57', '2024-02-16 00:01:57'),
-	('d9b2ccea-59e0-4c8a-9733-7cba7e72ced4', 'PROFESIONAL 1', '22222222', '22-22222222-2', '2222222220', '2mail@mail.com', '22222-2', 'Calle 2', 'Rosario', '0000-00-00 00:00:00', '', 1, 1, NULL, NULL);
+	('d9b2ccea-59e0-4c8a-9733-7cba7e72ced4', 'PROFESIONAL 1', '22222222', '22-22222222-2', '2222222220', '2mail@mail.com', '22222-2', 'Calle 2', 'Rosario', '0000-00-00 00:00:00', '', 0, 1, NULL, NULL);
 
 CREATE TABLE IF NOT EXISTS `tb_profesionales_establecimientos` (
   `id` char(36) NOT NULL DEFAULT '0',

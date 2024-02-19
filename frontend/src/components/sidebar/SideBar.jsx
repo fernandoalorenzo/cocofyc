@@ -93,7 +93,9 @@ export default function SideBar() {
 									className="nav-link"
 									activeclassname="active">
 									<i className="nav-icon fa-solid fa-house" />
-									Dashboard
+									<p>
+										Dashboard
+									</p>
 								</NavLink>
 							</li>
 							<li className="nav-item">
@@ -102,7 +104,9 @@ export default function SideBar() {
 									className="nav-link"
 									activeclassname="active">
 									<i className="nav-icon fa-solid fa-user-tie" />
-									Profesionales
+									<p>
+										Profesionales
+									</p>
 								</NavLink>
 							</li>
 							<li className="nav-item">
