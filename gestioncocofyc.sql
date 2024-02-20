@@ -105,9 +105,18 @@ CREATE TABLE IF NOT EXISTS `tb_profesionales` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 INSERT IGNORE INTO `tb_profesionales` (`id`, `nombre`, `dni`, `cuit`, `telefono`, `email`, `matricula`, `domicilio`, `localidad`, `fecha_nacimiento`, `imagen`, `activo`, `estado_matricula_id`, `created_at`, `updated_at`) VALUES
+	('04d940af-cfa2-44ce-91a0-c34260509510', 'PROFESIONAL 11', '11', '12-54-7', NULL, '12mail@mail.com', '77777-7', 'Calle 7', 'Rosario', '0000-00-00 00:00:00', '', 1, NULL, '2024-02-19 18:27:16', '2024-02-19 18:27:16'),
+	('0646015f-7d12-4abb-bc03-ba0b2db22fcd', 'PROFESIONAL 12', '12', '12-54-7', NULL, '12mail@mail.com', '77777-7', 'Calle 7', 'Rosario', '0000-00-00 00:00:00', '', 1, NULL, '2024-02-19 18:27:23', '2024-02-19 18:27:23'),
+	('091d7518-e810-4e8b-a48d-88b4fe3bbb97', 'PROFESIONAL 2', '2', '12-55-7', NULL, '12mail@mail.com', '77777-7', 'Calle 7', 'Rosario', '0000-00-00 00:00:00', '', 1, NULL, '2024-02-19 18:27:10', '2024-02-19 18:27:10'),
 	('438db041-caff-4eee-b3ac-2bac1fa749eb', 'PROFESIONAL 1', '11111111', '11-11111111-1', '111111111', '1mail@mail.com', '11111-1', 'Calle 1', 'Rosario', '0000-00-00 00:00:00', '', 1, 1, NULL, NULL),
+	('550da60e-801e-43fd-9577-2d358778574a', 'PROFESIONAL 5', '555', '12-55-7', NULL, '12mail@mail.com', '77777-7', 'Calle 7', 'Rosario', '0000-00-00 00:00:00', '', 1, NULL, '2024-02-19 18:26:32', '2024-02-19 18:26:32'),
+	('82aa1d70-245a-41c8-a173-46d8fac67739', 'PROFESIONAL 8', '8', '12-55-7', NULL, '12mail@mail.com', '77777-7', 'Calle 7', 'Rosario', '0000-00-00 00:00:00', '', 1, NULL, '2024-02-19 18:26:51', '2024-02-19 18:26:51'),
 	('947978b3-a61c-428a-82d9-5adcba181d9e', 'PROFESIONAL 3', '33333333', '33-33333333-3', '333-3333333', '3mail@mail.com', '33333-3', 'Calle 3', 'Rosario', '0000-00-00 00:00:00', '', 1, 1, '2024-02-16 00:01:57', '2024-02-16 00:01:57'),
-	('d9b2ccea-59e0-4c8a-9733-7cba7e72ced4', 'PROFESIONAL 1', '22222222', '22-22222222-2', '2222222220', '2mail@mail.com', '22222-2', 'Calle 2', 'Rosario', '0000-00-00 00:00:00', '', 0, 1, NULL, NULL);
+	('947fec4f-233e-4506-b7b7-475d038b2fc1', 'PROFESIONAL 6', '66666', '12-55-7', NULL, '12mail@mail.com', '77777-7', 'Calle 7', 'Rosario', '0000-00-00 00:00:00', '', 1, NULL, '2024-02-19 18:26:39', '2024-02-19 18:26:39'),
+	('a0c63d2b-5ae1-4b4f-8805-9d3aa934d238', 'PROFESIONAL 7', '7777', '12-55-7', NULL, '12mail@mail.com', '77777-7', 'Calle 7', 'Rosario', '0000-00-00 00:00:00', '', 1, NULL, '2024-02-19 18:26:46', '2024-02-19 18:26:46'),
+	('a6bd907c-8666-4d7b-b887-596cb8f5719d', 'PROFESIONAL 9', '9', '12-55-7', NULL, '12mail@mail.com', '77777-7', 'Calle 7', 'Rosario', '0000-00-00 00:00:00', '', 1, NULL, '2024-02-19 18:26:54', '2024-02-19 18:26:54'),
+	('d9b2ccea-59e0-4c8a-9733-7cba7e72ced4', 'PROFESIONAL 1', '22222222', '22-22222222-2', '2222222220', '2mail@mail.com', '22222-2', 'Calle 2', 'Rosario', '0000-00-00 00:00:00', '', 0, 1, NULL, NULL),
+	('ec249d34-488d-4854-ad90-1e7f72284ef2', 'PROFESIONAL 10', '10', '12-55-7', NULL, '12mail@mail.com', '77777-7', 'Calle 7', 'Rosario', '0000-00-00 00:00:00', '', 1, NULL, '2024-02-19 18:27:00', '2024-02-19 18:27:00');
 
 CREATE TABLE IF NOT EXISTS `tb_profesionales_establecimientos` (
   `id` char(36) NOT NULL DEFAULT '0',
