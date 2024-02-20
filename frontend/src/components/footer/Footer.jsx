@@ -6,13 +6,11 @@ const Footer = () => {
 		<>
 			<div>
 				<footer className="main-footer">
-					<strong>
-						Copyright © 2014-2021{" "}
-						<a href="https://adminlte.io">AdminLTE.io</a>.
-					</strong>
-					All rights reserved.
-					<div className="float-right d-none d-sm-inline-block">
-						<b>Version</b> 3.2.0
+					Copyright ©{new Date().getFullYear()}. All rights reserved. Dev by Fernando Lorenzo
+					<div className="float-right d-none d-sm-inline">
+						<b>Version</b> 1.0.0 | {new Date().getDate()}-
+						{("0" + (new Date().getMonth() + 1)).slice(-2)}-
+						{new Date().getFullYear()}
 					</div>
 				</footer>
 				{/* Control Sidebar */}
@@ -22,12 +20,6 @@ const Footer = () => {
 				{/* /.control-sidebar */}
 			</div>
 		</>
-		// <footer className="text-center bg-primary bg-gradient align-items-center col align-self-center">
-		// 	<p>
-		// 		Copyright ©{new Date().getFullYear()}. All rights reserved.
-		// 		Powered by Fernando Lorenzo
-		// 	</p>
-		// </footer>
 	);
 };
 

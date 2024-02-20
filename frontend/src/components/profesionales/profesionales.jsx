@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import { useTable, useSortBy, usePagination } from "react-table";
 
 const ProfesionalesTabla = () => {
-    const [data, setData] = useState([]);
+	const [data, setData] = useState([]);
 	const [filterText, setFilterText] = useState("");
 	const [selectedPageSize, setSelectedPageSize] = useState(10);
 
@@ -124,7 +124,7 @@ const ProfesionalesTabla = () => {
 	const handleClearFilter = () => {
 		setFilterText("");
 	};
-	
+
 	const handlePageSizeChange = (e) => {
 		const size = parseInt(e.target.value, 10);
 		setSelectedPageSize(size);
@@ -148,27 +148,24 @@ const ProfesionalesTabla = () => {
 					<div className="container-fluid">
 						<div className="d-grid gap-2 d-md-flex justify-content-md-end mb-3">
 							<div className="input-group col-4 me-md-2">
-								
-									<input
-										type="text"
-										className="form-control"
-										placeholder="Filtrar..."
-										value={filterText}
-										onChange={handleFilterChange}
+								<input
+									type="text"
+									className="form-control"
+									placeholder="Filtrar..."
+									value={filterText}
+									onChange={handleFilterChange}
 								/>
 								{filterText && (
 									<div className="input-group-append">
-									<button
-										className="btn bg-white"
-										title="Limpiar búsqueda"
-										type="button"
-										onClick={() => setFilterText("")}>
-										<i className="fa-regular fa-circle-xmark"></i>
-									</button>
-								</div>
-    
-									)}
-								
+										<button
+											className="btn bg-white"
+											title="Limpiar búsqueda"
+											type="button"
+											onClick={() => setFilterText("")}>
+											<i className="fa-regular fa-circle-xmark"></i>
+										</button>
+									</div>
+								)}
 							</div>
 							<button
 								type="button"
@@ -221,9 +218,14 @@ const ProfesionalesTabla = () => {
 								})}
 							</tbody>
 						</table>
-						<div className="container-fluid my-2">
-							<div className="row justify-content-between">
-								<div className="col col-4 d-flex justify-content-start pagination">
+						<div className="container-fluid align-items-center">
+							<div className="row justify-content-between align-items-center">
+								<div className="col col-4 d-flex justify-content-start align-items-center">
+									<div className="col">
+										Mostrando {pageIndex * pageSize + 1} -{" "}
+										{pageIndex * pageSize + page.length} de{" "}
+										{data.length} registros
+									</div>
 									<button
 										className="btn btn-sm btn-outline-primary ms-1"
 										onClick={() => gotoPage(0)}
@@ -249,7 +251,7 @@ const ProfesionalesTabla = () => {
 										<i className="fa-solid fa-forward-step"></i>
 									</button>{" "}
 								</div>
-								<div className="col col-4 d-flex justify-content-evenly pagination content-align-center">
+								<div className="col col-4 d-flex justify-content-evenly content-align-center align-items-center">
 									<span>
 										Página <strong>{pageIndex + 1}</strong>{" "}
 										de <strong>{pageOptions.length}</strong>
@@ -268,9 +270,10 @@ const ProfesionalesTabla = () => {
 										style={{ width: "4rem" }}
 									/>
 								</div>
-								<div className="col col-4 d-flex justify-content-end pagination">
+								<div className="col col-4 d-flex justify-content-end align-items-center">
+									<span>Reg. por Pág. </span>
 									<select
-										className="form-select form-select-sm"
+										className="form-select form-select-sm w-25"
 										value={selectedPageSize}
 										onChange={handlePageSizeChange}>
 										{[10, 25, 50, 100].map((size) => (
@@ -279,41 +282,6 @@ const ProfesionalesTabla = () => {
 											</option>
 										))}
 									</select>
-									{/* <div className="col col-4 d-flex justify-content-evenly pagination">
-									<span>
-										Página <strong>{pageIndex + 1}</strong>{" "}
-										de <strong>{pageOptions.length}</strong>
-									</span>
-									Ir a la página:{" "}
-									<input
-										className="form-control form-control-sm"
-										type="number"
-										defaultValue={pageIndex + 1}
-										onChange={(e) => {
-											const page = e.target.value
-												? Number(e.target.value) - 1
-												: 0;
-											gotoPage(page);
-										}}
-										style={{ width: "4rem" }}
-									/>
-								</div>
-								<div className="col col-4 d-flex justify-content-end pagination">
-									<select
-										className="form-select form-select-sm"
-										value={pageSize}
-										onChange={(e) => {
-											setPageSize(Number(e.target.value));
-										}}>
-										{[5, 10, 25, 100].map((pageSize) => (
-											<option
-												key={pageSize}
-												value={pageSize}>
-												Mostrar {pageSize}
-											</option>
-										))}
-									</select>
-								</div> */}
 								</div>
 							</div>
 						</div>
