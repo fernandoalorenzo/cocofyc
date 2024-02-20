@@ -1,0 +1,15 @@
+.form-check-input {
+    margin-left: 0 !important;
+    /* Esto elimina el margen izquierdo */
+}
+
+.form-check {
+    margin-left: 0 !important;
+    padding-left: 0 !important;
+    /* Esto elimina el margen izquierdo */
+}
+
+.form-switch {
+    margin-left: 0 !important;
+    /* Esto elimina el margen izquierdo */
+}

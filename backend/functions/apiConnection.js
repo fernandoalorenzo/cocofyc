@@ -1,10 +1,7 @@
-const apiConnection = async (endpoint, filter, method, body, headers) => {
+const apiConnection = async (endpoint, direction, method, body, headers) => {
 	try {
-		const port = process.env.PORT || 5000;
-		const url = new URL(process.env.DB_HOST || "http://127.0.0.1" +":" + port + "/" + endpoint);
-		url.pathname += filter;
-
-		console.log(url.href);
+		const url = new URL(endpoint);
+		url.pathname += direction;
 
 		// Verifica si existe la propiedad 'Authorization' en el objeto de headers
 		// if (!headers || !headers.Authorization) {

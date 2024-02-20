@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useTable, useSortBy, usePagination } from "react-table";
+import apiConnection from "../../../../backend/functions/apiConnection";
 
 const ProfesionalesTabla = () => {
 	const [data, setData] = useState([]);
@@ -9,13 +10,23 @@ const ProfesionalesTabla = () => {
 	useEffect(() => {
 		const fetchProfesionales = async () => {
 			try {
-				const response = await fetch(
-					"http://localhost:5000/profesionales"
+				const endpoint = "http://127.0.0.1:5000/profesionales/";
+				const direction = "";
+				const method = "GET";
+				const body = false;
+				const headers = {
+					"Content-Type": "application/json",
+					// Authorization: localStorage.getItem("token"),
+				};
+
+				const data = await apiConnection(
+					endpoint,
+					direction,
+					method,
+					body,
+					headers
 				);
-				if (!response.ok) {
-					throw new Error("Error al obtener los datos");
-				}
-				const data = await response.json();
+
 				setData(data.data);
 			} catch (error) {
 				console.error("Error:", error.message);
@@ -63,6 +74,28 @@ const ProfesionalesTabla = () => {
 				accessor: "email",
 			},
 			{
+				Header: "Localidad",
+				accessor: "localidad",
+			},
+			{
+				Header: "Activo",
+				accessor: "activo",
+				Cell: ({ row }) => (
+					
+						<div className="form-check form-switch">
+							<input
+								className="form-check-input"
+								type="checkbox"
+								checked={row.original.activo}
+								onChange={() => toggleActivo(row.original.id)} // Reemplaza toggleActivo con la función que actualiza el estado de activo
+							/>
+							{/* <label className="form-check-label"> */}
+								{/* {row.original.activo ? "Activo" : "Inactivo"} */}
+							{/* </label> */}
+						</div>
+				),
+			},
+			{
 				Header: "Acciones",
 				accessor: "id",
 				Cell: ({ row }) => (
@@ -108,7 +141,11 @@ const ProfesionalesTabla = () => {
 		{
 			columns,
 			data: filteredData,
-			initialState: { pageIndex: 0, pageSize: selectedPageSize }, // Usar selectedPageSize
+			initialState: {
+				pageIndex: 0,
+				pageSize: selectedPageSize,
+				sortBy: [{ id: "nombre", desc: false }],
+			},
 			autoResetPage: false,
 			autoResetPageSize: false,
 		},
@@ -179,20 +216,25 @@ const ProfesionalesTabla = () => {
 						<table
 							{...getTableProps()}
 							className="table table-hover table-striped table-responsive-sm table-sm table-borderless align-middle">
-							<thead>
+							<thead className="bg-primary">
 								{headerGroups.map((headerGroup) => (
 									<tr {...headerGroup.getHeaderGroupProps()}>
 										{headerGroup.headers.map((column) => (
 											<th
 												{...column.getHeaderProps(
 													column.getSortByToggleProps()
-												)}>
+												)}
+												className={`${
+													column.Header === "Activo"
+														? "text-center"
+														: ""
+												}`}>
 												{column.render("Header")}
 												<span>
 													{column.isSorted
 														? column.isSortedDesc
-															? " 🔽"
-															: " 🔼"
+															? "  ↓"
+															: "  ↑"
 														: ""}
 												</span>
 											</th>
@@ -209,7 +251,9 @@ const ProfesionalesTabla = () => {
 												return (
 													<td
 														{...cell.getCellProps()}>
+														{/* <div className="d-flex justify-content-center px-0"> */}
 														{cell.render("Cell")}
+														{/* </div> */}
 													</td>
 												);
 											})}
