@@ -1,191 +1,298 @@
-/* eslint-disable react/prop-types */
-/* eslint-disable no-unused-vars */
-import React, { useState, useEffect } from "react";
-import { Toaster } from "react-hot-toast";
-import { ToastOK } from "../toast/Toast";
-import apiConnection from "../../../../backend/functions/apiConnection";
+import React, { useState } from "react";
 
-const modalProfesional = (props) => {
-	// const [titulo, setTitulo] = useState("");
-	// const [descripcion, setDescripcion] = useState("");
-	// const [imagenUrl, setImagenUrl] = useState("");
+const ProfesionalesModal = ({ showModal, closeModal, data }) => {
+	const [formData, setFormData] = useState({
+		nombre: "",
+		dni: "",
+		cuit: "",
+		telefono: "",
+		email: "",
+		matricula: "",
+		domicilio: "",
+		localidad: "",
+		fecha_nacimiento: "",
+		imagen: null, // Puedes inicializar este campo según tus necesidades
+		activo: false,
+		estado_matricula_id: "", // Asegúrate de inicializarlo con el valor adecuado
+	});
 
-	// const user = JSON.parse(localStorage.getItem("user"));
-	// const userId = user ? user.id : null;
+	const handleChange = (e) => {
+		const { name, value } = e.target;
+		setFormData({ ...formData, [name]: value });
+	};
 
-	// const handleImagenUrlChange = (event) => {
-	// 	setImagenUrl(event.target.value);
-	// };
+	const handleFileChange = (e) => {
+		const file = e.target.files[0];
+		// Aquí puedes manejar el archivo como desees, por ejemplo, mostrar una vista previa o almacenarlo en el estado
+	};
 
-	useEffect(() => {
-		const cargarDatosExistente = async () => {
-			try {
-				const endpoint = "http://127.0.0.1:5000/profesional/";
-				const direction = props.profesionalId;
-				const method = "GET";
-				const body = false;
-				const headers = {
-					"Content-Type": "application/json",
-					// Authorization: localStorage.getItem("token"),
-				};
-
-				const data = await apiConnection(
-					endpoint,
-					direction,
-					method,
-					body,
-					headers
-				);
-
-				// setTitulo(data.titulo);
-				// setDescripcion(data.descripcion);
-				// setImagenUrl(data.imagen);
-			} catch (error) {
-				console.error(
-					"Error al intentar obtener datos para editar: ",
-					error
-				);
-			}
-		};
-		// if (props.isEdit && props.postId) {
-		// 	cargarDatosExistente();
-		// }
-  // }, [props.isEdit, props.postId]);
-  	}, []);
-
-	const handleGuardarPost = async () => {
-		const data = {
-			usuario: userId,
-			titulo,
-			descripcion,
-			imagen: imagenUrl,
-		};
-
+	const handleSubmit = async (e) => {
+		e.preventDefault();
 		try {
-			const endpoint = "http://127.0.0.1:5000/profesional/";
-			const direction = "";
-			const method = "POST";
-			const body = {
-				usuario: userId,
-				titulo: titulo,
-				descripcion: descripcion,
-				imagen: imagenUrl,
-			};
+			const endpoint = "http://127.0.0.1:5000/profesionales/";
+			const direction = data ? `/${data.id}` : ""; // Si hay data, es una actualización, de lo contrario, es una creación
+			const method = data ? "PUT" : "POST"; // Método dependiendo de si es una actualización o una creación
+			const body = JSON.stringify(formData);
 			const headers = {
 				"Content-Type": "application/json",
 				// Authorization: localStorage.getItem("token"),
 			};
 
-			await apiConnection(endpoint, direction, method, body, headers);
+			const response = await fetch(endpoint + direction, {
+				method,
+				headers,
+				body,
+			});
 
-			// CIERRA EL MODAL DESPUÉS DE GUARDAR
-			props.onClose();
-
-			// MUESTRA NOTIFICACIÓN
-			ToastOK("Profesional", "agregado");
+			if (response.ok) {
+				// Aquí puedes manejar el éxito de la operación, como cerrar el modal o actualizar la lista de profesionales
+				console.log("Operación exitosa");
+			} else {
+				console.error("Error en la operación:", response.statusText);
+			}
 		} catch (error) {
-			console.error("Error: ", error.message);
+			console.error("Error:", error.message);
 		}
 	};
 
-	let modalStyle = {
-		display: "block",
-		backgroundColor: "rgba(0, 0, 0, 0.8)",
-	};
-
 	return (
-		<>
-			<div
-				className="modal show fade in"
-				tabIndex="-1"
-				style={modalStyle}>
-				<div className="modal-dialog modal-dialog-centered">
-					<div className="modal-content">
-						<div className="modal-header bg-primary">
-							<h5 className="modal-title">Agregar Post</h5>
-							<button
-								type="button"
-								className="btn-close"
-								onClick={props.onClose}></button>
-						</div>
-						<div className="d-grid modal-body ">
-							<label className="form-label text-start">
-								Título
-							</label>
-							<input
-								className="form-control"
-								type="text"
-								value={titulo}
-								onChange={(e) => setTitulo(e.target.value)}
-							/>
-							<label className="form-label text-start mt-4">
-								Descripción
-							</label>
-							<textarea
-								className="form-control"
-								type="text"
-								value={descripcion}
-								onChange={(e) => setDescripcion(e.target.value)}
-							/>
-							<label className="form-label text-start mt-4">
-								URL de Imagen
-							</label>
-							<input
-								className="form-control"
-								type="text"
-								value={imagenUrl}
-								onChange={handleImagenUrlChange}
-							/>
-
-							<div
-								className="card mt-3 bottom-0 start-50 translate-middle-x"
-								style={{ width: "12rem" }}>
-								<div className="card-header p-1">
-									<p className="p-0 m-0 fw-bold">
-										Vista Previa
-									</p>
+		<div
+			className={`modal ${showModal ? "show" : ""}`}
+			tabIndex="-1"
+			style={{ display: showModal ? "block" : "none" }}>
+			<div className="modal-dialog">
+				<div className="modal-content">
+					<div className="modal-header bg-primary">
+						<h5 className="modal-title">
+							{data ? "Editar Profesional" : "Nuevo Profesional"}
+						</h5>
+						<button
+							type="button"
+							className="btn-close"
+							aria-label="Close"
+							onClick={closeModal}></button>
+					</div>
+					<form onSubmit={handleSubmit}>
+						<div className="modal-body">
+							<div className="row">
+								{/* Nombre Completo */}
+								<div className="col mb-3">
+									<label
+										htmlFor="nombre"
+										className="form-label">
+										Nombre Completo
+									</label>
+									<input
+										type="text"
+										className="form-control"
+										id="nombre"
+										name="nombre"
+										value={formData.nombre}
+										onChange={handleChange}
+									/>
 								</div>
-								<div className="card-body p-0">
-									{imagenUrl.length === 0 && (
-										<img
-											className="card-img-top p-5"
-											src="noimage.png"
-											alt="Imagen"
+							</div>
+							<div className="row">
+								{/* DNI */}
+								<div className="col mb-3">
+									<label htmlFor="dni" className="form-label">
+										DNI
+									</label>
+									<input
+										type="text"
+										className="form-control"
+										id="dni"
+										name="dni"
+										value={formData.dni}
+										onChange={handleChange}
+									/>
+								</div>
+								{/* CUIT */}
+								<div className="col mb-3">
+									<label
+										htmlFor="cuit"
+										className="form-label">
+										CUIT
+									</label>
+									<input
+										type="text"
+										className="form-control"
+										id="cuit"
+										name="cuit"
+										value={formData.cuit}
+										onChange={handleChange}
+									/>
+								</div>
+								{/* Matrícula */}
+								<div className="col mb-3">
+									<label
+										htmlFor="matricula"
+										className="form-label">
+										Matrícula
+									</label>
+									<input
+										type="text"
+										className="form-control"
+										id="matricula"
+										name="matricula"
+										value={formData.matricula}
+										onChange={handleChange}
+									/>
+								</div>
+							</div>
+							<div className="row">
+								{/* Teléfono */}
+								<div className="col mb-3">
+									<label
+										htmlFor="telefono"
+										className="form-label">
+										Teléfono
+									</label>
+									<input
+										type="text"
+										className="form-control"
+										id="telefono"
+										name="telefono"
+										value={formData.telefono}
+										onChange={handleChange}
+									/>
+								</div>
+								{/* E-Mail */}
+								<div className="col mb-3">
+									<label
+										htmlFor="email"
+										className="form-label">
+										E-Mail
+									</label>
+									<input
+										type="email"
+										className="form-control"
+										id="email"
+										name="email"
+										value={formData.email}
+										onChange={handleChange}
+									/>
+								</div>
+							</div>
+							<div className="row">
+								{/* Domicilio */}
+								<div className="col mb-3">
+									<label
+										htmlFor="domicilio"
+										className="form-label">
+										Domicilio
+									</label>
+									<input
+										type="text"
+										className="form-control"
+										id="domicilio"
+										name="domicilio"
+										value={formData.domicilio}
+										onChange={handleChange}
+									/>
+								</div>
+								{/* Localidad */}
+								<div className="col mb-3">
+									<label
+										htmlFor="localidad"
+										className="form-label">
+										Localidad
+									</label>
+									<input
+										type="text"
+										className="form-control"
+										id="localidad"
+										name="localidad"
+										value={formData.localidad}
+										onChange={handleChange}
+									/>
+								</div>
+							</div>
+							<div className="row">
+								{/* Fecha de Nacimiento */}
+								<div className="col mb-3">
+									<label
+										htmlFor="fecha_nacimiento"
+										className="form-label">
+										Fecha de Nacimiento
+									</label>
+									<input
+										type="date"
+										className="form-control"
+										id="fecha_nacimiento"
+										name="fecha_nacimiento"
+										value={formData.fecha_nacimiento}
+										onChange={handleChange}
+									/>
+								</div>
+
+								{/* Activo */}
+								<div className="col mb-3 form-check">
+									<input
+										type="checkbox"
+										className="form-check-input"
+										id="activo"
+										name="activo"
+										checked={formData.activo}
+										onChange={handleChange}
+									/>
+									<label
+										className="form-check-label"
+										htmlFor="activo">
+										Activo
+									</label>
+								</div>
+								{/* Estado de Matrícula */}
+								<div className="col mb-3">
+									<label
+										htmlFor="estado_matricula_id"
+										className="form-label">
+										Estado de Matrícula
+									</label>
+									<select
+										className="form-select"
+										id="estado_matricula_id"
+										name="estado_matricula_id"
+										value={formData.estado_matricula_id}
+										onChange={handleChange}>
+										{/* Opciones del select */}
+									</select>
+								</div>
+								<div className="row">
+									{/* Imagen */}
+									<div className="col mb-3">
+										<label
+											htmlFor="imagen"
+											className="form-label">
+											Imagen
+										</label>
+										<input
+											type="file"
+											className="form-control"
+											id="imagen"
+											name="imagen"
+											onChange={handleFileChange}
 										/>
-									)}
-									{imagenUrl && (
-										<img
-											className="card-img-top"
-											src={imagenUrl}
-											alt="Imagen"
-										/>
-									)}
+									</div>
 								</div>
 							</div>
 						</div>
 						<div className="modal-footer">
-							<div className="d-grid gap-2 d-md-flex justify-content-md-end">
-								<button
-									type="button"
-									className="btn btn-primary"
-									id="guardar"
-									onClick={handleGuardarPost}
-									disabled={
-										!titulo.trim() ||
-										!descripcion.trim() ||
-										!imagenUrl.trim()
-									}>
-									<i className="fa-regular fa-floppy-disk px-2"></i>
-									Guardar
-								</button>
-							</div>
+							<button
+								type="button"
+								className="btn btn-secondary"
+								onClick={closeModal}>
+								Cancelar
+							</button>
+							<button type="submit" className="btn btn-primary">
+								{data ? "Guardar Cambios" : "Crear"}
+							</button>
 						</div>
-					</div>
+					</form>
 				</div>
 			</div>
-			<Toaster />
-		</>
+		</div>
 	);
 };
 
-export default modalProfesional;
+export default ProfesionalesModal;
