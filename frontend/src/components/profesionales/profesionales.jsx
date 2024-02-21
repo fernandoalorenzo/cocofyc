@@ -51,76 +51,97 @@ const ProfesionalesTabla = () => {
 		);
 	}, [data, filterText]);
 
-	const columns = React.useMemo(
-		() => [
-			{
-				Header: "Nombre",
-				accessor: "nombre",
-			},
-			{
-				Header: "DNI",
-				accessor: "dni",
-			},
-			{
-				Header: "Matrícula",
-				accessor: "matricula",
-			},
-			{
-				Header: "Teléfono",
-				accessor: "telefono",
-			},
-			{
-				Header: "e-Mail",
-				accessor: "email",
-			},
-			{
-				Header: "Localidad",
-				accessor: "localidad",
-			},
-			{
-				Header: "Activo",
-				accessor: "activo",
-				Cell: ({ row }) => (
-					
-						<div className="form-check form-switch">
-							<input
-								className="form-check-input"
-								type="checkbox"
-								checked={row.original.activo}
-								onChange={() => toggleActivo(row.original.id)} // Reemplaza toggleActivo con la función que actualiza el estado de activo
-							/>
-							{/* <label className="form-check-label"> */}
-								{/* {row.original.activo ? "Activo" : "Inactivo"} */}
-							{/* </label> */}
+		const columns = React.useMemo(
+			() => [
+				{
+					Header: "Nombre",
+					accessor: "nombre",
+				},
+				{
+					Header: "DNI",
+					accessor: "dni",
+				},
+				{
+					Header: "Matrícula",
+					accessor: "matricula",
+				},
+				{
+					Header: "Teléfono",
+					accessor: "telefono",
+				},
+				{
+					Header: "e-Mail",
+					accessor: "email",
+				},
+				{
+					Header: "Localidad",
+					accessor: "localidad",
+				},
+				{
+					Header: "Activo",
+					accessor: "activo",
+					Cell: ({ row }) => (
+						<>
+							<div className="form-switch">
+								<input
+									className="form-check-input"
+									type="checkbox"
+									checked={row.original.activo}
+									onChange={() =>
+										toggleActivo(row.original.id)
+									}
+								/>
+								<label className="form-check-label" hidden>
+									{row.original.activo ? "1" : "0"}
+								</label>
+							</div>
+						</>
+					),
+					sortType: (rowA, rowB, columnId) => {
+						// Convertir los valores a números para que la comparación sea numérica
+						const valueA = rowA.original.activo ? 1 : 0;
+						const valueB = rowB.original.activo ? 1 : 0;
+
+						// Comparar los valores y devolver el resultado
+						return valueA - valueB;
+					},
+				},
+				{
+					Header: "Acciones",
+					accessor: "id",
+					Cell: ({ row }) => (
+						<div>
+							<button
+								className="btn btn-info mx-2 btn-sm"
+								data-bs-id="{profesional.id}"
+								onClick={() =>
+									verProfesional(row.original.id)
+								}>
+								<i className="fa-regular fa-eye"></i>{" "}
+								Mostrar
+							</button>
+							<button
+								className="btn btn-warning mx-2 btn-sm"
+								data-bs-id="{profesional.id}"
+								onClick={() => editarProfesional(row.original.id)}>
+								<i className="fa-regular fa-pen-to-square"></i>{" "}
+								Editar
+							</button>
+							<button
+								className="btn btn-danger mx-2 btn-sm"
+								data-bs-id="{profesional.id}"
+								onClick={() =>
+									eliminarProfesional(row.original.id)
+								}>
+								<i className="fa-regular fa-trash-can"></i>{" "}
+								Eliminar
+							</button>
 						</div>
-				),
-			},
-			{
-				Header: "Acciones",
-				accessor: "id",
-				Cell: ({ row }) => (
-					<div>
-						<button
-							className="btn btn-warning mx-2 btn-sm"
-							data-bs-id="{user.id_user}"
-							onClick={() => editarProfesional(row.original)}>
-							<i className="fa-regular fa-pen-to-square"></i>{" "}
-							Editar
-						</button>
-						<button
-							className="btn btn-danger mx-2 btn-sm"
-							data-bs-id="{user.id_user}"
-							onClick={() =>
-								eliminarProfesional(row.original.id)
-							}>
-							<i className="fa-regular fa-trash-can"></i> Eliminar
-						</button>
-					</div>
-				),
-			},
-		],
-		[]
-	);
+					),
+				},
+			],
+			[]
+		);
 
 	const {
 		getTableProps,
@@ -225,16 +246,23 @@ const ProfesionalesTabla = () => {
 													column.getSortByToggleProps()
 												)}
 												className={`${
-													column.Header === "Activo"
+													column.Header ===
+														"Activo" ||
+													column.Header === "DNI" ||
+													column.Header ===
+														"Matrícula" ||
+													column.Header ===
+														"Teléfono" ||
+													column.Header === "Acciones"
 														? "text-center"
 														: ""
 												}`}>
 												{column.render("Header")}
-												<span>
+												<span className="ms-2 p-1 text-warning">
 													{column.isSorted
 														? column.isSortedDesc
-															? "  ↓"
-															: "  ↑"
+															? "↓"
+															: "↑"
 														: ""}
 												</span>
 											</th>
@@ -250,10 +278,30 @@ const ProfesionalesTabla = () => {
 											{row.cells.map((cell) => {
 												return (
 													<td
+														{...cell.getCellProps()}
+														className={`${
+															cell.column
+																.Header ===
+																"DNI" ||
+															cell.column
+																.Header ===
+																"Matrícula" ||
+															cell.column
+																.Header ===
+																"Activo" ||
+															cell.column
+																.Header ===
+																"Teléfono"
+																? "text-center"
+																: "" ||
+															cell.column
+																.Header ===
+																"Acciones"
+																? "text-center"
+																: ""
+														}`}
 														{...cell.getCellProps()}>
-														{/* <div className="d-flex justify-content-center px-0"> */}
 														{cell.render("Cell")}
-														{/* </div> */}
 													</td>
 												);
 											})}
