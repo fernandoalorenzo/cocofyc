@@ -42,7 +42,7 @@ export default apiConnection;
 
 // const fetchUserInfo = async (postUserId) => {
 // 	try {
-// 		const endpoint = "http://127.0.0.1:5000/users/";
+// 		const endpoint = "http://127.0.0.1:5000/api/users/";
 // 		const filter = props.usuario; // "" si es para POST
 // 		const method = "GET";
 

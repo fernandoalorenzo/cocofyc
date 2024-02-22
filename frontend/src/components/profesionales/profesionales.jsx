@@ -1,19 +1,30 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useTable, useSortBy, usePagination } from "react-table";
 import apiConnection from "../../../../backend/functions/apiConnection";
-import ProfesionalesModal from './profesionalesModal';
+import ProfesionalesModal from "./profesionalesModal";
 
 const ProfesionalesTabla = () => {
 	const [data, setData] = useState([]);
 	const [filterText, setFilterText] = useState("");
 	const [selectedPageSize, setSelectedPageSize] = useState(10);
+  const [showProfesionalesModal, setShowProfesionalesModal] = useState(false);
 
-	const [showProfesionalesModal, setShowProfesionalesModal] = useState(false);
+  const [selectedProfesionalData, setSelectedProfesionalData] = useState(null);
 
+  const verProfesional = (id) => {
+		// Encuentra el profesional seleccionado utilizando su ID
+		const profesional = data.find((profesional) => profesional.id === id);
+		// Establece los datos del profesional seleccionado en el estado
+		setSelectedProfesionalData(profesional);
+		// Abre el modal
+		setShowProfesionalesModal(true);
+  };
+
+  // OBTENER LISTA DE REGISTROS
 	useEffect(() => {
 		const fetchProfesionales = async () => {
 			try {
-				const endpoint = "http://127.0.0.1:5000/profesionales/";
+				const endpoint = "http://127.0.0.1:5000/api/profesionales";
 				const direction = "";
 				const method = "GET";
 				const body = false;
@@ -114,7 +125,7 @@ const ProfesionalesTabla = () => {
 					<div>
 						<button
 							className="btn btn-info mx-2 btn-sm"
-							data-bs-id="{profesional.id}"
+							data-bs-id="{row.original.id}"
 							onClick={() => verProfesional(row.original.id)}>
 							<i className="fa-regular fa-eye"></i> Mostrar
 						</button>
@@ -410,7 +421,7 @@ const ProfesionalesTabla = () => {
 				showModal={showProfesionalesModal}
 				closeModal={closeProfesionalesModal}
 				updateParentData={updateData}
-				data={null} // Opcionalmente, puedes pasar datos si estás editando un profesional existente
+				data={selectedProfesionalData}
 			/>
 		</>
 	);

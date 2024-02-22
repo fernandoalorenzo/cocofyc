@@ -1,6 +1,5 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../config/sequelizeConfig.js";
-import Profesional from "./profesionalesModel.js";
 
 const Estado = sequelize.define(
 	"tb_estados_matricula",
@@ -22,11 +21,11 @@ const Estado = sequelize.define(
 );
 
 // Definir la asociación con Profesional
-Estado.associate = (models) => {
-	Estado.hasMany(models.Profesional, {
-		foreignKey: "estado_matricula_id",
-		as: "profesionales",
-	});
+const associate = (models) => {
+    const Profesional = models.Profesional;
+    Estado.hasMany(Profesional, {
+        foreignKey: 'estado_matricula_id',
+        as: 'profesionales',
+    });
 };
-
 export default Estado;
