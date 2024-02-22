@@ -19,6 +19,12 @@ const apiConnection = async (endpoint, direction, method, body, headers) => {
 		}
 
 		const responseData = await response.json();
+
+		if (responseData.error) {
+			// Si hay un error en la respuesta, lanzar un error con el mensaje de error
+			throw new Error(responseData.error);
+		}
+		
 		return responseData;
 	} catch (error) {
 		throw new Error(`Error en la conexión API: ${error.message}`);

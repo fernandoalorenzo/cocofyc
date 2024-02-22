@@ -54,97 +54,91 @@ const ProfesionalesTabla = () => {
 		);
 	}, [data, filterText]);
 
-		const columns = React.useMemo(
-			() => [
-				{
-					Header: "Nombre",
-					accessor: "nombre",
-				},
-				{
-					Header: "DNI",
-					accessor: "dni",
-				},
-				{
-					Header: "Matrícula",
-					accessor: "matricula",
-				},
-				{
-					Header: "Teléfono",
-					accessor: "telefono",
-				},
-				{
-					Header: "e-Mail",
-					accessor: "email",
-				},
-				{
-					Header: "Localidad",
-					accessor: "localidad",
-				},
-				{
-					Header: "Activo",
-					accessor: "activo",
-					Cell: ({ row }) => (
-						<>
-							<div className="form-switch">
-								<input
-									className="form-check-input"
-									type="checkbox"
-									checked={row.original.activo}
-									onChange={() =>
-										toggleActivo(row.original.id)
-									}
-								/>
-								<label className="form-check-label" hidden>
-									{row.original.activo ? "1" : "0"}
-								</label>
-							</div>
-						</>
-					),
-					sortType: (rowA, rowB, columnId) => {
-						// Convertir los valores a números para que la comparación sea numérica
-						const valueA = rowA.original.activo ? 1 : 0;
-						const valueB = rowB.original.activo ? 1 : 0;
-
-						// Comparar los valores y devolver el resultado
-						return valueA - valueB;
-					},
-				},
-				{
-					Header: "Acciones",
-					accessor: "id",
-					Cell: ({ row }) => (
-						<div>
-							<button
-								className="btn btn-info mx-2 btn-sm"
-								data-bs-id="{profesional.id}"
-								onClick={() =>
-									verProfesional(row.original.id)
-								}>
-								<i className="fa-regular fa-eye"></i>{" "}
-								Mostrar
-							</button>
-							<button
-								className="btn btn-warning mx-2 btn-sm"
-								data-bs-id="{profesional.id}"
-								onClick={() => editarProfesional(row.original.id)}>
-								<i className="fa-regular fa-pen-to-square"></i>{" "}
-								Editar
-							</button>
-							<button
-								className="btn btn-danger mx-2 btn-sm"
-								data-bs-id="{profesional.id}"
-								onClick={() =>
-									eliminarProfesional(row.original.id)
-								}>
-								<i className="fa-regular fa-trash-can"></i>{" "}
-								Eliminar
-							</button>
+	const columns = React.useMemo(
+		() => [
+			{
+				Header: "Nombre",
+				accessor: "nombre",
+			},
+			{
+				Header: "DNI",
+				accessor: "dni",
+			},
+			{
+				Header: "Matrícula",
+				accessor: "matricula",
+			},
+			{
+				Header: "Teléfono",
+				accessor: "telefono",
+			},
+			{
+				Header: "e-Mail",
+				accessor: "email",
+			},
+			{
+				Header: "Localidad",
+				accessor: "localidad",
+			},
+			{
+				Header: "Activo",
+				accessor: "activo",
+				Cell: ({ row }) => (
+					<>
+						<div className="form-switch">
+							<input
+								className="form-check-input"
+								type="checkbox"
+								checked={row.original.activo}
+								onChange={() => toggleActivo(row.original.id)}
+							/>
+							<label className="form-check-label" hidden>
+								{row.original.activo ? "1" : "0"}
+							</label>
 						</div>
-					),
+					</>
+				),
+				sortType: (rowA, rowB, columnId) => {
+					// Convertir los valores a números para que la comparación sea numérica
+					const valueA = rowA.original.activo ? 1 : 0;
+					const valueB = rowB.original.activo ? 1 : 0;
+
+					// Comparar los valores y devolver el resultado
+					return valueA - valueB;
 				},
-			],
-			[]
-		);
+			},
+			{
+				Header: "Acciones",
+				accessor: "id",
+				Cell: ({ row }) => (
+					<div>
+						<button
+							className="btn btn-info mx-2 btn-sm"
+							data-bs-id="{profesional.id}"
+							onClick={() => verProfesional(row.original.id)}>
+							<i className="fa-regular fa-eye"></i> Mostrar
+						</button>
+						<button
+							className="btn btn-warning mx-2 btn-sm"
+							data-bs-id="{profesional.id}"
+							onClick={() => editarProfesional(row.original.id)}>
+							<i className="fa-regular fa-pen-to-square"></i>{" "}
+							Editar
+						</button>
+						<button
+							className="btn btn-danger mx-2 btn-sm"
+							data-bs-id="{profesional.id}"
+							onClick={() =>
+								eliminarProfesional(row.original.id)
+							}>
+							<i className="fa-regular fa-trash-can"></i> Eliminar
+						</button>
+					</div>
+				),
+			},
+		],
+		[]
+	);
 
 	const {
 		getTableProps,
@@ -197,6 +191,10 @@ const ProfesionalesTabla = () => {
 
 	const closeProfesionalesModal = () => setShowProfesionalesModal(false);
 
+	// Función para actualizar los datos después de agregar un nuevo registro
+	const updateData = (newData) => {
+		setData([...data, newData]);
+	};
 
 	return (
 		<>
@@ -411,6 +409,7 @@ const ProfesionalesTabla = () => {
 			<ProfesionalesModal
 				showModal={showProfesionalesModal}
 				closeModal={closeProfesionalesModal}
+				updateParentData={updateData}
 				data={null} // Opcionalmente, puedes pasar datos si estás editando un profesional existente
 			/>
 		</>
