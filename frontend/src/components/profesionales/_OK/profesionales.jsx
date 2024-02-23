@@ -7,12 +7,20 @@ const ProfesionalesTabla = () => {
 	const [data, setData] = useState([]);
 	const [filterText, setFilterText] = useState("");
 	const [selectedPageSize, setSelectedPageSize] = useState(10);
-	const [showModal, setShowModal] = useState(false);
-	const [selectedProfesional, setSelectedProfesional] = useState(null);
-	const [modalMode, setModalMode] = useState("mostrar"); // "mostrar" o "editar" o "agregar"
-	const [editProfesionalData, setEditProfesionalData] = useState(null); // Datos del registro a editar
+  const [showProfesionalesModal, setShowProfesionalesModal] = useState(false);
 
-	// OBTENER LISTA DE REGISTROS
+  const [selectedProfesionalData, setSelectedProfesionalData] = useState(null);
+
+  const verProfesional = (id) => {
+		// Encuentra el profesional seleccionado utilizando su ID
+		const profesional = data.find((profesional) => profesional.id === id);
+		// Establece los datos del profesional seleccionado en el estado
+		setSelectedProfesionalData(profesional);
+		// Abre el modal
+		setShowProfesionalesModal(true);
+  };
+
+  // OBTENER LISTA DE REGISTROS
 	useEffect(() => {
 		const fetchProfesionales = async () => {
 			try {
@@ -93,8 +101,7 @@ const ProfesionalesTabla = () => {
 								className="form-check-input"
 								type="checkbox"
 								checked={row.original.activo}
-								// onChange={() => toggleActivo(row.original.id)}
-								readOnly
+								onChange={() => toggleActivo(row.original.id)}
 							/>
 							<label className="form-check-label" hidden>
 								{row.original.activo ? "1" : "0"}
@@ -118,14 +125,23 @@ const ProfesionalesTabla = () => {
 					<div>
 						<button
 							className="btn btn-info mx-2 btn-sm"
-							onClick={() => handleMostrar(row.original)}>
+							data-bs-id="{row.original.id}"
+							onClick={() => verProfesional(row.original.id)}>
 							<i className="fa-regular fa-eye"></i> Mostrar
 						</button>
-						<button className="btn btn-warning mx-2 btn-sm">
+						<button
+							className="btn btn-warning mx-2 btn-sm"
+							data-bs-id="{profesional.id}"
+							onClick={() => editarProfesional(row.original.id)}>
 							<i className="fa-regular fa-pen-to-square"></i>{" "}
 							Editar
 						</button>
-						<button className="btn btn-danger mx-2 btn-sm">
+						<button
+							className="btn btn-danger mx-2 btn-sm"
+							data-bs-id="{profesional.id}"
+							onClick={() =>
+								eliminarProfesional(row.original.id)
+							}>
 							<i className="fa-regular fa-trash-can"></i> Eliminar
 						</button>
 					</div>
@@ -166,16 +182,6 @@ const ProfesionalesTabla = () => {
 		usePagination
 	);
 
-	const handleMostrar = (profesional) => {
-		setSelectedProfesional(profesional);
-	};
-
-	useEffect(() => {
-		if (selectedProfesional) {
-			setShowModal(true);
-		}
-	}, [selectedProfesional]);
-
 	const handleFilterChange = (e) => {
 		const value = e.target.value || "";
 		setFilterText(value);
@@ -192,16 +198,13 @@ const ProfesionalesTabla = () => {
 		updatePageSize(size); // Usar updatePageSize
 	};
 
+	const openProfesionalesModal = () => setShowProfesionalesModal(true);
+
+	const closeProfesionalesModal = () => setShowProfesionalesModal(false);
+
 	// Función para actualizar los datos después de agregar un nuevo registro
 	const updateData = (newData) => {
 		setData([...data, newData]);
-	};
-
-	// Función para cerrar el modal y restablecer los datos del formulario
-	const closeModalAndResetData = () => {
-		setSelectedProfesional(null);
-		setShowModal(false);
-		// Aquí puedes agregar cualquier lógica adicional para restablecer los datos del formulario si es necesario
 	};
 
 	return (
@@ -245,7 +248,8 @@ const ProfesionalesTabla = () => {
 								<button
 									type="button"
 									className="btn btn-primary"
-									id="abrirModalAgregar">
+									id="abrirModalAgregar"
+									onClick={openProfesionalesModal}>
 									<i className="fa-regular fa-square-plus"></i>{" "}
 									Agregar
 								</button>
@@ -414,10 +418,10 @@ const ProfesionalesTabla = () => {
 				</div>
 			</div>
 			<ProfesionalesModal
-				showModal={showModal}
-				setShowModal={setShowModal}
-				profesional={selectedProfesional}
-				onClose={closeModalAndResetData}
+				showModal={showProfesionalesModal}
+				closeModal={closeProfesionalesModal}
+				updateParentData={updateData}
+				data={selectedProfesionalData}
 			/>
 		</>
 	);

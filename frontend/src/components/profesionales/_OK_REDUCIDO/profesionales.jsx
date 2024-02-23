@@ -1,16 +1,13 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useTable, useSortBy, usePagination } from "react-table";
 import apiConnection from "../../../../backend/functions/apiConnection";
-import ProfesionalesModal from "./profesionalesModal";
+import Modal from "./profesionalesModal"; // Importa el componente Modal
 
 const ProfesionalesTabla = () => {
 	const [data, setData] = useState([]);
 	const [filterText, setFilterText] = useState("");
 	const [selectedPageSize, setSelectedPageSize] = useState(10);
-	const [showModal, setShowModal] = useState(false);
-	const [selectedProfesional, setSelectedProfesional] = useState(null);
-	const [modalMode, setModalMode] = useState("mostrar"); // "mostrar" o "editar" o "agregar"
-	const [editProfesionalData, setEditProfesionalData] = useState(null); // Datos del registro a editar
+	const [selectedProfesional, setSelectedProfesional] = useState(null); // Nuevo estado para el profesional seleccionado
 
 	// OBTENER LISTA DE REGISTROS
 	useEffect(() => {
@@ -93,8 +90,7 @@ const ProfesionalesTabla = () => {
 								className="form-check-input"
 								type="checkbox"
 								checked={row.original.activo}
-								// onChange={() => toggleActivo(row.original.id)}
-								readOnly
+								onChange={() => toggleActivo(row.original.id)}
 							/>
 							<label className="form-check-label" hidden>
 								{row.original.activo ? "1" : "0"}
@@ -116,17 +112,18 @@ const ProfesionalesTabla = () => {
 				accessor: "id",
 				Cell: ({ row }) => (
 					<div>
-						<button
+						{/* <button
 							className="btn btn-info mx-2 btn-sm"
-							onClick={() => handleMostrar(row.original)}>
+							data-bs-id="{row.original.id}"
+							onClick={() => verProfesional(row.original.id)}>
 							<i className="fa-regular fa-eye"></i> Mostrar
-						</button>
-						<button className="btn btn-warning mx-2 btn-sm">
-							<i className="fa-regular fa-pen-to-square"></i>{" "}
-							Editar
-						</button>
-						<button className="btn btn-danger mx-2 btn-sm">
-							<i className="fa-regular fa-trash-can"></i> Eliminar
+						</button> */}
+						<button
+							className="btn btn-primary"
+							onClick={() =>
+								setSelectedProfesional(row.original)
+							}>
+							Ver Detalles
 						</button>
 					</div>
 				),
@@ -166,16 +163,6 @@ const ProfesionalesTabla = () => {
 		usePagination
 	);
 
-	const handleMostrar = (profesional) => {
-		setSelectedProfesional(profesional);
-	};
-
-	useEffect(() => {
-		if (selectedProfesional) {
-			setShowModal(true);
-		}
-	}, [selectedProfesional]);
-
 	const handleFilterChange = (e) => {
 		const value = e.target.value || "";
 		setFilterText(value);
@@ -192,20 +179,14 @@ const ProfesionalesTabla = () => {
 		updatePageSize(size); // Usar updatePageSize
 	};
 
-	// Función para actualizar los datos después de agregar un nuevo registro
-	const updateData = (newData) => {
-		setData([...data, newData]);
-	};
-
-	// Función para cerrar el modal y restablecer los datos del formulario
-	const closeModalAndResetData = () => {
-		setSelectedProfesional(null);
-		setShowModal(false);
-		// Aquí puedes agregar cualquier lógica adicional para restablecer los datos del formulario si es necesario
-	};
-
 	return (
 		<>
+			{/* Agrega el Modal */}
+			<Modal
+				profesional={selectedProfesional}
+				onClose={() => setSelectedProfesional(null)}
+			/>
+
 			<div className="content-wrapper">
 				<div className="content-header">
 					<div className="container-fluid">
@@ -242,13 +223,6 @@ const ProfesionalesTabla = () => {
 										</div>
 									)}
 								</div>
-								<button
-									type="button"
-									className="btn btn-primary"
-									id="abrirModalAgregar">
-									<i className="fa-regular fa-square-plus"></i>{" "}
-									Agregar
-								</button>
 							</div>
 							<table
 								{...getTableProps()}
@@ -336,89 +310,10 @@ const ProfesionalesTabla = () => {
 									})}
 								</tbody>
 							</table>
-							<div className="container-fluid align-items-center">
-								<div className="row justify-content-between align-items-center">
-									<div className="col col-4 d-flex justify-content-start align-items-center">
-										<div className="col">
-											Mostrando {pageIndex * pageSize + 1}{" "}
-											-{" "}
-											{pageIndex * pageSize + page.length}{" "}
-											de {data.length} registros
-										</div>
-										<button
-											className="btn btn-sm btn-outline-primary ms-1"
-											onClick={() => gotoPage(0)}
-											disabled={!canPreviousPage}>
-											<i className="fa-solid fa-backward-step"></i>
-										</button>{" "}
-										<button
-											className="btn btn-sm btn-outline-primary ms-1"
-											onClick={() => previousPage()}
-											disabled={!canPreviousPage}>
-											<i className="fa-solid fa-caret-left"></i>
-										</button>{" "}
-										<button
-											className="btn btn-sm btn-outline-primary ms-1"
-											onClick={() => nextPage()}
-											disabled={!canNextPage}>
-											<i className="fa-solid fa-caret-right"></i>
-										</button>{" "}
-										<button
-											className="btn btn-sm btn-outline-primary ms-1"
-											onClick={() =>
-												gotoPage(pageCount - 1)
-											}
-											disabled={!canNextPage}>
-											<i className="fa-solid fa-forward-step"></i>
-										</button>{" "}
-									</div>
-									<div className="col col-4 d-flex justify-content-evenly content-align-center align-items-center">
-										<span>
-											Página{" "}
-											<strong>{pageIndex + 1}</strong> de{" "}
-											<strong>
-												{pageOptions.length}
-											</strong>
-										</span>
-										<span>Ir a la página: </span>
-										<input
-											className="form-control form-control-sm"
-											type="number"
-											defaultValue={pageIndex + 1}
-											onChange={(e) => {
-												const page = e.target.value
-													? Number(e.target.value) - 1
-													: 0;
-												gotoPage(page);
-											}}
-											style={{ width: "4rem" }}
-										/>
-									</div>
-									<div className="col col-4 d-flex justify-content-end align-items-center">
-										<span>Reg. por Pág. </span>
-										<select
-											className="form-select form-select-sm w-25"
-											value={selectedPageSize}
-											onChange={handlePageSizeChange}>
-											{[10, 25, 50, 100].map((size) => (
-												<option key={size} value={size}>
-													{size}
-												</option>
-											))}
-										</select>
-									</div>
-								</div>
-							</div>
 						</div>
 					</section>
 				</div>
 			</div>
-			<ProfesionalesModal
-				showModal={showModal}
-				setShowModal={setShowModal}
-				profesional={selectedProfesional}
-				onClose={closeModalAndResetData}
-			/>
 		</>
 	);
 };

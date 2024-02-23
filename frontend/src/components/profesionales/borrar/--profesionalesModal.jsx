@@ -2,10 +2,172 @@ import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import apiConnection from "../../../../backend/functions/apiConnection";
 
-const ProfesionalesModal = ({ showModal, setShowModal, profesional, onClose }) => {
+const ProfesionalesModal = ({
+	showModal,
+	closeModal,
+	data,
+	updateParentData,
+}) => {
+	const initialState = {
+		nombre: "",
+		dni: "",
+		cuit: "",
+		telefono: "",
+		email: "",
+		matricula: "",
+		domicilio: "",
+		localidad: "",
+		fecha_nacimiento: "",
+		imagen: null,
+		activo: false,
+		estado_matricula_id: "",
+	};
+
+	const [formData, setFormData] = useState(initialState);
+	const [errorMessage, setErrorMessage] = useState("");
+
 	const [estadosMatriculas, setEstadosMatriculas] = useState([]);
 
-	// CARGAR ESTADOS DE MATRICULA EN EL SELECT
+	// FORMATO PARA EL NOMBRE
+	const [nombre, setNombre] = useState("");
+	const handleChangeNombre = (event) => {
+		const value = event.target.value.toUpperCase(); // Convertir a mayúsculas
+		setFormData({
+			...formData,
+			nombre: value,
+		});
+	};
+
+	// FORMATO PARA EL DNI
+	const [dni, setDni] = useState("");
+	const handleChangeDni = (event) => {
+		let value = event.target.value.replace(/\D/g, "");
+		value = value.slice(0, 8);
+		let formattedValue = value.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+		setFormData({
+			...formData,
+			dni: formattedValue,
+		});
+	};
+
+	// FORMATO PARA EL CUIT
+	const [cuit, setCuit] = useState("");
+	const handleChangeCuit = (event) => {
+		let value = event.target.value.replace(/\D/g, "");
+		value = value.slice(0, 11);
+		if (value.length >= 2) {
+			value = value.slice(0, 2) + "-" + value.slice(2);
+		}
+		if (value.length >= 11) {
+			value = value.slice(0, 11) + "-" + value.slice(11);
+		}
+		setFormData({
+			...formData,
+			cuit: value,
+		});
+	};
+
+	const handleChange = (e) => {
+		const { name, value } = e.target;
+		setFormData({ ...formData, [name]: value });
+	};
+
+	const handleFileChange = (e) => {
+		const file = e.target.files[0];
+		// Aquí puedes manejar el archivo como desees, por ejemplo, mostrar una vista previa o almacenarlo en el estado
+	};
+
+	const handleSubmit = async (e) => {
+		e.preventDefault();
+
+		// Remover el guion del CUIT y los puntos del DNI
+		const cuitSinGuion = formData.cuit.replace(/-/g, "");
+		const dniSinPuntos = formData.dni.replace(/\./g, "");
+
+		// Crear una copia del formData con los valores transformados
+		const formDataToSend = {
+			...formData,
+			cuit: cuitSinGuion,
+			dni: dniSinPuntos,
+		};
+
+		try {
+			const endpoint = "http://127.0.0.1:5000/api/profesionales/";
+			const direction = data ? `/${data.id}` : ""; // Si hay data, es una actualización, de lo contrario, es una creación
+			const method = data ? "PUT" : "POST"; // Método dependiendo de si es una actualización o una creación
+			const body = formDataToSend;
+
+			const headers = {
+				"Content-Type": "application/json",
+				// Authorization: localStorage.getItem("token"),
+			};
+
+			const response = await apiConnection(
+				endpoint,
+				direction,
+				method,
+				body,
+				headers
+			);
+
+			// Después de agregar el nuevo registro, llamar a la función para actualizar los datos del padre
+			updateParentData(formDataToSend);
+
+			if (response.data) {
+				// MOSTRAR SWEET ALERT
+				Swal.fire({
+					icon: "success",
+					title: "¡Registro guardado exitosamente!",
+					showConfirmButton: false,
+					timer: 2500, // Cierra automáticamente después de 2.5 segundos
+				});
+
+				// CERRAR MODAL
+				setTimeout(() => {
+					closeModalAndResetData();
+				}, 2500);
+
+				console.log("Operación exitosa");
+				console.log("Datos del profesional:", response.data);
+			} else {
+				console.error("Error en la operación:", response.error);
+			}
+		} catch (error) {
+			if (error.message.includes("duplicado")) {
+				setErrorMessage(
+					"El valor que está intentando guardar ya existe en la base de datos."
+				);
+			} else {
+				setErrorMessage(
+					"Ocurrió un error al procesar su solicitud. Por favor, inténtelo de nuevo más tarde."
+				);
+			}
+
+			console.error("Error:", error.message);
+			// Verificar si el error es debido a un DNI duplicado
+			if (error.response && error.response.status === 409) {
+				Swal.fire({
+					icon: "error",
+					title: "Error al guardar el registro",
+					text: "El DNI ingresado ya existe en la base de datos.",
+					confirmButtonText: "Aceptar",
+				});
+			} else {
+				Swal.fire({
+					icon: "error",
+					title: "Error al guardar el registro",
+					text: "Ocurrió un error al intentar guardar el registro. Por favor, inténtelo de nuevo más tarde.",
+					confirmButtonText: "Aceptar",
+				});
+			}
+		}
+	};
+
+	const closeModalAndResetData = () => {
+		closeModal();
+		setFormData(initialState);
+	};
+
 	useEffect(() => {
 		const fetchEstadosMatriculas = async () => {
 			try {
@@ -27,6 +189,7 @@ const ProfesionalesModal = ({ showModal, setShowModal, profesional, onClose }) =
 				);
 
 				setEstadosMatriculas(data.data);
+
 			} catch (error) {
 				console.error("Error:", error.message);
 			}
@@ -34,16 +197,6 @@ const ProfesionalesModal = ({ showModal, setShowModal, profesional, onClose }) =
 
 		fetchEstadosMatriculas();
 	}, []);
-
-    const closeModalAndResetData = () => {
-        setShowModal(false);
-        onClose();
-		// Aquí puedes agregar cualquier lógica adicional para restablecer los datos del formulario si es necesario
-	};
-
-	if (!profesional) {
-		return <div>Loading...</div>;
-	}
 
 	return (
 		<div
@@ -55,15 +208,16 @@ const ProfesionalesModal = ({ showModal, setShowModal, profesional, onClose }) =
 			<div className="modal-dialog modal-xl">
 				<div className="modal-content bg-secondary">
 					<div className="modal-header bg-primary">
-						<h5 className="modal-title">Nuevo Profesional</h5>
+						<h5 className="modal-title">
+							{data ? "Editar Profesional" : "Nuevo Profesional"}
+						</h5>
 						<button
 							type="button"
 							className="btn-close"
 							aria-label="Close"
 							onClick={closeModalAndResetData}></button>
 					</div>
-					{/* <form onSubmit={handleSubmit}> */}
-					<form>
+					<form onSubmit={handleSubmit}>
 						<div className="modal-body">
 							<div className="container-fluid">
 								<div className="row">
@@ -79,8 +233,9 @@ const ProfesionalesModal = ({ showModal, setShowModal, profesional, onClose }) =
 											className="form-control"
 											id="nombre"
 											name="nombre"
-											defaultValue={profesional.nombre}
-											readOnly
+											value={formData.nombre}
+											onChange={handleChangeNombre}
+											required
 										/>
 									</div>
 									{/* DNI */}
@@ -95,8 +250,9 @@ const ProfesionalesModal = ({ showModal, setShowModal, profesional, onClose }) =
 											className="form-control"
 											id="dni"
 											name="dni"
-											defaultValue={profesional.dni}
-											readOnly
+											value={formData.dni}
+											onChange={handleChangeDni}
+											required
 										/>
 									</div>
 									{/* CUIT */}
@@ -111,8 +267,8 @@ const ProfesionalesModal = ({ showModal, setShowModal, profesional, onClose }) =
 											className="form-control"
 											id="cuit"
 											name="cuit"
-											defaultValue={profesional.cuit}
-											readOnly
+											value={formData.cuit}
+											onChange={handleChangeCuit}
 										/>
 									</div>
 									{/* Matrícula */}
@@ -127,8 +283,9 @@ const ProfesionalesModal = ({ showModal, setShowModal, profesional, onClose }) =
 											className="form-control"
 											id="matricula"
 											name="matricula"
-											defaultValue={profesional.matricula}
-											readOnly
+											value={formData.matricula}
+											onChange={handleChange}
+											required
 										/>
 									</div>
 								</div>
@@ -145,10 +302,8 @@ const ProfesionalesModal = ({ showModal, setShowModal, profesional, onClose }) =
 											className="form-control"
 											id="fecha_nacimiento"
 											name="fecha_nacimiento"
-											defaultValue={
-												profesional.fecha_nacimiento
-											}
-											readOnly
+											value={formData.fecha_nacimiento}
+											onChange={handleChange}
 										/>
 									</div>
 									{/* Teléfono */}
@@ -163,8 +318,8 @@ const ProfesionalesModal = ({ showModal, setShowModal, profesional, onClose }) =
 											className="form-control"
 											id="telefono"
 											name="telefono"
-											defaultValue={profesional.telefono}
-											readOnly
+											value={formData.telefono}
+											onChange={handleChange}
 										/>
 									</div>
 									{/* E-Mail */}
@@ -179,8 +334,8 @@ const ProfesionalesModal = ({ showModal, setShowModal, profesional, onClose }) =
 											className="form-control"
 											id="email"
 											name="email"
-											defaultValue={profesional.email}
-											readOnly
+											value={formData.email}
+											onChange={handleChange}
 										/>
 									</div>
 									{/* Activo */}
@@ -196,17 +351,14 @@ const ProfesionalesModal = ({ showModal, setShowModal, profesional, onClose }) =
 												className="form-check-input"
 												id="activo"
 												name="activo"
-												checked={profesional.activo}
-												readOnly
-
-												// checked={formData.activo}
-												// onChange={(e) =>
-												// 	setFormData({
-												// 		...formData,
-												// 		activo: e.target
-												// 			.checked,
-												// 	})
-												// }
+												checked={formData.activo}
+												onChange={(e) =>
+													setFormData({
+														...formData,
+														activo: e.target
+															.checked,
+													})
+												}
 											/>
 										</div>
 									</div>
@@ -217,42 +369,13 @@ const ProfesionalesModal = ({ showModal, setShowModal, profesional, onClose }) =
 											className="form-label mb-0">
 											Estado de Matrícula
 										</label>
-										{/* <select
-											className="form-select"
-											id="estado_matricula_id"
-											name="estado_matricula_id"
-											defaultValue={profesional.cuit}
-											readOnly
-											// onChange={handleChange}
-										> */}
-										{/* {!data && ( */}
-
-										{/* <option value="">
-												Seleccionar
-											</option> */}
-
-										{/* )} */}
-
-										{/* {estadosMatriculas.map((estado) => (
-												<option
-													key={estado.id}
-													value={estado.id}>
-													{estado.estado}
-												</option>
-											))}
-										</select> */}
 										<select
 											className="form-select"
 											id="estado_matricula_id"
 											name="estado_matricula_id"
-											defaultValue={
-												profesional.estado_matricula_id
-											} // Usar defaultValue en lugar de value
-											readOnly // Asegura que el campo sea de solo lectura
-										>
-											<option value="">
-												Seleccionar
-											</option>
+											value={formData.estado_matricula_id}
+											onChange={handleChange}>
+											{!data && <option value="">Seleccionar</option>}
 											{estadosMatriculas.map((estado) => (
 												<option
 													key={estado.id}
@@ -276,9 +399,8 @@ const ProfesionalesModal = ({ showModal, setShowModal, profesional, onClose }) =
 											className="form-control"
 											id="domicilio"
 											name="domicilio"
-											// onChange={handleChange}
-											defaultValue={profesional.domicilio}
-											readOnly
+											value={formData.domicilio}
+											onChange={handleChange}
 										/>
 									</div>
 									{/* Localidad */}
@@ -293,9 +415,8 @@ const ProfesionalesModal = ({ showModal, setShowModal, profesional, onClose }) =
 											className="form-control"
 											id="localidad"
 											name="localidad"
-											// onChange={handleChange}
-											defaultValue={profesional.localidad}
-											readOnly
+											value={formData.localidad}
+											onChange={handleChange}
 										/>
 									</div>
 								</div>
@@ -312,9 +433,7 @@ const ProfesionalesModal = ({ showModal, setShowModal, profesional, onClose }) =
 											className="form-control"
 											id="imagen"
 											name="imagen"
-											// defaultValue={profesional.imagen}
-											// readOnly
-											// onChange={handleFileChange}
+											onChange={handleFileChange}
 										/>
 									</div>
 								</div>
@@ -328,12 +447,12 @@ const ProfesionalesModal = ({ showModal, setShowModal, profesional, onClose }) =
 								<i className="fa-solid fa-ban me-2"></i>
 								Cancelar
 							</button>
-							{/* <button
+							<button
 								type="submit"
 								className="btn btn-primary col-md-2">
 								<i className="fa-regular fa-floppy-disk me-2"></i>
-								"Guardar"
-							</button> */}
+								{data ? "Guardar Cambios" : "Crear"}
+							</button>
 						</div>
 					</form>
 				</div>
