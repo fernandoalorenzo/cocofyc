@@ -12,6 +12,7 @@ const ProfesionalesModal = ({
 	const [estadosMatriculas, setEstadosMatriculas] = useState([]);
 	const [editProfesionalData, setEditProfesionalData] = useState(null); // Datos del registro a editar
 
+	// DEFINE EL TITULO DEL MODAL
 	let modalTitle = "";
 	if (modalMode === "mostrar") {
 		modalTitle = "Mostrar Profesional";
@@ -24,6 +25,52 @@ const ProfesionalesModal = ({
 	// Usar editProfesionalData si el modal está en modo "editar"
 	const profesionalData =
 		modalMode === "editar" ? editProfesionalData : profesional;
+
+	// ESTABLECE LOS VALORES INICIALES DEL MODAL
+	const [inputValues, setInputValues] = useState({
+		nombre: "",
+		dni: "",
+		cuit: "",
+		telefono: "",
+		email: "",
+		matricula: "",
+		domicilio: "",
+		localidad: "",
+		fecha_nacimiento: "",
+		imagen: "",
+		activo: false,
+		estado_matricula_id: "",
+	});
+
+	
+	// FUNCION PARA CARGAR LOS DATOS DEL PROFESIONAL A EDITAR
+	const handleInputChange = (e) => {
+		const { name, value } = e.target;
+		setInputValues({
+			...inputValues,
+			[name]: value,
+		});
+	};
+
+	// SI LA PROP PROFESIONAL TRAE DATOS, CARGA DATOS DEL PROFESIONAL EN LOS INPUTS
+	useEffect(() => {
+		if (profesional) {
+			setInputValues({
+				nombre: profesional.nombre,
+				dni: profesional.dni,
+				cuit: profesional.cuit,
+				telefono: profesional.telefono,
+				email: profesional.email,
+				matricula: profesional.matricula,
+				domicilio: profesional.domicilio,
+				localidad: profesional.localidad,
+				fecha_nacimiento: profesional.fecha_nacimiento,
+				imagen: profesional.imagen,
+				activo: profesional.activo,
+				estado_matricula_id: profesional.estado_matricula_id,
+			});
+		}
+	}, [profesional]);
 
 	// CARGAR ESTADOS DE MATRICULA EN EL SELECT
 	useEffect(() => {
@@ -55,15 +102,49 @@ const ProfesionalesModal = ({
 		fetchEstadosMatriculas();
 	}, []);
 
+	// CERRAR MODAL Y RESTABLECER DATOS
 	const closeModalAndResetData = () => {
 		setShowModal(false);
 		onClose();
-		// Aquí puedes agregar cualquier lógica adicional para restablecer los datos del formulario si es necesario
 	};
 
 	if (!profesional) {
 		return <div>Loading...</div>;
 	}
+
+	// FUNCION PARA ACTUALIZAR LOS DATOS
+	const handleFormSubmit = async (e) => {
+		e.preventDefault();
+
+		try {
+			const endpoint = "http://127.0.0.1:5000/api/profesionales/";
+			const direction = `${profesional.id}`;
+			const method = profesional ? "PUT" : "POST"; // Método dependiendo de si es una actualización o una creación
+			const body = inputValues;
+			const headers = {
+				"Content-Type": "application/json",
+				// Authorization: localStorage.getItem("token"),
+			};
+
+			// Realizar la llamada al servidor
+			const response = await apiConnection(
+				endpoint,
+				direction,
+				method,
+				body,
+				headers
+			);
+
+			// Actualizar los datos locales si es necesario
+			// Esto es opcional y depende de cómo manejes los datos en tu aplicación
+
+			// Cerrar el modal y restablecer los datos del formulario
+			closeModalAndResetData();
+		} catch (error) {
+			console.error("Error:", error.message);
+			// Manejar el error aquí (mostrar una notificación, etc.)
+		}
+	};
 
 	return (
 		<div
@@ -82,8 +163,8 @@ const ProfesionalesModal = ({
 							aria-label="Close"
 							onClick={closeModalAndResetData}></button>
 					</div>
-					{/* <form onSubmit={handleSubmit}> */}
-					<form>
+					<form onSubmit={handleFormSubmit}>
+						{/* <form> */}
 						<div className="modal-body">
 							<div className="container-fluid">
 								<div className="row">
@@ -99,21 +180,13 @@ const ProfesionalesModal = ({
 											className="form-control"
 											id="nombre"
 											name="nombre"
-											// defaultValue={profesional.nombre}
-											// readOnly
-											value={
-												modalMode === "editar"
-													? nombre
-													: profesional.nombre
-											}
+											value={inputValues.nombre}
 											readOnly={modalMode === "mostrar"}
-											onChange={(e) =>
-												setNombre(e.target.value)
-											}
+											onChange={handleInputChange}
 										/>
 									</div>
 									{/* DNI */}
-									<div className="col-2 mb-3">
+									<div className="col mb-3">
 										<label
 											htmlFor="dni"
 											className="form-label mb-0">
@@ -124,12 +197,13 @@ const ProfesionalesModal = ({
 											className="form-control"
 											id="dni"
 											name="dni"
-											defaultValue={profesional.dni}
-											readOnly
+											value={inputValues.dni}
+											readOnly={modalMode === "mostrar"}
+											onChange={handleInputChange}
 										/>
 									</div>
 									{/* CUIT */}
-									<div className="col-2 mb-3">
+									<div className="col mb-3">
 										<label
 											htmlFor="cuit"
 											className="form-label mb-0">
@@ -140,28 +214,47 @@ const ProfesionalesModal = ({
 											className="form-control"
 											id="cuit"
 											name="cuit"
-											defaultValue={profesional.cuit}
-											readOnly
-										/>
-									</div>
-									{/* Matrícula */}
-									<div className="col-2 mb-3">
-										<label
-											htmlFor="matricula"
-											className="form-label mb-0">
-											Matrícula
-										</label>
-										<input
-											type="text"
-											className="form-control"
-											id="matricula"
-											name="matricula"
-											defaultValue={profesional.matricula}
-											readOnly
+											value={inputValues.cuit}
+											readOnly={modalMode === "mostrar"}
+											onChange={handleInputChange}
 										/>
 									</div>
 								</div>
 								<div className="row">
+									{/* Teléfono */}
+									<div className="col-4 mb-3">
+										<label
+											htmlFor="telefono"
+											className="form-label mb-0">
+											Teléfono
+										</label>
+										<input
+											type="text"
+											className="form-control"
+											id="telefono"
+											name="telefono"
+											value={inputValues.telefono}
+											readOnly={modalMode === "mostrar"}
+											onChange={handleInputChange}
+										/>
+									</div>
+									{/* E-Mail */}
+									<div className="col mb-3">
+										<label
+											htmlFor="email"
+											className="form-label mb-0">
+											E-Mail
+										</label>
+										<input
+											type="email"
+											className="form-control"
+											id="email"
+											name="email"
+											value={inputValues.email}
+											readOnly={modalMode === "mostrar"}
+											onChange={handleInputChange}
+										/>
+									</div>
 									{/* Fecha de Nacimiento */}
 									<div className="col-2 mb-3">
 										<label
@@ -174,124 +267,13 @@ const ProfesionalesModal = ({
 											className="form-control"
 											id="fecha_nacimiento"
 											name="fecha_nacimiento"
-											defaultValue={
-												profesional.fecha_nacimiento
-											}
-											readOnly
+											value={inputValues.fecha_nacimiento}
+											readOnly={modalMode === "mostrar"}
+											onChange={handleInputChange}
 										/>
-									</div>
-									{/* Teléfono */}
-									<div className="col-2 mb-3">
-										<label
-											htmlFor="telefono"
-											className="form-label mb-0">
-											Teléfono
-										</label>
-										<input
-											type="text"
-											className="form-control"
-											id="telefono"
-											name="telefono"
-											defaultValue={profesional.telefono}
-											readOnly
-										/>
-									</div>
-									{/* E-Mail */}
-									<div className="col-3 mb-3">
-										<label
-											htmlFor="email"
-											className="form-label mb-0">
-											E-Mail
-										</label>
-										<input
-											type="email"
-											className="form-control"
-											id="email"
-											name="email"
-											defaultValue={profesional.email}
-											readOnly
-										/>
-									</div>
-									{/* Activo */}
-									<div className="col-2 mb-3 text-center">
-										<label
-											htmlFor="activo"
-											className="form-label mb-0">
-											Activo
-										</label>
-										<div className="form-switch">
-											<input
-												type="checkbox"
-												className="form-check-input"
-												id="activo"
-												name="activo"
-												checked={profesional.activo}
-												readOnly
-
-												// checked={formData.activo}
-												// onChange={(e) =>
-												// 	setFormData({
-												// 		...formData,
-												// 		activo: e.target
-												// 			.checked,
-												// 	})
-												// }
-											/>
-										</div>
-									</div>
-									{/* Estado de Matrícula */}
-									<div className="col mb-3">
-										<label
-											htmlFor="estado_matricula_id"
-											className="form-label mb-0">
-											Estado de Matrícula
-										</label>
-										{/* <select
-											className="form-select"
-											id="estado_matricula_id"
-											name="estado_matricula_id"
-											defaultValue={profesional.cuit}
-											readOnly
-											// onChange={handleChange}
-										> */}
-										{/* {!data && ( */}
-
-										{/* <option value="">
-												Seleccionar
-											</option> */}
-
-										{/* )} */}
-
-										{/* {estadosMatriculas.map((estado) => (
-												<option
-													key={estado.id}
-													value={estado.id}>
-													{estado.estado}
-												</option>
-											))}
-										</select> */}
-										<select
-											className="form-select"
-											id="estado_matricula_id"
-											name="estado_matricula_id"
-											defaultValue={
-												profesional.estado_matricula_id
-											} // Usar defaultValue en lugar de value
-											readOnly // Asegura que el campo sea de solo lectura
-										>
-											<option value="">
-												Seleccionar
-											</option>
-											{estadosMatriculas.map((estado) => (
-												<option
-													key={estado.id}
-													value={estado.id}>
-													{estado.estado}
-												</option>
-											))}
-										</select>
 									</div>
 								</div>
+
 								<div className="row">
 									{/* Domicilio */}
 									<div className="col mb-3">
@@ -305,9 +287,9 @@ const ProfesionalesModal = ({
 											className="form-control"
 											id="domicilio"
 											name="domicilio"
-											// onChange={handleChange}
-											defaultValue={profesional.domicilio}
-											readOnly
+											value={inputValues.domicilio}
+											readOnly={modalMode === "mostrar"}
+											onChange={handleInputChange}
 										/>
 									</div>
 									{/* Localidad */}
@@ -322,13 +304,127 @@ const ProfesionalesModal = ({
 											className="form-control"
 											id="localidad"
 											name="localidad"
-											// onChange={handleChange}
-											defaultValue={profesional.localidad}
-											readOnly
+											value={inputValues.localidad}
+											readOnly={modalMode === "mostrar"}
+											onChange={handleInputChange}
 										/>
 									</div>
 								</div>
 								<div className="row">
+									{/* Matrícula */}
+									<div className="col mb-3">
+										<label
+											htmlFor="matricula"
+											className="form-label mb-0">
+											Matrícula
+										</label>
+										<input
+											type="text"
+											className="form-control"
+											id="matricula"
+											name="matricula"
+											value={inputValues.matricula}
+											readOnly={modalMode === "mostrar"}
+											onChange={handleInputChange}
+										/>
+									</div>
+									{/* Estado de Matrícula */}
+									<div className="col mb-3">
+										<label
+											htmlFor="estado_matricula_id"
+											className="form-label mb-0">
+											Estado de Matrícula
+										</label>
+										{modalMode === "mostrar" ? (
+											<input
+												type="text"
+												className="form-control"
+												id="estado_matricula_id"
+												name="estado_matricula_id"
+												value={
+													estadosMatriculas.find(
+														(estado) =>
+															estado.id ===
+															inputValues.estado_matricula_id
+													)?.estado || ""
+												}
+												readOnly
+											/>
+										) : (
+											<select
+												className="form-select"
+												id="estado_matricula_id"
+												name="estado_matricula_id"
+												value={
+													inputValues.estado_matricula_id
+												}
+												onChange={handleInputChange}>
+												<option value="">
+													Seleccionar
+												</option>
+												{estadosMatriculas.map(
+													(estado) => (
+														<option
+															key={estado.id}
+															value={estado.id}>
+															{estado.estado}
+														</option>
+													)
+												)}
+											</select>
+										)}
+									</div>
+									{/* Activo */}
+									<div className="col-1 mb-3 text-center">
+										<label
+											htmlFor="activo"
+											className="form-label mb-0">
+											Activo
+										</label>
+										<div className="form-check form-switch">
+											<input
+												type="checkbox"
+												className="form-check-input"
+												id="activo"
+												name="activo"
+												value={
+													inputValues.activo
+														? "1"
+														: "0"
+												} // Convertir a 1 o 0
+												checked={inputValues.activo}
+												onChange={handleInputChange}
+												disabled={
+													modalMode === "mostrar"
+												}
+											/>
+										</div>
+
+										{/* <div className="form-check">
+											<label
+												className="form-label mb-0"
+												htmlFor="activo">
+												Activo
+											</label>
+											<input
+												className="form-check-input"
+												type="checkbox"
+												// role="switch"
+												// id="flexSwitchCheckDefault"
+												name="activo"
+												value={inputValues.activo}
+												// checked={inputValues.activo}
+												onChange={
+													modalMode === "mostrar"
+														? null
+														: handleInputChange
+												}
+												disabled={
+													modalMode === "mostrar"
+												}
+											/>
+										</div> */}
+									</div>
 									{/* Imagen */}
 									<div className="col mb-3">
 										<label
@@ -341,15 +437,17 @@ const ProfesionalesModal = ({
 											className="form-control"
 											id="imagen"
 											name="imagen"
-											// defaultValue={profesional.imagen}
-											// readOnly
-											// onChange={handleFileChange}
 										/>
 									</div>
 								</div>
 							</div>
 						</div>
-						<div className="modal-footer">
+						<div
+							className="modal-footer bg-dark"
+							// LO MUESTRA SI ESTA EDITANDO O AGREGANDO REGISTROS
+							style={{
+								display: modalMode != "mostrar" ? "" : "none",
+							}}>
 							<button
 								type="button"
 								className="btn btn-secondary col-md-2"
@@ -359,14 +457,7 @@ const ProfesionalesModal = ({
 							</button>
 							<button
 								type="submit"
-								className="btn btn-primary col-md-2"
-								// LO MUESTRA SI EDITA O NUEVO REGISTRO
-								style={{
-									display:
-										modalMode != "mostrar"
-											? "block"
-											: "none",
-								}}>
+								className="btn btn-primary col-md-2">
 								<i className="fa-regular fa-floppy-disk me-2"></i>
 								Guardar
 							</button>
