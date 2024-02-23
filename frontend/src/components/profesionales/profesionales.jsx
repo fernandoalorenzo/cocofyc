@@ -118,10 +118,14 @@ const ProfesionalesTabla = () => {
 					<div>
 						<button
 							className="btn btn-info mx-2 btn-sm"
-							onClick={() => handleMostrar(row.original)}>
+							onClick={() => handleMostrar(row.original, "mostrar")}>
 							<i className="fa-regular fa-eye"></i> Mostrar
 						</button>
-						<button className="btn btn-warning mx-2 btn-sm">
+						<button
+							className="btn btn-warning mx-2 btn-sm"
+							onClick={() =>
+								handleMostrar(row.original, "editar")
+							}>
 							<i className="fa-regular fa-pen-to-square"></i>{" "}
 							Editar
 						</button>
@@ -166,8 +170,10 @@ const ProfesionalesTabla = () => {
 		usePagination
 	);
 
-	const handleMostrar = (profesional) => {
+	const handleMostrar = (profesional, mode) => {
 		setSelectedProfesional(profesional);
+		setModalMode(mode);
+		setEditProfesionalData(profesional);
 	};
 
 	useEffect(() => {
@@ -418,6 +424,7 @@ const ProfesionalesTabla = () => {
 				setShowModal={setShowModal}
 				profesional={selectedProfesional}
 				onClose={closeModalAndResetData}
+				modalMode={modalMode}
 			/>
 		</>
 	);

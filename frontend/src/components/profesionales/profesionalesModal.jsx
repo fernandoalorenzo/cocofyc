@@ -2,8 +2,28 @@ import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import apiConnection from "../../../../backend/functions/apiConnection";
 
-const ProfesionalesModal = ({ showModal, setShowModal, profesional, onClose }) => {
+const ProfesionalesModal = ({
+	showModal,
+	setShowModal,
+	profesional,
+	onClose,
+	modalMode,
+}) => {
 	const [estadosMatriculas, setEstadosMatriculas] = useState([]);
+	const [editProfesionalData, setEditProfesionalData] = useState(null); // Datos del registro a editar
+
+	let modalTitle = "";
+	if (modalMode === "mostrar") {
+		modalTitle = "Mostrar Profesional";
+	} else if (modalMode === "editar") {
+		modalTitle = "Editar Profesional";
+	} else if (modalMode === "agregar") {
+		modalTitle = "Agregar Nuevo Profesional";
+	}
+
+	// Usar editProfesionalData si el modal está en modo "editar"
+	const profesionalData =
+		modalMode === "editar" ? editProfesionalData : profesional;
 
 	// CARGAR ESTADOS DE MATRICULA EN EL SELECT
 	useEffect(() => {
@@ -35,9 +55,9 @@ const ProfesionalesModal = ({ showModal, setShowModal, profesional, onClose }) =
 		fetchEstadosMatriculas();
 	}, []);
 
-    const closeModalAndResetData = () => {
-        setShowModal(false);
-        onClose();
+	const closeModalAndResetData = () => {
+		setShowModal(false);
+		onClose();
 		// Aquí puedes agregar cualquier lógica adicional para restablecer los datos del formulario si es necesario
 	};
 
@@ -55,7 +75,7 @@ const ProfesionalesModal = ({ showModal, setShowModal, profesional, onClose }) =
 			<div className="modal-dialog modal-xl">
 				<div className="modal-content bg-secondary">
 					<div className="modal-header bg-primary">
-						<h5 className="modal-title">Nuevo Profesional</h5>
+						<h5 className="modal-title">{modalTitle}</h5>
 						<button
 							type="button"
 							className="btn-close"
@@ -79,8 +99,17 @@ const ProfesionalesModal = ({ showModal, setShowModal, profesional, onClose }) =
 											className="form-control"
 											id="nombre"
 											name="nombre"
-											defaultValue={profesional.nombre}
-											readOnly
+											// defaultValue={profesional.nombre}
+											// readOnly
+											value={
+												modalMode === "editar"
+													? nombre
+													: profesional.nombre
+											}
+											readOnly={modalMode === "mostrar"}
+											onChange={(e) =>
+												setNombre(e.target.value)
+											}
 										/>
 									</div>
 									{/* DNI */}
@@ -328,12 +357,19 @@ const ProfesionalesModal = ({ showModal, setShowModal, profesional, onClose }) =
 								<i className="fa-solid fa-ban me-2"></i>
 								Cancelar
 							</button>
-							{/* <button
+							<button
 								type="submit"
-								className="btn btn-primary col-md-2">
+								className="btn btn-primary col-md-2"
+								// LO MUESTRA SI EDITA O NUEVO REGISTRO
+								style={{
+									display:
+										modalMode != "mostrar"
+											? "block"
+											: "none",
+								}}>
 								<i className="fa-regular fa-floppy-disk me-2"></i>
-								"Guardar"
-							</button> */}
+								Guardar
+							</button>
 						</div>
 					</form>
 				</div>
