@@ -12,62 +12,33 @@ const ProfesionalesTabla = () => {
 	const [modalMode, setModalMode] = useState("mostrar"); // "mostrar" o "editar" o "agregar"
 	const [editProfesionalData, setEditProfesionalData] = useState(null); // Datos del registro a editar
 
-  // Definir initialValues
-  const initialValues = {
-    nombre: "",
-    dni: "",
-    cuit: "",
-    telefono: "",
-    email: "",
-    matricula: "",
-    domicilio: "",
-    localidad: "",
-    fecha_nacimiento: "",
-    imagen: "",
-    activo: false,
-    estado_matricula_id: "",
-};
-
-  const [inputValues, setInputValues] = useState(initialValues); // Inicializar inputValues con el estado inicial
-  
 	// OBTENER LISTA DE REGISTROS
-	const fetchProfesionales = async () => {
-		try {
-			const endpoint = "http://127.0.0.1:5000/api/profesionales";
-			const direction = "";
-			const method = "GET";
-			const body = false;
-			const headers = {
-				"Content-Type": "application/json",
-				// Authorization: localStorage.getItem("token"),
-			};
-
-			const data = await apiConnection(
-				endpoint,
-				direction,
-				method,
-				body,
-				headers
-			);
-
-			// Verificar y corregir el formato de la fecha antes de establecer los datos
-			const profesionalesData = data.data.map((profesional) => {
-				// Verificar si la fecha es "0000-00-00" y reemplazarla por una cadena vacía
-				if (profesional.fecha_nacimiento === "0000-00-00") {
-					return { ...profesional, fecha_nacimiento: "" };
-				} else {
-					return profesional;
-				}
-			});
-
-			setData(profesionalesData);
-		} catch (error) {
-			console.error("Error:", error.message);
-		}
-	};
-
-	// OBTENER LISTA DE REGISTROS AL CARGAR EL COMPONENTE
 	useEffect(() => {
+		const fetchProfesionales = async () => {
+			try {
+				const endpoint = "http://127.0.0.1:5000/api/profesionales";
+				const direction = "";
+				const method = "GET";
+				const body = false;
+				const headers = {
+					"Content-Type": "application/json",
+					// Authorization: localStorage.getItem("token"),
+				};
+
+				const data = await apiConnection(
+					endpoint,
+					direction,
+					method,
+					body,
+					headers
+				);
+
+				setData(data.data);
+			} catch (error) {
+				console.error("Error:", error.message);
+			}
+		};
+
 		fetchProfesionales();
 	}, []);
 
@@ -147,21 +118,19 @@ const ProfesionalesTabla = () => {
 					<div>
 						<button
 							className="btn btn-info mx-2 btn-sm"
-							onClick={() =>
-								handleMostrar(row.original, "mostrar")
-							}>
-							<i className="fa-regular fa-eye" /> Mostrar
+							onClick={() => handleMostrar(row.original, "mostrar")}>
+							<i className="fa-regular fa-eye"></i> Mostrar
 						</button>
 						<button
 							className="btn btn-warning mx-2 btn-sm"
 							onClick={() =>
 								handleMostrar(row.original, "editar")
 							}>
-							<i className="fa-regular fa-pen-to-square" />{" "}
+							<i className="fa-regular fa-pen-to-square"></i>{" "}
 							Editar
 						</button>
 						<button className="btn btn-danger mx-2 btn-sm">
-							<i className="fa-regular fa-trash-can" /> Eliminar
+							<i className="fa-regular fa-trash-can"></i> Eliminar
 						</button>
 					</div>
 				),
@@ -238,7 +207,7 @@ const ProfesionalesTabla = () => {
 	const closeModalAndResetData = () => {
 		setSelectedProfesional(null);
 		setShowModal(false);
-		fetchProfesionales();
+		// Aquí puedes agregar cualquier lógica adicional para restablecer los datos del formulario si es necesario
 	};
 
 	return (
@@ -274,7 +243,7 @@ const ProfesionalesTabla = () => {
 												onClick={() =>
 													setFilterText("")
 												}>
-												<i className="fa-regular fa-circle-xmark" />
+												<i className="fa-regular fa-circle-xmark"></i>
 											</button>
 										</div>
 									)}
@@ -282,13 +251,8 @@ const ProfesionalesTabla = () => {
 								<button
 									type="button"
 									className="btn btn-primary"
-									id="abrirModalAgregar"
-                  // onClick={handleAgregar}
-                  onClick={() =>
-								handleMostrar(initialValues, "agregar")
-							}
-                >
-									<i className="fa-regular fa-square-plus" />{" "}
+									id="abrirModalAgregar">
+									<i className="fa-regular fa-square-plus"></i>{" "}
 									Agregar
 								</button>
 							</div>
@@ -391,19 +355,19 @@ const ProfesionalesTabla = () => {
 											className="btn btn-sm btn-outline-primary ms-1"
 											onClick={() => gotoPage(0)}
 											disabled={!canPreviousPage}>
-											<i className="fa-solid fa-backward-step" />
+											<i className="fa-solid fa-backward-step"></i>
 										</button>{" "}
 										<button
 											className="btn btn-sm btn-outline-primary ms-1"
 											onClick={() => previousPage()}
 											disabled={!canPreviousPage}>
-											<i className="fa-solid fa-caret-left" />
+											<i className="fa-solid fa-caret-left"></i>
 										</button>{" "}
 										<button
 											className="btn btn-sm btn-outline-primary ms-1"
 											onClick={() => nextPage()}
 											disabled={!canNextPage}>
-											<i className="fa-solid fa-caret-right" />
+											<i className="fa-solid fa-caret-right"></i>
 										</button>{" "}
 										<button
 											className="btn btn-sm btn-outline-primary ms-1"
@@ -411,7 +375,7 @@ const ProfesionalesTabla = () => {
 												gotoPage(pageCount - 1)
 											}
 											disabled={!canNextPage}>
-											<i className="fa-solid fa-forward-step" />
+											<i className="fa-solid fa-forward-step"></i>
 										</button>{" "}
 									</div>
 									<div className="col col-4 d-flex justify-content-evenly content-align-center align-items-center">
@@ -462,7 +426,6 @@ const ProfesionalesTabla = () => {
 				onClose={closeModalAndResetData}
 				modalMode={modalMode}
 			/>
-
 		</>
 	);
 };

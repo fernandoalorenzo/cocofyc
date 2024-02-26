@@ -42,13 +42,21 @@ const ProfesionalesModal = ({
 		estado_matricula_id: "",
 	});
 
-	
 	// FUNCION PARA CARGAR LOS DATOS DEL PROFESIONAL A EDITAR
 	const handleInputChange = (e) => {
 		const { name, value } = e.target;
 		setInputValues({
 			...inputValues,
 			[name]: value,
+		});
+	};
+
+	// FUNCION PARA CONTROLAR EL CHECKBOX
+	const handleSwitchChange = (e) => {
+		const { name, checked } = e.target;
+		setInputValues({
+			...inputValues,
+			[name]: checked,
 		});
 	};
 
@@ -356,12 +364,11 @@ const ProfesionalesModal = ({
 												id="estado_matricula_id"
 												name="estado_matricula_id"
 												value={
-													inputValues.estado_matricula_id
+													inputValues.estado_matricula_id ||
+													"" // Verificación de nulo aquí
 												}
 												onChange={handleInputChange}>
-												<option value="">
-													Seleccionar
-												</option>
+												<option>Seleccionar</option>
 												{estadosMatriculas.map(
 													(estado) => (
 														<option
@@ -387,43 +394,18 @@ const ProfesionalesModal = ({
 												className="form-check-input"
 												id="activo"
 												name="activo"
-												value={
-													inputValues.activo
-														? "1"
-														: "0"
-												} // Convertir a 1 o 0
+												value={setInputValues.activo}
 												checked={inputValues.activo}
-												onChange={handleInputChange}
-												disabled={
+												onChange={
+													modalMode !== "mostrar"
+														? handleSwitchChange
+														: null
+												}
+												readOnly={
 													modalMode === "mostrar"
 												}
 											/>
 										</div>
-
-										{/* <div className="form-check">
-											<label
-												className="form-label mb-0"
-												htmlFor="activo">
-												Activo
-											</label>
-											<input
-												className="form-check-input"
-												type="checkbox"
-												// role="switch"
-												// id="flexSwitchCheckDefault"
-												name="activo"
-												value={inputValues.activo}
-												// checked={inputValues.activo}
-												onChange={
-													modalMode === "mostrar"
-														? null
-														: handleInputChange
-												}
-												disabled={
-													modalMode === "mostrar"
-												}
-											/>
-										</div> */}
 									</div>
 									{/* Imagen */}
 									<div className="col mb-3">
