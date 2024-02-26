@@ -8,7 +8,6 @@ const ProfesionalesModal = ({
 	profesional,
 	onClose,
 	modalMode,
-	fetchProfesionales,
 }) => {
 	const [estadosMatriculas, setEstadosMatriculas] = useState([]);
 	const [editProfesionalData, setEditProfesionalData] = useState(null); // Datos del registro a editar
@@ -65,18 +64,18 @@ const ProfesionalesModal = ({
 	useEffect(() => {
 		if (profesional) {
 			setInputValues({
-				nombre: profesional.nombre || "",
-				dni: profesional.dni || "",
-				cuit: profesional.cuit || "",
-				telefono: profesional.telefono || "",
-				email: profesional.email || "",
-				matricula: profesional.matricula || "",
-				domicilio: profesional.domicilio || "",
-				localidad: profesional.localidad || "",
-				fecha_nacimiento: profesional.fecha_nacimiento || "",
-				imagen: profesional.imagen || "",
-				activo: profesional.activo || false,
-				estado_matricula_id: profesional.estado_matricula_id || "",
+				nombre: profesional.nombre,
+				dni: profesional.dni,
+				cuit: profesional.cuit,
+				telefono: profesional.telefono,
+				email: profesional.email,
+				matricula: profesional.matricula,
+				domicilio: profesional.domicilio,
+				localidad: profesional.localidad,
+				fecha_nacimiento: profesional.fecha_nacimiento,
+				imagen: profesional.imagen,
+				activo: profesional.activo,
+				estado_matricula_id: profesional.estado_matricula_id,
 			});
 		}
 	}, [profesional]);
@@ -149,7 +148,6 @@ const ProfesionalesModal = ({
 
 			// Cerrar el modal y restablecer los datos del formulario
 			closeModalAndResetData();
-			fetchProfesionales();
 		} catch (error) {
 			console.error("Error:", error.message);
 			// Manejar el error aquí (mostrar una notificación, etc.)

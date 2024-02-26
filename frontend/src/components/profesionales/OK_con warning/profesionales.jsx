@@ -12,7 +12,9 @@ const ProfesionalesTabla = () => {
 	const [modalMode, setModalMode] = useState("mostrar"); // "mostrar" o "editar" o "agregar"
 	const [editProfesionalData, setEditProfesionalData] = useState(null); // Datos del registro a editar
 
-	const fetchProfesionales = async () => {
+	// OBTENER LISTA DE REGISTROS
+	useEffect(() => {
+		const fetchProfesionales = async () => {
 			try {
 				const endpoint = "http://127.0.0.1:5000/api/profesionales";
 				const direction = "";
@@ -37,9 +39,6 @@ const ProfesionalesTabla = () => {
 			}
 		};
 
-	
-	// OBTENER LISTA DE REGISTROS
-	useEffect(() => {
 		fetchProfesionales();
 	}, []);
 
@@ -210,32 +209,6 @@ const ProfesionalesTabla = () => {
 		setShowModal(false);
 		// Aquí puedes agregar cualquier lógica adicional para restablecer los datos del formulario si es necesario
 	};
-
-	// const actualizarTabla = async () => {
-	// 	try {
-	// 		const endpoint = "http://127.0.0.1:5000/api/profesionales";
-	// 		const direction = "";
-	// 		const method = "GET";
-	// 		const body = false;
-	// 		const headers = {
-	// 			"Content-Type": "application/json",
-	// 			// Authorization: localStorage.getItem("token"),
-	// 		};
-
-	// 		const newData = await apiConnection(
-	// 			endpoint,
-	// 			direction,
-	// 			method,
-	// 			body,
-	// 			headers
-	// 		);
-
-	// 		setData(newData.data); // Actualiza los datos en el estado del componente
-	// 	} catch (error) {
-	// 		console.error("Error:", error.message);
-	// 		// Manejar el error aquí (mostrar una notificación, etc.)
-	// 	}
-	// };
 
 	return (
 		<>
@@ -452,7 +425,6 @@ const ProfesionalesTabla = () => {
 				profesional={selectedProfesional}
 				onClose={closeModalAndResetData}
 				modalMode={modalMode}
-				fetchProfesionales={fetchProfesionales}
 			/>
 		</>
 	);
