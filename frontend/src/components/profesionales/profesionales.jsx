@@ -9,7 +9,7 @@ const ProfesionalesTabla = () => {
 	const [selectedPageSize, setSelectedPageSize] = useState(10);
 	const [showModal, setShowModal] = useState(false);
 	const [selectedProfesional, setSelectedProfesional] = useState(null);
-	const [modalMode, setModalMode] = useState("mostrar"); // "mostrar" o "editar" o "agregar"
+	const [modalMode, setModalMode] = useState(""); // "mostrar" o "editar" o "agregar"
 	const [editProfesionalData, setEditProfesionalData] = useState(null); // Datos del registro a editar
 
 	const fetchProfesionales = async () => {
@@ -94,7 +94,6 @@ const ProfesionalesTabla = () => {
 								className="form-check-input"
 								type="checkbox"
 								checked={row.original.activo}
-								// onChange={() => toggleActivo(row.original.id)}
 								readOnly
 							/>
 							<label className="form-check-label" hidden>
@@ -177,6 +176,11 @@ const ProfesionalesTabla = () => {
 		setEditProfesionalData(profesional);
 	};
 
+	const handleAgregarClick = () => {
+		setShowModal(true); // Abrir el modal al hacer clic en Agregar
+		setModalMode("agregar"); // Establecer el modo del modal en "agregar"
+	};
+
 	useEffect(() => {
 		if (selectedProfesional) {
 			setShowModal(true);
@@ -208,34 +212,7 @@ const ProfesionalesTabla = () => {
 	const closeModalAndResetData = () => {
 		setSelectedProfesional(null);
 		setShowModal(false);
-		// Aquí puedes agregar cualquier lógica adicional para restablecer los datos del formulario si es necesario
 	};
-
-	// const actualizarTabla = async () => {
-	// 	try {
-	// 		const endpoint = "http://127.0.0.1:5000/api/profesionales";
-	// 		const direction = "";
-	// 		const method = "GET";
-	// 		const body = false;
-	// 		const headers = {
-	// 			"Content-Type": "application/json",
-	// 			// Authorization: localStorage.getItem("token"),
-	// 		};
-
-	// 		const newData = await apiConnection(
-	// 			endpoint,
-	// 			direction,
-	// 			method,
-	// 			body,
-	// 			headers
-	// 		);
-
-	// 		setData(newData.data); // Actualiza los datos en el estado del componente
-	// 	} catch (error) {
-	// 		console.error("Error:", error.message);
-	// 		// Manejar el error aquí (mostrar una notificación, etc.)
-	// 	}
-	// };
 
 	return (
 		<>
@@ -278,7 +255,8 @@ const ProfesionalesTabla = () => {
 								<button
 									type="button"
 									className="btn btn-primary"
-									id="abrirModalAgregar">
+									id="abrirModalAgregar"
+									onClick={handleAgregarClick}>
 									<i className="fa-regular fa-square-plus"></i>{" "}
 									Agregar
 								</button>

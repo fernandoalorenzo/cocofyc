@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Swal from "sweetalert2";
+import sweetAlert from "../toast/SweetAlert";
 import apiConnection from "../../../../backend/functions/apiConnection";
 
 const ProfesionalesModal = ({
@@ -144,15 +144,30 @@ const ProfesionalesModal = ({
 				headers
 			);
 
-			// Actualizar los datos locales si es necesario
-			// Esto es opcional y depende de cómo manejes los datos en tu aplicación
+			sweetAlert(
+				"success",
+				"Operación exitosa!",
+				"El registro se guardó exitosamente.",
+				2500,
+				false
+			); // icono , titulo , mensaje, mostrarOk, tiempo en milisegundos
 
-			// Cerrar el modal y restablecer los datos del formulario
-			closeModalAndResetData();
-			fetchProfesionales();
+			
+			// CERRAR MODAL
+			setTimeout(() => {
+				closeModalAndResetData();
+				fetchProfesionales();
+			},2500);
+			
 		} catch (error) {
 			console.error("Error:", error.message);
-			// Manejar el error aquí (mostrar una notificación, etc.)
+			sweetAlert(
+				"error",
+				"Error en la operación",
+				error.message,
+				2500,
+				false
+			);
 		}
 	};
 
@@ -283,7 +298,6 @@ const ProfesionalesModal = ({
 										/>
 									</div>
 								</div>
-
 								<div className="row">
 									{/* Domicilio */}
 									<div className="col mb-3">
