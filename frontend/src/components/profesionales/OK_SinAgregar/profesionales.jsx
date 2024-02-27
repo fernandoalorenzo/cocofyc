@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useTable, useSortBy, usePagination } from "react-table";
-import Swal from "sweetalert2";
 import apiConnection from "../../../../backend/functions/apiConnection";
 import ProfesionalesModal from "./profesionalesModal";
 
@@ -8,10 +7,11 @@ const ProfesionalesTabla = () => {
 	const [data, setData] = useState([]);
 	const [filterText, setFilterText] = useState("");
 	const [selectedPageSize, setSelectedPageSize] = useState(10);
-	const [showProfesionalesModal, setShowProfesionalesModal] = useState(false);
+	const [showModal, setShowModal] = useState(false);
 	const [selectedProfesional, setSelectedProfesional] = useState(null);
+	const [modalMode, setModalMode] = useState(""); // "mostrar" o "editar" o "agregar"
 	const [editProfesionalData, setEditProfesionalData] = useState(null); // Datos del registro a editar
-	const [modalMode, setModalMode] = useState(""); // Definir modalMode como estado
+	const [isAddingMode, setIsAddingMode] = useState(false); // Estado para controlar si el modal está en modo "agregar"
 
 	const fetchProfesionales = async () => {
 		try {
@@ -58,65 +58,6 @@ const ProfesionalesTabla = () => {
 		);
 	}, [data, filterText]);
 
-	const handleEliminar = async (id) => {
-		// Mostrar SweetAlert de confirmación
-		const result = await Swal.fire({
-			title: "¿Estás seguro?",
-			text: "Esta acción no se puede deshacer",
-			icon: "warning",
-			showCancelButton: true,
-			confirmButtonColor: "#FF0000",
-			cancelButtonColor: "9B9B9B",
-			confirmButtonText: "Eliminar",
-			cancelButtonText: "Cancelar",
-		});
-
-		// Si el usuario confirma la eliminación
-		if (result.isConfirmed) {
-			try {
-				
-				const endpoint = "http://127.0.0.1:5000/api/profesionales/";
-				const direction = id;
-				const method = "DELETE";
-				const body = false;
-				const headers = {
-					"Content-Type": "application/json",
-					// Authorization: localStorage.getItem("token"),
-				};
-
-				const data = await apiConnection(
-					endpoint,
-					direction,
-					method,
-					body,
-					headers
-				);
-
-				setData(data.data);
-			
-				// Mostrar SweetAlert de éxito
-				Swal.fire({
-					title: "Eliminado",
-					text: "El registro ha sido eliminado correctamente",
-					icon: "success",
-					showConfirmButton: false,
-					timer: 2500,
-				});
-
-				// Actualizar la tabla llamando a fetchProfesionales
-				// fetchProfesionales();
-			} catch (error) {
-				console.error("Error al eliminar el registro:", error.message);
-				// Mostrar SweetAlert de error si la eliminación falla
-				Swal.fire({
-					title: "Error",
-					text: "Ha ocurrido un error al intentar eliminar el registro",
-					icon: "error",
-				});
-			}
-		}
-	};
-
 	const columns = React.useMemo(
 		() => [
 			{
@@ -153,7 +94,7 @@ const ProfesionalesTabla = () => {
 								className="form-check-input"
 								type="checkbox"
 								checked={row.original.activo}
-								onChange={() => toggleActivo(row.original.id)}
+								readOnly
 							/>
 							<label className="form-check-label" hidden>
 								{row.original.activo ? "1" : "0"}
@@ -190,9 +131,7 @@ const ProfesionalesTabla = () => {
 							<i className="fa-regular fa-pen-to-square"></i>{" "}
 							Editar
 						</button>
-						<button
-							className="btn btn-danger mx-2 btn-sm"
-							onClick={() => handleEliminar(row.original.id)}>
+						<button className="btn btn-danger mx-2 btn-sm">
 							<i className="fa-regular fa-trash-can"></i> Eliminar
 						</button>
 					</div>
@@ -235,15 +174,13 @@ const ProfesionalesTabla = () => {
 
 	const handleMostrar = (profesional, mode) => {
 		setSelectedProfesional(profesional);
-		// setModalMode(mode);
-		setEditProfesionalData(profesional);
-		setShowProfesionalesModal(true);
 		setModalMode(mode);
+		setEditProfesionalData(profesional);
 	};
 
 	useEffect(() => {
 		if (selectedProfesional) {
-			setShowProfesionalesModal(true);
+			setShowModal(true);
 		}
 	}, [selectedProfesional]);
 
@@ -263,9 +200,23 @@ const ProfesionalesTabla = () => {
 		updatePageSize(size); // Usar updatePageSize
 	};
 
-	const openProfesionalesModal = () => setShowProfesionalesModal(true);
+	// Función para actualizar los datos después de agregar un nuevo registro
+	// const updateData = (newData) => {
+	// 	setData([...data, newData]);
+	// };
 
-	const closeProfesionalesModal = () => setShowProfesionalesModal(false);
+	const openModalToAdd = () => {
+		setModalMode("agregar");
+		setIsAddingMode(true);
+		setShowModal(true);
+	};
+
+	// Función para cerrar el modal y restablecer los datos del formulario
+	const closeModalAndResetData = () => {
+		setSelectedProfesional(null);
+		setShowModal(false);
+		setIsAddingMode(false); // Resetear el modo de agregar
+	};
 
 	return (
 		<>
@@ -309,7 +260,7 @@ const ProfesionalesTabla = () => {
 									type="button"
 									className="btn btn-primary"
 									id="abrirModalAgregar"
-									onClick={openProfesionalesModal}>
+									onClick={openModalToAdd}>
 									<i className="fa-regular fa-square-plus"></i>{" "}
 									Agregar
 								</button>
@@ -478,11 +429,13 @@ const ProfesionalesTabla = () => {
 				</div>
 			</div>
 			<ProfesionalesModal
-				showModal={showProfesionalesModal}
-				closeModal={closeProfesionalesModal}
-				data={selectedProfesional}
+				showModal={showModal}
+				setShowModal={setShowModal}
+				profesional={selectedProfesional}
+				onClose={closeModalAndResetData}
 				modalMode={modalMode}
 				fetchProfesionales={fetchProfesionales}
+				isAddingMode={isAddingMode} // Pasar el estado de modo de agregar al modal
 			/>
 		</>
 	);
