@@ -10,13 +10,14 @@ import Home from "./components/home/Home";
 import Header from "./components/header/Header";
 import SideBar from "./components/sidebar/SideBar";
 import Profesionales from "./components/profesionales/profesionales.jsx";
+import Imagen from "./components/profesionales/imagen.jsx";
 import { useState } from "react";
 
 const App = () => {
 	// const [currentUser, setCurrentUser] = useState(
 	// 		JSON.parse(localStorage.getItem("user"))
 	// );
-	
+
 	// ACTUALIZA LOS DATOS DE USUARIO
 	// const updateUser = (newUserData) => {
 	// 	setCurrentUser(newUserData);
@@ -41,6 +42,7 @@ const App = () => {
 							path="/profesionales"
 							element={<Profesionales />}
 						/>
+						<Route path="/imagen" element={<Imagen />} />
 					</Routes>
 					<Footer />
 				</Router>
