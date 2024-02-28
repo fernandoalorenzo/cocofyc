@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import sweetAlert from "../toast/SweetAlert";
+import Swal from "sweetalert2";
 import apiConnection from "../../../../backend/functions/apiConnection";
 
 const ProfesionalesModal = ({
@@ -133,15 +133,26 @@ const ProfesionalesModal = ({
 		modalTitle = "Agregar Nuevo Profesional";
 	}
 
-	// const handleChange = (e) => {
-	// 	const { name, value } = e.target;
-	// 	setFormData({ ...formData, [name]: value });
-	// };
-
 	// const handleFileChange = (e) => {
 	// 	const file = e.target.files[0];
 	// 	// Aquí puedes manejar el archivo como desees, por ejemplo, mostrar una vista previa o almacenarlo en el estado
 	// };
+
+	// FUNCION PARA VERIFICAR SI EL DNI EXISTE
+	const checkDniExists = async (dni) => {
+		try {
+			const endpoint = `http://localhost:5000/api/profesionales/dni/${dni}`;
+			const response = await fetch(endpoint);
+			
+			const data = await response.json();
+
+			if (response.ok) {
+				return data.success;
+			}
+		} catch (error) {
+			console.error("Error al verificar si el DNI existe:", error);
+		}
+	};
 
 	// FUNCION PARA ACTUALIZAR LOS DATOS
 	const handleFormSubmit = async (e) => {
@@ -159,9 +170,29 @@ const ProfesionalesModal = ({
 		};
 
 		try {
+			if (modalMode === "agregar") {
+				// Verificar si el DNI ya existe
+				const dniExists = await checkDniExists(formDataToSend.dni);
+				if (dniExists) {
+					// Mostrar mensaje de error al usuario
+					Swal.fire({
+						icon: "error",
+						title: "Error al guardar el registro",
+						text: "El DNI ingresado ya existe en la base de datos.",
+						showConfirmButton: true,
+						timer: null,
+					});
+					return; // Salir de la función si el DNI está duplicado
+				} else {
+					// Si el DNI no existe, continuar con la creación o actualización
+					console.log(
+						"El DNI no esta duplicado en la base de datos."
+					);
+				}
+			}
 			const endpoint = "http://127.0.0.1:5000/api/profesionales/";
-			const direction = formDataToSend ? `/${data.id}` : ""; // Si hay data, es una actualización, de lo contrario, es una creación
-			const method = formDataToSend ? "PUT" : "POST"; // Método dependiendo de si es una actualización o una creación
+			const direction = data ? `${data.id}` : ""; // Si hay data, es una actualización, de lo contrario, es una creación
+			const method = data ? "PUT" : "POST"; // Método dependiendo de si es una actualización o una creación
 			const body = formDataToSend;
 
 			const headers = {
@@ -177,19 +208,14 @@ const ProfesionalesModal = ({
 				headers
 			);
 
-			// Después de agregar el nuevo registro, llamar a la función para actualizar los datos del padre
-			// updateParentData(formDataToSend);
-
 			if (response.data) {
-				// MOSTRAR SWEET ALERT
-
-				sweetAlert(
-					"success",
-					"Operación exitosa!",
-					"¡Registro guardado exitosamente.",
-					2500,
-					false
-				);
+				Swal.fire({
+					icon: "success",
+					title: "Operación exitosa!",
+					text: "Registro guardado exitosamente.",
+					showConfirmButton: false,
+					timer: 2500,
+				});
 
 				// CERRAR MODAL
 				setTimeout(() => {
@@ -200,44 +226,15 @@ const ProfesionalesModal = ({
 				console.error("Error en la operación:", response.error);
 			}
 		} catch (error) {
-			if (error.message.includes("duplicado")) {
-				sweetAlert(
-					"error",
-					"Error al guardar el registro",
-					"El valor que está intentando guardar ya existe en la base de datos.",
-					2500,
-					false
-				);
-				;
-			} else {
-				sweetAlert(
-					"error",
-					"Error al guardar el registro",
-					"Ocurrió un error al procesar su solicitud. Por favor, inténtelo de nuevo más tarde.",
-					2500,
-					false
-				);
-			}
+			Swal.fire({
+				icon: "error",
+				title: "Error al guardar el registro",
+				text: "Ocurrió un error al procesar su solicitud. Por favor, inténtelo de nuevo más tarde.",
+				showConfirmButton: false,
+				timer: 2500,
+			});
 
 			console.error("Error:", error.message);
-			// Verificar si el error es debido a un DNI duplicado
-			if (error.response && error.response.status === 409) {
-				sweetAlert(
-					"error",
-					"Error al guardar el registro",
-					"El DNI ingresado ya existe en la base de datos.",
-					2500,
-					false
-				);
-			} else {
-				sweetAlert(
-					"error",
-					"Error al guardar el registro",
-					"Ocurrió un error al intentar guardar el registro. Por favor, inténtelo de nuevo más tarde.",
-					2500,
-					false
-				);
-			}
 		}
 	};
 

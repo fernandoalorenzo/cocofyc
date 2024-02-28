@@ -10,7 +10,6 @@ const ProfesionalesTabla = () => {
 	const [selectedPageSize, setSelectedPageSize] = useState(10);
 	const [showProfesionalesModal, setShowProfesionalesModal] = useState(false);
 	const [selectedProfesional, setSelectedProfesional] = useState(null);
-	const [editProfesionalData, setEditProfesionalData] = useState(null); // Datos del registro a editar
 	const [modalMode, setModalMode] = useState(""); // Definir modalMode como estado
 
 	const fetchProfesionales = async () => {
@@ -59,7 +58,7 @@ const ProfesionalesTabla = () => {
 	}, [data, filterText]);
 
 	const handleEliminar = async (id) => {
-		// Mostrar SweetAlert de confirmación
+		
 		const result = await Swal.fire({
 			title: "¿Estás seguro?",
 			text: "Esta acción no se puede deshacer",
@@ -92,9 +91,9 @@ const ProfesionalesTabla = () => {
 					headers
 				);
 
-				setData(data.data);
+				// setData(data.filter((row) => row.id !== id));
+				// setData(data.data);
 			
-				// Mostrar SweetAlert de éxito
 				Swal.fire({
 					title: "Eliminado",
 					text: "El registro ha sido eliminado correctamente",
@@ -104,10 +103,13 @@ const ProfesionalesTabla = () => {
 				});
 
 				// Actualizar la tabla llamando a fetchProfesionales
-				// fetchProfesionales();
+				
+				setTimeout(() => {
+					fetchProfesionales();
+				}, 2500);
 			} catch (error) {
 				console.error("Error al eliminar el registro:", error.message);
-				// Mostrar SweetAlert de error si la eliminación falla
+				
 				Swal.fire({
 					title: "Error",
 					text: "Ha ocurrido un error al intentar eliminar el registro",
@@ -184,9 +186,9 @@ const ProfesionalesTabla = () => {
 						</button>
 						<button
 							className="btn btn-warning mx-2 btn-sm"
-							onClick={() =>
-								handleMostrar(row.original, "editar")
-							}>
+							onClick={() => {
+								handleMostrar(row.original, "editar");
+							}}>
 							<i className="fa-regular fa-pen-to-square"></i>{" "}
 							Editar
 						</button>
@@ -235,17 +237,15 @@ const ProfesionalesTabla = () => {
 
 	const handleMostrar = (profesional, mode) => {
 		setSelectedProfesional(profesional);
-		// setModalMode(mode);
-		setEditProfesionalData(profesional);
-		setShowProfesionalesModal(true);
 		setModalMode(mode);
+		setShowProfesionalesModal(true);
 	};
 
-	useEffect(() => {
-		if (selectedProfesional) {
-			setShowProfesionalesModal(true);
-		}
-	}, [selectedProfesional]);
+	// useEffect(() => {
+	// 	if (selectedProfesional) {
+	// 		setShowProfesionalesModal(true);
+	// 	}
+	// }, [selectedProfesional]);
 
 	const handleFilterChange = (e) => {
 		const value = e.target.value || "";
@@ -266,6 +266,12 @@ const ProfesionalesTabla = () => {
 	const openProfesionalesModal = () => setShowProfesionalesModal(true);
 
 	const closeProfesionalesModal = () => setShowProfesionalesModal(false);
+
+	useEffect(() => {
+		if (!showProfesionalesModal) {
+			setSelectedProfesional(null);
+		}
+	}, [showProfesionalesModal]);
 
 	return (
 		<>
@@ -309,7 +315,10 @@ const ProfesionalesTabla = () => {
 									type="button"
 									className="btn btn-primary"
 									id="abrirModalAgregar"
-									onClick={openProfesionalesModal}>
+									onClick={() => {
+										setModalMode("agregar");
+										openProfesionalesModal();
+									}}>
 									<i className="fa-regular fa-square-plus"></i>{" "}
 									Agregar
 								</button>

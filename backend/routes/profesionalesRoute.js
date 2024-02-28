@@ -3,6 +3,7 @@ import {
 	createProfesional,
 	deleteProfesional,
 	getProfesionalById,
+	getProfesionalByDNI,
 	getProfesionales,
 	updateProfesional,
 } from "../controllers/profesionalesController.js";
@@ -15,6 +16,7 @@ const profesionalesRouter = express.Router();
 profesionalesRouter.get("/", getProfesionales);
 // profesionalesRouter.get("/:id", authenticateToken, getProfesionalById);
 profesionalesRouter.get("/:id", getProfesionalById);
+profesionalesRouter.get("/dni/:dni", getProfesionalByDNI);
 // profesionalesRouter.post("/", authenticateToken, createProfesional);
 profesionalesRouter.post("/", createProfesional);
 // profesionalesRouter.put("/:id", authenticateToken, updateProfesional);

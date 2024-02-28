@@ -54,6 +54,38 @@ const getProfesionalById = async (request, response) => {
 	// 	});
 };
 
+// Obtener un profesional por DNI
+const getProfesionalByDNI = async (request, response) => {
+	// 	authenticateToken(request, response, async () => {
+		const dni = request.params.dni;
+		try {
+			const profesional = await Profesional.findOne({ where: { dni: dni } });
+
+			if (profesional) {
+				// Devolver los datos del profesional si se encontró
+				response.status(200).json({
+					success: true,
+					data: profesional,
+				});
+			} else {
+				// Devolver un mensaje de error si el profesional no se encontró
+				response.status(404).json({
+					success: false,
+					error: "Profesional no encontrado",
+				});
+			}
+		} catch (error) {
+			// Manejar cualquier error que ocurra durante la búsqueda
+			console.error("Error: " + error.message);
+			response.status(500).json({
+				success: false,
+				error: "Error interno del servidor",
+				message: error.message,
+			});
+		}
+	// 	});
+};
+
 // Actualizar profesionales
 const updateProfesional = async (request, response) => {
 	// 	authenticateToken(request, response, async () => {
@@ -100,6 +132,7 @@ export {
 	createProfesional,
 	getProfesionales,
 	getProfesionalById,
+	getProfesionalByDNI,
 	updateProfesional,
 	deleteProfesional,
 };
