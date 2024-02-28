@@ -53,7 +53,7 @@ const ProfesionalesModal = ({
 	};
 
 	// FORMATO PARA EL NOMBRE
-	const [nombre, setNombre] = useState("");
+	// const [nombre, setNombre] = useState("");
 	const handleChangeNombre = (event) => {
 		const value = event.target.value.toUpperCase(); // Convertir a mayúsculas
 		setFormData({
@@ -63,7 +63,7 @@ const ProfesionalesModal = ({
 	};
 
 	// FORMATO PARA EL DNI
-	const [dni, setDni] = useState("");
+	// const [dni, setDni] = useState("");
 	const handleChangeDni = (event) => {
 		let value = event.target.value;
 		value = value.replace(/\D/g, "");
@@ -76,7 +76,7 @@ const ProfesionalesModal = ({
 	};
 
 	// FORMATO PARA EL CUIT
-	const [cuit, setCuit] = useState("");
+	// const [cuit, setCuit] = useState("");
 	const handleChangeCuit = (event) => {
 		let value = event.target.value.replace(/\D/g, "");
 		value = value.slice(0, 11);

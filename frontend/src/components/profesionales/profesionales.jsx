@@ -241,20 +241,14 @@ const ProfesionalesTabla = () => {
 		setShowProfesionalesModal(true);
 	};
 
-	// useEffect(() => {
-	// 	if (selectedProfesional) {
-	// 		setShowProfesionalesModal(true);
-	// 	}
-	// }, [selectedProfesional]);
-
 	const handleFilterChange = (e) => {
 		const value = e.target.value || "";
 		setFilterText(value);
 	};
 
-	const handleClearFilter = () => {
-		setFilterText("");
-	};
+	// const handleClearFilter = () => {
+	// 	setFilterText("");
+	// };
 
 	const handlePageSizeChange = (e) => {
 		const size = parseInt(e.target.value, 10);
