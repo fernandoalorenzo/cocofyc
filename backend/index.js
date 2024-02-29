@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import multer from "multer";// Middleware para manejar archivos multipart/form-data
-import fs from "node:fs";
+import fs from "fs";
 
 import profesionalesRouter from "./routes/profesionalesRoute.js";
 import establecimientoRouer from "./routes/establecimientosRoute.js";
@@ -23,28 +23,6 @@ app.use("/api/establecimientos", establecimientoRouer);
 app.use("/api/estados", estadosRouter);
 // app.use("/usuarios", usuariosRouter);
 
-// Configuración de multer para manejar la carga de archivos
-// const upload = multer({
-// 	dest: "./../frontend/public/uploads", // Carpeta donde se guardarán los archivos subidos
-// 	// dest: "uploads/", // Carpeta donde se guardarán los archivos subidos
-// });
-
-// Ruta para subir una imagen
-// app.post("/api/loadimage", upload.single("image"), (req, res) => {
-// 	// res.json({ filename: req.file.filename });
-// 	// console.log(req.file);
-// 	saveFile(req.file);
-// 	res.send("ok");
-// });
-
-// Ruta para subir varias imagenes (3 en este caso)
-// app.post("/api/loadimages", upload.array("images", 3), (req, res) => {
-// 	// res.json({ filename: req.file.filename });
-// 	// console.log(req.file);
-// 	req.files.map(saveFile);
-// 	res.send("ok");
-// });
-
 // FUNCION PARA RENOMBRAR EL ARCHIVO
 // function saveFile(file) {
 // 	const newPath = `./../frontend/public/uploads/${file.originalname}`;
@@ -57,16 +35,38 @@ const storage = multer.diskStorage({
 		return cb(null, "./../frontend/public/uploads");
 	},
 	filename: function (req, file, cb) {
-		return cb(null, `${Date.now()}_${file.originalname}`);
+		// return cb(null, `${Date.now()}_${file.originalname}`);
+		return cb(null, `${file.originalname}`);
 	},
 });
 
 const upload = multer({ storage });
 
+// Ruta para subir una imagen
 app.post("/api/loadimage/", upload.single("file"), (req, res) => {
 	console.log(req.body);
 	console.log(req.file);
-	return res.send("ok");
+	return res.send("Archivo subido");
+});
+
+// Ruta para eliminar una imagen
+app.delete("/api/deleteimage/:filename", (req, res) => {
+	const filename = req.params.filename;
+
+	// Lógica para eliminar el archivo
+	fs.unlink(`./../frontend/public/uploads/${filename}`, (err) => {
+		if (err) {
+			console.error("Error al eliminar el archivo:", err);
+			return res
+				.status(500)
+				.json({ error: "Error al eliminar el archivo" });
+		}
+
+		console.log("Archivo eliminado correctamente");
+		return res
+			.status(200)
+			.json({ message: "Archivo eliminado correctamente" });
+	});
 });
 
 // CONEXION A LA BASE DE DATOS

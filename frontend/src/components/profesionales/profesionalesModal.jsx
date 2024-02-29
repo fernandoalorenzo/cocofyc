@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import apiConnection from "../../../../backend/functions/apiConnection";
 
+
 const ProfesionalesModal = ({
 	showModal,
 	closeModal,
@@ -19,10 +20,13 @@ const ProfesionalesModal = ({
 		domicilio: "",
 		localidad: "",
 		fecha_nacimiento: "",
-		imagen: null,
+		imagen: "",
 		activo: false,
 		estado_matricula_id: "",
 	};
+
+	const [imagePreview, setImagePreview] = useState(null);
+	const [file, setFile] = useState();
 
 	const [formData, setFormData] = useState(initialState);
 
@@ -133,17 +137,134 @@ const ProfesionalesModal = ({
 		modalTitle = "Agregar Nuevo Profesional";
 	}
 
-	// const handleFileChange = (e) => {
-	// 	const file = e.target.files[0];
-	// 	// Aquí puedes manejar el archivo como desees, por ejemplo, mostrar una vista previa o almacenarlo en el estado
-	// };
+	// FUNCION PARA MOSTRAR LA IMAGEN
+	const handleImageChange = (e) => {
+		const selectedFile = e.target.files[0];
+
+		// Si no se selecciona ningún archivo, borramos la vista previa
+		if (!selectedFile) {
+			// setImagePreview(null);
+			// inputValues.imagen = false;
+			console.log("selected")
+			return;
+		}
+
+		inputValues.imagen = selectedFile;
+
+		setFile(selectedFile);
+
+		const file = e.target.files[0];
+
+		const reader = new FileReader();
+		reader.onloadend = () => {
+			setImagePreview(reader.result);
+		};
+		reader.readAsDataURL(selectedFile);
+	};
+
+	// FUNCION PARA ELIMINAR LA IMAGEN
+	const handleRemoveImage = async () => {
+    try {
+        const result = await Swal.fire({
+            title: "¿Estás seguro?",
+            text: "Esta acción no podrá deshacerse",
+            icon: "warning",
+            showConfirmButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Sí, eliminar",
+            showCancelButton: true,
+            cancelButtonText: "Cancelar",
+        });
+
+        if (result.isConfirmed) {
+            // Hacer una solicitud HTTP para eliminar el archivo
+            const response = await fetch(
+				"http://localhost:5000/api/deleteimage/" + inputValues.imagen,
+				{
+					method: "DELETE",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify({ filename: inputValues.imagen }),
+				}
+			);
+
+            if (response.ok) {
+                // Si la eliminación fue exitosa, actualizar la interfaz de usuario
+                setImagePreview(null);
+                setFile(null);
+                document.getElementById("file").value = "";
+                setInputValues({
+                    ...inputValues,
+                    imagen: "",
+                });
+                console.log('Archivo eliminado exitosamente');
+            } else {
+                console.error('Error al eliminar el archivo:', response.statusText);
+            }
+        }
+    } catch (error) {
+        console.error('Error al eliminar el archivo:', error);
+    }
+};
+
+	// FUNCION PARA SUBIR LA IMAGEN
+	const handleUpload = async () => {
+		if (!imagePreview) {
+			Swal.fire({
+				icon: "error",
+				title: "Oops...",
+				text: "No hay una imagen para subir",
+				confirmButtonText: "Ok",
+			})
+			return false;
+		}
+
+		if (!file) { // Verificar si hay un archivo seleccionado
+			return false;
+		}
+
+		const formData = new FormData();
+		formData.append("file", file);
+
+		const profesionalId = data.id;
+
+		const fileExtension = file.name.split(".").pop();
+
+		// const fileName = `img_profesional_${profesionalId}_${file.name}`;
+		const fileName = `img_profesional_${profesionalId}.${fileExtension}`;
+
+		formData.set("file", file, fileName);
+
+		try {
+			const response = await fetch(
+				"http://localhost:5000/api/loadimage/",
+				{
+					method: "POST",
+					body: formData,
+				}
+			);
+
+			if (response.ok) {
+				console.log("Imagen subida correctamente. ", fileName  );
+				return fileName; // Devolver el nombre de archivo
+			} else {
+				console.error("Error al subir la imagen:", response.statusText);
+				return false; // Devolver falso si hubo un error al subir la imagen
+			}
+		} catch (error) {
+			console.error("Error de red:", error);
+			return false; // Devolver falso si hubo un error de red
+		}
+	};
 
 	// FUNCION PARA VERIFICAR SI EL DNI EXISTE
 	const checkDniExists = async (dni) => {
 		try {
 			const endpoint = `http://localhost:5000/api/profesionales/dni/${dni}`;
 			const response = await fetch(endpoint);
-			
+
 			const data = await response.json();
 
 			if (response.ok) {
@@ -161,6 +282,35 @@ const ProfesionalesModal = ({
 		// Remover el guion del CUIT y los puntos del DNI
 		const cuitSinGuion = inputValues.cuit.replace(/-/g, "");
 		const dniSinPuntos = inputValues.dni.replace(/\./g, "");
+
+		// Subir la imagen
+		const imagenSubida = await handleUpload();
+
+		console.log("imagenSubida submit:", imagenSubida);
+		console.log("inputValues,imagen:", inputValues.imagen);
+
+		if (imagenSubida) {
+			// Si la imagen se subió correctamente, actualizar inputValues.imagen a true
+			inputValues.imagen = imagenSubida;
+		} else {
+			if (inputValues.imagen) {
+				Swal.fire({
+					title: "¿Estás seguro?",
+					text: "Esta acción no se podrá deshacer",
+					icon: "warning",
+					showConfirmButton: true,
+					confirmButtonColor: "#3085d6",
+					cancelButtonColor: "#d33",
+					confirmButtonText: "Sí, eliminar",
+					showCancelButton: true,
+					cancelButtonText: "Cancelar",
+				}).then((result) => {
+					if (result.isConfirmed) {
+						inputValues.imagen = ""; // Reiniciamos el estado del input de imagen
+					}
+				});
+			}
+		}
 
 		// Crear una copia del formData con los valores transformados
 		const formDataToSend = {
@@ -190,6 +340,7 @@ const ProfesionalesModal = ({
 					);
 				}
 			}
+
 			const endpoint = "http://127.0.0.1:5000/api/profesionales/";
 			const direction = data ? `${data.id}` : ""; // Si hay data, es una actualización, de lo contrario, es una creación
 			const method = data ? "PUT" : "POST"; // Método dependiendo de si es una actualización o una creación
@@ -240,12 +391,18 @@ const ProfesionalesModal = ({
 
 	const closeModalAndResetData = () => {
 		closeModal();
+		setFile(null);
 		setFormData(initialState);
+		document.getElementById("file").value = ""; // Reiniciamos el input de archivo
+		setImagePreview(null); // Reiniciamos la vista previa de la imagen
 	};
 
 	useEffect(() => {
 		if (data) {
 			setFormData(data); // Utiliza los datos del profesional seleccionado si están disponibles
+			if (data.id && data.imagen) {
+				setImagePreview(`./../../public/uploads/${data.imagen}`);
+			}
 		}
 	}, [data]);
 
@@ -488,7 +645,7 @@ const ProfesionalesModal = ({
 												name="estado_matricula_id"
 												value={
 													inputValues.estado_matricula_id ||
-													"" // Verificación de nulo aquí
+													"" // Verificación de nulo
 												}
 												onChange={handleInputChange}>
 												<option>Seleccionar</option>
@@ -511,7 +668,8 @@ const ProfesionalesModal = ({
 											className="form-label mb-0">
 											Activo
 										</label>
-										<div className="form-check form-switch">
+										{/* <div className="form-check form-switch"> */}
+										<div className="form-switch">
 											<input
 												type="checkbox"
 												className="form-check-input"
@@ -533,15 +691,47 @@ const ProfesionalesModal = ({
 									{/* Imagen */}
 									<div className="col mb-3">
 										<label
-											htmlFor="imagen"
+											htmlFor="file"
 											className="form-label mb-0">
 											Imagen
 										</label>
 										<input
 											type="file"
-											className="form-control"
-											id="imagen"
+											id="file"
+											name="file"
+											className="btn btn-warning form-control"
+											onChange={handleImageChange}
+										/>
+									</div>
+									<div className="col align-self-center">
+										{imagePreview && (
+											<>
+												<img
+													src={imagePreview}
+													alt="Vista previa"
+													className="img-fluid rounded"
+													style={{
+														maxWidth: "100%",
+														maxHeight: "3rem",
+													}}
+												/>
+
+												<button
+													type="button"
+													className="btn btn-danger mx-2"
+													onClick={handleRemoveImage}>
+													<i className="fa-solid fa-ban me-2"></i>
+													Eliminar Imagen
+												</button>
+											</>
+										)}
+									</div>
+									<div>
+										<input
+											type="text"
+											value={inputValues.imagen || ""}
 											name="imagen"
+											
 										/>
 									</div>
 								</div>

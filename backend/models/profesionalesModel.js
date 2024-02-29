@@ -18,8 +18,12 @@ const Profesional = sequelize.define(
 		domicilio: DataTypes.STRING(50),
 		localidad: DataTypes.STRING(50),
 		fecha_nacimiento: DataTypes.DATE,
-		imagen: DataTypes.STRING,
-		activo: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: false },
+		imagen: DataTypes.STRING(50),
+		activo: {
+			type: DataTypes.BOOLEAN,
+			allowNull: false,
+			defaultValue: false,
+		},
 		estado_matricula_id: DataTypes.CHAR(36),
 	},
 	{

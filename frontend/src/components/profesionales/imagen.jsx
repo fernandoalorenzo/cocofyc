@@ -1,13 +1,13 @@
 import React, { useState } from "react";
-import axios from "axios";
+import apiConnection from "../../../../backend/functions/apiConnection";
 
 const Imagen = () => {
-  const [imagePreview, setImagePreview] = useState(null);
-  const [file, setFile] = useState();
+	const [imagePreview, setImagePreview] = useState(null);
+	const [file, setFile] = useState();
 
 	const handleImageChange = (e) => {
-    setFile(e.target.files[0]);
-    const file = e.target.files[0];
+		setFile(e.target.files[0]);
+		const file = e.target.files[0];
 		if (file) {
 			const reader = new FileReader();
 			reader.onloadend = () => {
@@ -17,7 +17,7 @@ const Imagen = () => {
 		}
 	};
 
-	const handleUpload = () => {
+	const handleUpload = async () => {
 		if (!imagePreview) {
 			console.log("No hay imagen para subir.");
 			return;
@@ -26,17 +26,24 @@ const Imagen = () => {
 		const formData = new FormData();
 		formData.append("file", file);
 
-    axios.post("http://localhost:5000/api/loadimage/", formData)
-      .then((response) => {
-        if (response.ok) {
-          console.log("Imagen subida correctamente.");
-        }
-        
-      })
-      .catch((error) => {
-        console.error("Error de red:", error);
-      })
-  };
+		fetch("http://localhost:5000/api/loadimage/", {
+			method: "POST",
+			body: formData,
+		})
+			.then((response) => {
+				if (response.ok) {
+					console.log("Imagen subida correctamente.");
+				} else {
+					console.error(
+						"Error al subir la imagen:",
+						response.statusText
+					);
+				}
+			})
+			.catch((error) => {
+				console.error("Error de red:", error);
+			});
+	};
 
 	return (
 		<>
@@ -52,8 +59,8 @@ const Imagen = () => {
 							<div className="col-sm-6">
 								<input
 									type="file"
-									// name="image"
-									// id="image"
+									name="image"
+									id="image"
 									className="form-control"
 									onChange={handleImageChange}
 								/>

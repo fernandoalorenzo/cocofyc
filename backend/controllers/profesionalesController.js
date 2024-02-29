@@ -96,6 +96,10 @@ const updateProfesional = async (request, response) => {
 				{ where: { id: id } }
 			)
 
+			console.log("request body controller:", request.body)
+
+			console.log("Profesional actualizado:", profesionalUpdate)
+
 			response.status(201).json({
 				message: "El profesional fue actualizado exitosamente!",
 				data: profesionalUpdate,
