@@ -6,6 +6,7 @@ import {
 	getProfesionalByDNI,
 	getProfesionales,
 	updateProfesional,
+	patchProfesional,
 } from "../controllers/profesionalesController.js";
 import authenticateToken from "../functions/tokenVerify.js";
 
@@ -23,5 +24,7 @@ profesionalesRouter.post("/", createProfesional);
 profesionalesRouter.put("/:id", updateProfesional);
 // profesionalesRouter.delete("/:id", authenticateToken, deleteProfesional);
 profesionalesRouter.delete("/:id", deleteProfesional);
+// profesionalesRouter.patch("/:id", authenticateToken, patchProfesional);
+profesionalesRouter.patch("/:id", patchProfesional);
 
 export default profesionalesRouter;

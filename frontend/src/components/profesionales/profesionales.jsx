@@ -155,7 +155,7 @@ const ProfesionalesTabla = () => {
 								className="form-check-input"
 								type="checkbox"
 								checked={row.original.activo}
-								onChange={() => toggleActivo(row.original.id)}
+								onChange={() => false}
 							/>
 							<label className="form-check-label" hidden>
 								{row.original.activo ? "1" : "0"}

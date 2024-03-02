@@ -3,9 +3,9 @@
 /* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ToastErrorGenerico, ToastOK } from "../toast/Toast.jsx";
-import { ToastError } from "../toast/Toast.jsx";
-import { Toaster } from "react-hot-toast";
+// import { ToastErrorGenerico, ToastOK } from "../toast/Toast.jsx";
+// import { ToastError } from "../toast/Toast.jsx";
+// import { Toaster } from "react-hot-toast";
 
 const UserInfoForm = ({ isUpdating }) => {
 	const [formData, setFormData] = useState({
@@ -55,11 +55,11 @@ const UserInfoForm = ({ isUpdating }) => {
 				const userData = await response.json();
 				setFormData(userData);
 			} else {
-				ToastErrorGenerico("Error al cargar los datos del usuario");
+				// ToastErrorGenerico("Error al cargar los datos del usuario");
 			}
 		} catch (error) {
 			console.error("Error al cargar los datos del usuario:", error);
-			ToastError("Error al cargar los datos del usuario");
+			// ToastError("Error al cargar los datos del usuario");
 		}
 	};
 
@@ -82,8 +82,8 @@ const UserInfoForm = ({ isUpdating }) => {
 
 			if (response.ok) {
 				const successMessage = isUpdating
-					? ToastOK("Perfil", "actualizado")
-					: ToastOK("Usuario", "registrado");
+					// ? ToastOK("Perfil", "actualizado")
+					// : ToastOK("Usuario", "registrado");
 
 				// Actualiza el nombre en el localStorage si el nombre ha cambiado
 				const updatedUser = JSON.parse(localStorage.getItem("user"));
@@ -96,13 +96,13 @@ const UserInfoForm = ({ isUpdating }) => {
 				}, 2000);
 			} else {
 				const data = await response.json();
-				ToastErrorGenerico(data.message);
+				// ToastErrorGenerico(data.message);
 			}
 		} catch (error) {
 			console.error("Error al registrar/actualizar:", error);
-			ToastErrorGenerico(
-				"Error en el registro/actualización. Inténtalo de nuevo más tarde."
-			);
+			// ToastErrorGenerico(
+				// "Error en el registro/actualización. Inténtalo de nuevo más tarde."
+			// );
 		}
 	};
 
@@ -215,7 +215,7 @@ const UserInfoForm = ({ isUpdating }) => {
 					</div>
 				</form>
 			</section>
-			<Toaster />
+			{/* <Toaster /> */}
 		</>
 	);
 };

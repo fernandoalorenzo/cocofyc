@@ -3,9 +3,9 @@
 /* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ToastErrorGenerico, ToastOK } from "../toast/Toast.jsx";
-import { ToastError } from "../toast/Toast.jsx";
-import { Toaster } from "react-hot-toast";
+// import { ToastErrorGenerico, ToastOK } from "../toast/Toast.jsx";
+// import { ToastError } from "../toast/Toast.jsx";
+// import { Toaster } from "react-hot-toast";
 
 const UserPasswordForm = () => {
 	const [formData, setFormData] = useState({
@@ -121,7 +121,7 @@ const UserPasswordForm = () => {
 			const updateData = await updateResponse.json();
 
 			if (updateResponse.status === 200) {
-				ToastOK("Contraseña", "actualizada");
+				// ToastOK("Contraseña", "actualizada");
 
 				// Eliminar token y usuario del localStorage
 				localStorage.removeItem("token");
@@ -132,11 +132,11 @@ const UserPasswordForm = () => {
 				}, 1000);
 			} else {
 				// Error al actualizar la contraseña
-				ToastError(updateData.message);
+				// ToastError(updateData.message);
 			}
 		} catch (error) {
 			console.error("Error al enviar la solicitud:", error);
-			ToastErrorGenerico();
+			// ToastErrorGenerico();
 		}
 	};
 

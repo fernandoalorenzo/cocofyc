@@ -131,6 +131,34 @@ const deleteProfesional = async (request, response) => {
 	// 	});
 };
 
+// Eliminar un profesional
+const patchProfesional = async (request, response) => {
+	// 	authenticateToken(request, response, async () => {
+		const id = request.params.id;
+		const fieldsToUpdate = request.body;
+		try {
+			const profesional = await Profesional.findByPk(id);
+
+			if (!profesional) {
+				return response
+					.status(404)
+					.json({ message: "Profesional no encontrado." });
+			}
+
+			// Actualizar solo el campo 'nombre'
+			await profesional.update(fieldsToUpdate);
+
+			response.status(201).json({
+				message: "El profesional fue actualizado exitosamente!",
+				data: profesional,
+			});
+		} catch (error) {
+			console.error("Error: " + error.message);
+			response.status(500).send({ message: error.message });
+		}
+	// 	});
+};
+
 // Exportamos todas las rutas
 export {
 	createProfesional,
@@ -139,4 +167,5 @@ export {
 	getProfesionalByDNI,
 	updateProfesional,
 	deleteProfesional,
+	patchProfesional,
 };
