@@ -1,4 +1,4 @@
-// import User from "../models/userModel.js";
+import Usuario from "../models/usuariosModel.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { config } from "dotenv";
@@ -7,33 +7,33 @@ config();
 // Crear un nuevo usuario
 const createUsuario = async (request, response) => {
 	try {
-		// verifica si el correo que intenta registrar existe
-		const existUsuario = await Usuario.findOne({ email: request.body.email });
-		if (existUsuario) {
-			return response
-				.status(400)
-				.json({ message: "El correo ya está registrado." });
-		}
+		const hashedPassword = await bcrypt.hash(request.body.password, 10);
 
-		const user = await Usuario.create(request.body);
-
-		return response.status(201).send({
-			message: "El usuario fue creado exitosamente!",
-			data: user,
+const usuario = await Usuario.create({
+	...request.body,
+	password: hashedPassword,
+});
+		response.status(201).json({
+			message: "El profesional fue creado exitosamente!",
+			data: usuario,
 		});
 	} catch (error) {
-		console.log(error.message);
-		response.status(500).send({ message: "Error interno del servidor" });
+		console.error("Error: " + error.message);
+		response.status(500).send({ message: error.message });
 	}
 };
 
 // Obtener todos los usuarios
-const getUsuarios = async (req, res) => {
+const getUsuarios = async (request, response) => {
 	try {
-		const users = await Usuario.find();
-		res.status(200).json(users);
+		const usuarios = await Usuario.findAll(request.body);
+		response.status(201).json({
+			message: "El listado de profesionales fue creado exitosamente!",
+			data: usuarios,
+		});
 	} catch (error) {
-		res.status(500).json({ message: error.message });
+		console.error("Error: " + error.message);
+		response.status(500).send({ message: error.message });
 	}
 };
 
@@ -100,8 +100,16 @@ const deleteUsuario = async (request, response) => {
 const loginUsuario = async (req, res) => {
 	const secret = process.env.SECRET;
 	try {
-		const { email, password, id, nombre, apellido, rol } = req.body;
+		const { email, password, id, nombre, apellido, rol, activo } = req.body;
 
+		console.log("email: ", email)
+		console.log("password: ", password)
+		console.log("id: ", id)
+		console.log("Nombre: ", nombre)
+		console.log("Apellido: ", apellido)
+		console.log("Rol: ", rol)
+		console.log("Activo: ", activo)		
+		
 		// Verificar si el usuario existe en la base de datos
 		const user = await Usuario.findOne({ email });
 		if (!user) {
@@ -121,7 +129,7 @@ const loginUsuario = async (req, res) => {
 		// Generar el token JWT
 		const token = jwt.sign(
 			{
-				id: user._id,
+				id: user.id,
 				nombre: nombre,
 				apellido: apellido,
 				email: email,
@@ -140,7 +148,7 @@ const loginUsuario = async (req, res) => {
 				nombre: user.nombre,
 				apellido: user.apellido,
 				email: user.email,
-				id: user._id,
+				id: user.id,
 			},
 		});
 	} catch (error) {

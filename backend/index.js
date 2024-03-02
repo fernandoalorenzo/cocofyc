@@ -6,7 +6,7 @@ import fs from "fs";
 import profesionalesRouter from "./routes/profesionalesRoute.js";
 import establecimientoRouer from "./routes/establecimientosRoute.js";
 import estadosRouter from "./routes/estadosMatriculaRoute.js";
-// import usuariosRouter from "./routes/usuariosRoute.js";
+import usuariosRouter from "./routes/usuariosRoute.js";
 
 import connect from "./config/db.js";
 
@@ -21,7 +21,8 @@ app.use(cors());
 app.use("/api/profesionales", profesionalesRouter);
 app.use("/api/establecimientos", establecimientoRouer);
 app.use("/api/estados", estadosRouter);
-// app.use("/usuarios", usuariosRouter);
+app.use("/api/usuarios", usuariosRouter);
+app.use("/api/usuarios/login", usuariosRouter);
 
 // FUNCION PARA RENOMBRAR EL ARCHIVO
 // function saveFile(file) {

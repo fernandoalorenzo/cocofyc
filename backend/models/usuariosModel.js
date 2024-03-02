@@ -1,7 +1,7 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../config/sequelizeConfig.js";
 
-const User = sequelize.define(
+const Usuario = sequelize.define(
 	"tb_users",
 	{
 		id: {
@@ -11,7 +11,8 @@ const User = sequelize.define(
 		},
 		email: { type: DataTypes.STRING(50), allowNull: false },
 		password: { type: DataTypes.STRING(12), allowNull: false },
-		nombre: { type: DataTypes.STRING(50), allowNull: false },
+		nombre: { type: DataTypes.STRING(25), allowNull: false },
+		apellido: { type: DataTypes.STRING(25), allowNull: false },
 		rol: { type: DataTypes.STRING(20), allowNull: false },
 		avatar: DataTypes.STRING(50),
 		activo: {
@@ -27,16 +28,16 @@ const User = sequelize.define(
 );
 
 // Antes de crear o actualizar un usuario, hashea la contraseña
-User.beforeCreate(async (user) => {
-    if (user.password) {
-        user.password_hash = await bcrypt.hash(user.password, 10); // 10 es el costo de hashing, puede ajustarse según la seguridad necesaria
-    }
-});
+// Usuario.beforeCreate(async (usuario) => {
+// 	if (usuario.password) {
+// 		usuario.password_hash = await bcrypt.hash(usuario.password, 10);
+// 	}
+// });
 
-User.beforeUpdate(async (user) => {
-    if (user.changed('password')) {
-        user.password_hash = await bcrypt.hash(user.password, 10);
-    }
-});
+// Usuario.beforeUpdate(async (usuario) => {
+// 	if (usuario.changed("password")) {
+// 		usuario.password_hash = await bcrypt.hash(usuario.password, 10);
+// 	}
+// });
 
-export default User;
+export default Usuario;
