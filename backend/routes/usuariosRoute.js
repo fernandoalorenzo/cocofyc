@@ -18,7 +18,7 @@ usuariosRouter.get("/:id", getUsuarioById);
 usuariosRouter.post("/", createUsuario);
 usuariosRouter.put("/:id", updateUsuario);
 usuariosRouter.delete("/:id", deleteUsuario);
-usuariosRouter.post("/login", loginUsuario);
+usuariosRouter.post("/login/", loginUsuario);
 usuariosRouter.post("/validate-password/:id", validatePassword);
 usuariosRouter.put("/update-password/:id", updatePassword);
 

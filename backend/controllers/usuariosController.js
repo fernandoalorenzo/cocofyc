@@ -100,18 +100,14 @@ const deleteUsuario = async (request, response) => {
 const loginUsuario = async (req, res) => {
 	const secret = process.env.SECRET;
 	try {
+		// console.log("req.body: ", req.body)
 		const { email, password, id, nombre, apellido, rol, activo } = req.body;
 
-		console.log("email: ", email)
-		console.log("password: ", password)
-		console.log("id: ", id)
-		console.log("Nombre: ", nombre)
-		console.log("Apellido: ", apellido)
-		console.log("Rol: ", rol)
-		console.log("Activo: ", activo)		
-		
+		// const { email, password } = req.body;
+
 		// Verificar si el usuario existe en la base de datos
-		const user = await Usuario.findOne({ email });
+		const user = await Usuario.findOne({ where: { email } });
+
 		if (!user) {
 			return res
 				.status(401)
@@ -120,6 +116,7 @@ const loginUsuario = async (req, res) => {
 
 		// Verificar que la contraseña coincida
 		const passwordOk = await bcrypt.compare(password, user.password);
+
 		if (!passwordOk) {
 			return res
 				.status(401)

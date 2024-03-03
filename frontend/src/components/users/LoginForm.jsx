@@ -25,10 +25,10 @@ const LoginForm = () => {
 	};
 
 	const onLogin = async (event) => {
-		event.preventDefault();
+		event.preventDefault(event);
 
 		try {
-			const response = await fetch("http://localhost:5000/api/usuarios/login", {
+			const response = await fetch("http://localhost:5000/api/usuarios/login/", {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
