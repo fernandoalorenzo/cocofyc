@@ -100,13 +100,14 @@ const deleteUsuario = async (request, response) => {
 const loginUsuario = async (req, res) => {
 	const secret = process.env.SECRET;
 	try {
-		// console.log("req.body: ", req.body)
-		const { email, password, id, nombre, apellido, rol, activo } = req.body;
+		const { email, password, id, nombre, apellido, rol } = req.body;
 
 		// const { email, password } = req.body;
 
 		// Verificar si el usuario existe en la base de datos
 		const user = await Usuario.findOne({ where: { email } });
+
+		console.log("USER: ", user);
 
 		if (!user) {
 			return res
@@ -127,10 +128,10 @@ const loginUsuario = async (req, res) => {
 		const token = jwt.sign(
 			{
 				id: user.id,
-				nombre: nombre,
-				apellido: apellido,
-				email: email,
-				rol: rol,
+				nombre: user.nombre,
+				apellido: user.apellido,
+				email: user.email,
+				rol: user.rol,
 			},
 			secret,
 			{

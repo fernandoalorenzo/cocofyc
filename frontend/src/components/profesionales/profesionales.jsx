@@ -146,6 +146,10 @@ const ProfesionalesTabla = () => {
 				accessor: "localidad",
 			},
 			{
+				Header: "Estado Mat.",
+				accessor: "estado_matricula_id",
+			},
+			{
 				Header: "Activo",
 				accessor: "activo",
 				Cell: ({ row }) => (

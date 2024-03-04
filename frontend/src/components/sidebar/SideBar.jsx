@@ -3,7 +3,19 @@ import { Link, useNavigate, NavLink } from "react-router-dom";
 import { Logo } from "../logo/logo";
 
 export default function SideBar() {
-	const navigate = useNavigate();
+	// const navigate = useNavigate();
+
+	// const user = JSON.parse(localStorage.getItem("user"));
+	// const userName = user ? user.nombre : null;
+
+	// const handleLogout = () => {
+	// 	// Elimina los datos del localStorage
+	// 	localStorage.removeItem("user");
+	// 	localStorage.removeItem("token");
+
+	// 	// Redirige al login
+	// 	navigate("/login");
+	// };
 
 	const user = JSON.parse(localStorage.getItem("user"));
 	const userName = user ? user.nombre : null;
@@ -31,20 +43,39 @@ export default function SideBar() {
 				{/* Sidebar */}
 				<div className="sidebar">
 					{/* Sidebar user panel (optional) */}
-					<div className="user-panel mt-3 pb-3 mb-3 d-flex">
+					<div className="user-panel mt-3 pb-3 mb-3 d-flex align-items-center justify-content-between">
 						<div className="image">
 							<img
 								src="dist/img/user2-160x160.jpg"
 								className="img-circle elevation-2"
-								alt="User Image"
+								alt="Avatar"
 							/>
-						</div>
-						<div className="info">
-							<a href="#" className="d-block">
-								Alexander Pierce
+							<a className="ms-3">
+								{userName}
 							</a>
 						</div>
+						<div className="info">
+							<div className="d-flex align-items-center">
+								<div className="col-auto">
+									<i
+										className="fa-solid fa-user text-white"
+										style={{ cursor: "pointer" }}
+										title="Perfil"
+										onClick="">
+									</i>
+								</div>
+								<div className="col-auto p-0">
+									<i
+										className="fa-solid fa-power-off text-white"
+										style={{ cursor: "pointer" }}
+										title="Logout"
+										onClick="{handleLogout}">
+									</i>
+								</div>
+							</div>
+						</div>
 					</div>
+
 					{/* Sidebar Menu */}
 					<nav className="mt-2">
 						<ul
@@ -93,9 +124,7 @@ export default function SideBar() {
 									className="nav-link"
 									activeclassname="active">
 									<i className="nav-icon fa-solid fa-house" />
-									<p>
-										Dashboard
-									</p>
+									<p>Dashboard</p>
 								</NavLink>
 							</li>
 							<li className="nav-item">
@@ -104,9 +133,7 @@ export default function SideBar() {
 									className="nav-link"
 									activeclassname="active">
 									<i className="nav-icon fa-solid fa-user-tie" />
-									<p>
-										Profesionales
-									</p>
+									<p>Profesionales</p>
 								</NavLink>
 							</li>
 							<li className="nav-item">
