@@ -3,29 +3,14 @@ import { Link, useNavigate, NavLink } from "react-router-dom";
 import { Logo } from "../logo/logo";
 
 export default function SideBar() {
-	// const navigate = useNavigate();
-
-	// const user = JSON.parse(localStorage.getItem("user"));
-	// const userName = user ? user.nombre : null;
-
-	// const handleLogout = () => {
-	// 	// Elimina los datos del localStorage
-	// 	localStorage.removeItem("user");
-	// 	localStorage.removeItem("token");
-
-	// 	// Redirige al login
-	// 	navigate("/login");
-	// };
+	const navigate = useNavigate();
 
 	const user = JSON.parse(localStorage.getItem("user"));
 	const userName = user ? user.nombre : null;
 
 	const handleLogout = () => {
-		// Elimina los datos del localStorage
 		localStorage.removeItem("user");
 		localStorage.removeItem("token");
-
-		// Redirige al login
 		navigate("/login");
 	};
 
@@ -61,7 +46,7 @@ export default function SideBar() {
 										className="fa-solid fa-user text-white"
 										style={{ cursor: "pointer" }}
 										title="Perfil"
-										onClick="">
+									>
 									</i>
 								</div>
 								<div className="col-auto p-0">
@@ -69,7 +54,7 @@ export default function SideBar() {
 										className="fa-solid fa-power-off text-white"
 										style={{ cursor: "pointer" }}
 										title="Logout"
-										onClick="{handleLogout}">
+										onClick={handleLogout}>
 									</i>
 								</div>
 							</div>

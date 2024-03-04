@@ -5,7 +5,6 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 
-
 const LoginForm = () => {
 	const [loginData, setLoginData] = useState({
 		email: "",
@@ -25,16 +24,18 @@ const LoginForm = () => {
 	};
 
 	const onLogin = async (event) => {
-		event.preventDefault(event);
-
+		event.preventDefault();
 		try {
-			const response = await fetch("http://localhost:5000/api/usuarios/login/", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify(loginData),
-			});
+			const response = await fetch(
+				"http://localhost:5000/api/usuarios/login/",
+				{
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify(loginData),
+				}
+			);
 
 			if (response.ok) {
 				const { token, user } = await response.json();
@@ -44,26 +45,23 @@ const LoginForm = () => {
 				navigate("/");
 			} else {
 				const data = await response.json();
-
-				// Ocultar el mensaje de error pasados 3 segundos
+				setError(data.message || "Error en el inicio de sesión.");
 				setTimeout(() => {
 					setError(null);
 				}, 3000);
-
-				setError(data.message || "Error en el inicio de sesión.");
 			}
 		} catch (error) {
 			console.error("Error al iniciar sesión:", error);
 			setError(
 				"Error en el inicio de sesión. Inténtalo de nuevo más tarde."
 			);
-
-			// Ocultar el mensaje de error después de 3 segundos
 			setTimeout(() => {
 				setError(null);
 			}, 3000);
 		}
 	};
+
+
 
 	// DESACTIVAR EL SCROLL VERTICAL AL MONTAR EL COMPONENTE
 	useEffect(() => {

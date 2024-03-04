@@ -11,6 +11,7 @@ const ProfesionalesTabla = () => {
 	const [showProfesionalesModal, setShowProfesionalesModal] = useState(false);
 	const [selectedProfesional, setSelectedProfesional] = useState(null);
 	const [modalMode, setModalMode] = useState(""); // Definir modalMode como estado
+	const [estadosMatriculas, setEstadosMatriculas] = useState([]);
 
 	const fetchProfesionales = async () => {
 		try {
@@ -40,6 +41,35 @@ const ProfesionalesTabla = () => {
 	// OBTENER LISTA DE REGISTROS
 	useEffect(() => {
 		fetchProfesionales();
+	}, []);
+
+	// OBTENER LISTA DE ESTADOS DE MATRICULA
+	const fetchEstadosMatriculas = async () => {
+		try {
+			const endpoint = "http://127.0.0.1:5000/api/estados";
+			const direction = "";
+			const method = "GET";
+			const body = false;
+			const headers = {
+				"Content-Type": "application/json",
+				// Authorization: localStorage.getItem("token"),
+			};
+
+			const response = await apiConnection(
+				endpoint,
+				direction,
+				method,
+				body,
+				headers
+			);
+			setEstadosMatriculas(response.data);
+		} catch (error) {
+			console.error("Error:", error.message);
+		}
+	};
+
+	useEffect(() =>  {
+		fetchEstadosMatriculas();
 	}, []);
 
 	const filteredData = useMemo(() => {
@@ -148,6 +178,12 @@ const ProfesionalesTabla = () => {
 			{
 				Header: "Estado Mat.",
 				accessor: "estado_matricula_id",
+				Cell: ({ value }) => {
+					const estado = estadosMatriculas.find(
+						(estado) => estado.id === value
+					);
+					return estado ? estado.estado : "N/D";
+				},
 			},
 			{
 				Header: "Activo",
@@ -205,7 +241,7 @@ const ProfesionalesTabla = () => {
 				),
 			},
 		],
-		[]
+		[estadosMatriculas]
 	);
 
 	const {

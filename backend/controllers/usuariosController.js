@@ -107,8 +107,6 @@ const loginUsuario = async (req, res) => {
 		// Verificar si el usuario existe en la base de datos
 		const user = await Usuario.findOne({ where: { email } });
 
-		console.log("USER: ", user);
-
 		if (!user) {
 			return res
 				.status(401)
