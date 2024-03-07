@@ -203,6 +203,7 @@ const ProfesionalesModal = ({
 							method: "DELETE",
 							headers: {
 								"Content-Type": "application/json",
+								Authorization: localStorage.getItem("token"),
 							},
 							body: JSON.stringify({
 								filename: data.imagen,
@@ -223,7 +224,7 @@ const ProfesionalesModal = ({
 
 						const headers = {
 							"Content-Type": "application/json",
-							// Authorization: localStorage.getItem("token"),
+							Authorization: localStorage.getItem("token"),
 						};
 
 						const response = await apiConnection(
@@ -252,16 +253,16 @@ const ProfesionalesModal = ({
 
 	// FUNCION PARA SUBIR LA IMAGEN
 	const handleUpload = async () => {
-		if (!file) {
-			// Verificar si hay un archivo seleccionado
-			Swal.fire({
-				icon: "error",
-				title: "Oops...",
-				text: "No hay una imagen para subir",
-				confirmButtonText: "Ok",
-			});
-			return false;
-		}
+		// if (!file) {
+		// 	// Verificar si hay un archivo seleccionado
+		// 	Swal.fire({
+		// 		icon: "error",
+		// 		title: "Oops...",
+		// 		text: "No hay una imagen para subir",
+		// 		confirmButtonText: "Ok",
+		// 	});
+		// 	return false;
+		// }
 
 		const formFile = new FormData();
 		formFile.append("file", file);
@@ -367,7 +368,7 @@ const ProfesionalesModal = ({
 
 			const headers = {
 				"Content-Type": "application/json",
-				// Authorization: localStorage.getItem("token"),
+				Authorization: localStorage.getItem("token"),
 			};
 
 			const response = await apiConnection(
@@ -419,6 +420,8 @@ const ProfesionalesModal = ({
 	useEffect(() => {
 		if (!showModal) {
 			setImagePreview(""); // Limpiar la vista previa de la imagen al cerrar el modal
+			setFile(null);
+			// data.imagen = "";
 		}
 	}, [showModal]);
 
@@ -440,7 +443,7 @@ const ProfesionalesModal = ({
 				const body = false;
 				const headers = {
 					"Content-Type": "application/json",
-					// Authorization: localStorage.getItem("token"),
+					Authorization: localStorage.getItem("token"),
 				};
 
 				const data = await apiConnection(
@@ -501,6 +504,7 @@ const ProfesionalesModal = ({
 											value={inputValues.nombre}
 											readOnly={modalMode === "mostrar"}
 											onChange={handleChangeNombre}
+											required
 										/>
 									</div>
 									{/* DNI */}
@@ -518,6 +522,7 @@ const ProfesionalesModal = ({
 											value={inputValues.dni}
 											readOnly={modalMode === "mostrar"}
 											onChange={handleChangeDni}
+											required
 										/>
 									</div>
 									{/* CUIT */}
@@ -643,6 +648,7 @@ const ProfesionalesModal = ({
 											value={inputValues.matricula}
 											readOnly={modalMode === "mostrar"}
 											onChange={handleInputChange}
+											required
 										/>
 									</div>
 									{/* Estado de Matrícula */}
@@ -672,6 +678,7 @@ const ProfesionalesModal = ({
 												className="form-select"
 												id="estado_matricula_id"
 												name="estado_matricula_id"
+												required
 												value={
 													inputValues.estado_matricula_id ||
 													"" // Verificación de nulo
@@ -717,62 +724,76 @@ const ProfesionalesModal = ({
 										</div>
 									</div>
 									{/* Imagen */}
-									<div className="col-6 align-self-end m-0">
-										{imagePreview && (
-											<>
-												<div className="m-0 p-0 align-self-end">
-													<label
-														htmlFor="vista_previa"
-														className="form-label">
-														Imagen
-													</label>
-													<div className="col-1 align-self-end m-0 p-0">
-														<img
-															name="vista_previa"
-															src={imagePreview}
-															alt="Vista previa"
-															className="img-fluid rounded mx-auto"
-															style={{
-																maxHeight:
-																	"2.5rem",
-															}}
-														/>
+									<div className="col">
+										<div className="row align-items-end">
+											{imagePreview && (
+												<>
+													<div className="col-auto">
+														<label
+															htmlFor="vista_previa"
+															className="form-label">
+															Imagen
+														</label>
 													</div>
-													<div className="col align-self-end p-0">
-														<button
-															type="button"
-															className="btn btn-danger ms-md-auto"
-															onClick={
-																handleRemoveImage
-															}
-															hidden={
-																modalMode ===
-																"mostrar"
-															}>
-															<i className="fa-solid fa-ban me-2"></i>
-															Eliminar Imagen
-														</button>
+													<div className="row align-items-end">
+														<div className="col-auto">
+															<img
+																name="vista_previa"
+																src={
+																	imagePreview
+																}
+																alt="Vista previa"
+																className="img-fluid rounded mx-auto"
+																style={{
+																	maxHeight:
+																		"2.5rem",
+																}}
+															/>
+														</div>
+														<div className="col-auto">
+															{modalMode !==
+																"mostrar" && (
+																<button
+																	type="button"
+																	className="btn btn-danger ms-md-auto"
+																	onClick={
+																		handleRemoveImage
+																	}>
+																	<i className="fa-solid fa-ban me-2"></i>
+																	Eliminar
+																	Imagen
+																</button>
+															)}
+														</div>
 													</div>
-												</div>
-											</>
-										)}
-										<div
-											className="col m-0 p-0 align-self-end"
-											hidden={modalMode === "mostrar"}>
-											<label
-												htmlFor="fileInput"
-												className="btn btn-light form-control">
-												<i className="fa-solid fa-upload"></i>{" "}
-												Subir imagen...
-											</label>
-											<input
-												className="mb-0"
-												type="file"
-												id="fileInput"
-												name="file"
-												style={{ display: "none" }}
-												onChange={handleImageChange}
-											/>
+												</>
+											)}
+											{!imagePreview &&
+												modalMode !== "mostrar" && (
+													<>
+														<div className="col-auto">
+															<label
+																htmlFor="fileInput"
+																className="btn btn-light form-control m-0">
+																<i className="fa-solid fa-upload"></i>{" "}
+																Subir imagen...
+															</label>
+															<input
+																className="mb-0"
+																type="file"
+																id="fileInput"
+																name="file"
+																style={{
+																	display:
+																		"none",
+																}}
+																onChange={
+																	handleImageChange
+																}
+															/>
+														</div>
+													</>
+												)}
 										</div>
 									</div>
 									<div>

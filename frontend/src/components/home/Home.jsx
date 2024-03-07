@@ -1,11 +1,9 @@
 /* eslint-disable no-unused-vars */
-import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Home() {
 	const navigate = useNavigate();
-
-	const user = JSON.parse(localStorage.getItem("user"));
-	const userName = user ? user.nombre : null;
 
 	const handleLogout = () => {
 		// Elimina los datos del localStorage
@@ -118,8 +116,6 @@ export default function Home() {
 							{/* Left col */}
 							<section className="col-lg-7 connectedSortable">
 								Custom tabs (Charts with tabs)
-								
-								
 								{/* TO DO List */}
 								<div className="card">
 									<div className="card-header">
@@ -352,7 +348,6 @@ export default function Home() {
 							{/* /.Left col */}
 							{/* right col (We are only adding the ID to make the widgets sortable)*/}
 							<section className="col-lg-5 connectedSortable">
-								
 								{/* solid sales graph */}
 								<div className="card bg-gradient-info">
 									<div className="card-header border-0">
@@ -441,7 +436,6 @@ export default function Home() {
 									{/* /.card-footer */}
 								</div>
 								{/* /.card */}
-								
 							</section>
 							{/* right col */}
 						</div>

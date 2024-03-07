@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useTable, useSortBy, usePagination } from "react-table";
+import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import apiConnection from "../../../../backend/functions/apiConnection";
 import ProfesionalesModal from "./profesionalesModal";
@@ -21,7 +22,7 @@ const ProfesionalesTabla = () => {
 			const body = false;
 			const headers = {
 				"Content-Type": "application/json",
-				// Authorization: localStorage.getItem("token"),
+				Authorization: localStorage.getItem("token"),
 			};
 
 			const data = await apiConnection(
@@ -52,7 +53,7 @@ const ProfesionalesTabla = () => {
 			const body = false;
 			const headers = {
 				"Content-Type": "application/json",
-				// Authorization: localStorage.getItem("token"),
+				Authorization: localStorage.getItem("token"),
 			};
 
 			const response = await apiConnection(
@@ -110,7 +111,7 @@ const ProfesionalesTabla = () => {
 				const body = false;
 				const headers = {
 					"Content-Type": "application/json",
-					// Authorization: localStorage.getItem("token"),
+					Authorization: localStorage.getItem("token"),
 				};
 
 				const data = await apiConnection(

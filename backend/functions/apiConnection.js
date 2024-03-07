@@ -4,9 +4,9 @@ const apiConnection = async (endpoint, direction, method, body, headers) => {
 		url.pathname += direction;
 
 		// Verifica si existe la propiedad 'Authorization' en el objeto de headers
-		// if (!headers || !headers.Authorization) {
-		// 	throw new Error("Token no encontrado en los encabezados");
-		// }
+		if (!headers || !headers.Authorization) {
+			throw new Error("Token no encontrado en los encabezados");
+		}
 
 		const response = await fetch(url.href, {
 			method,
