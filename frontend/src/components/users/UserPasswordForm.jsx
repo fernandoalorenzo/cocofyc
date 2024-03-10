@@ -41,7 +41,7 @@ const UserPasswordForm = () => {
 	const validateCurrentPassword = async () => {
 		try {
 			const response = await fetch(
-				`http://localhost:5000/users/validate-password/${userId}`,
+				`http://localhost:5000/api/usuarios/validate-password/${userId}`,
 				{
 					method: "POST",
 					headers: {

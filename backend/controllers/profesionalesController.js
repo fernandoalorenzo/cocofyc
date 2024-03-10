@@ -3,7 +3,7 @@ import authenticateToken from "../functions/tokenVerify.js";
 
 // Crear un nuevo profesional
 const createProfesional = async (request, response) => {
-	// authenticateToken(request, response, async () => {
+	authenticateToken(request, response, async () => {
 	try {
 		const nuevoProfesional = await Profesional.create(request.body);
 
@@ -15,12 +15,12 @@ const createProfesional = async (request, response) => {
 		console.error("Error: " + error.message);
 		response.status(500).send({ message: error.message });
 	}
-	// });
+	});
 };
 
 // Obtener todos los profesionales
 const getProfesionales = async (request, response) => {
-	// authenticateToken(request, response, async () => {
+	authenticateToken(request, response, async () => {
 		try {
 			const profesionales = await Profesional.findAll(request.body);
 
@@ -32,13 +32,12 @@ const getProfesionales = async (request, response) => {
 			console.error("Error: " + error.message);
 			response.status(500).send({ message: error.message });
 		}
-	// }
-
+	});
 };
 
 // Obtener un profesional por Id
 const getProfesionalById = async (request, response) => {
-	// 	authenticateToken(request, response, async () => {
+		authenticateToken(request, response, async () => {
 	const id = request.params.id;
 		try {
 			const profesional = await Profesional.findOne({ where: { id: id } });
@@ -51,12 +50,12 @@ const getProfesionalById = async (request, response) => {
 			console.error("Error: " + error.message);
 			response.status(500).send({ message: error.message });
 		}
-	// 	});
+		});
 };
 
 // Obtener un profesional por DNI
 const getProfesionalByDNI = async (request, response) => {
-	// 	authenticateToken(request, response, async () => {
+		authenticateToken(request, response, async () => {
 		const dni = request.params.dni;
 		try {
 			const profesional = await Profesional.findOne({ where: { dni: dni } });
@@ -83,12 +82,12 @@ const getProfesionalByDNI = async (request, response) => {
 				message: error.message,
 			});
 		}
-	// 	});
+		});
 };
 
 // Actualizar profesionales
 const updateProfesional = async (request, response) => {
-	// 	authenticateToken(request, response, async () => {
+		authenticateToken(request, response, async () => {
 		const id = request.params.id;
 		try {
 			const profesionalUpdate = await Profesional.update(
@@ -108,12 +107,12 @@ const updateProfesional = async (request, response) => {
 			console.error("Error: " + error.message);
 			response.status(500).send({ message: error.message });
 		}
-	// 	});
+		});
 };
 
 // Eliminar un profesional
 const deleteProfesional = async (request, response) => {
-	// 	authenticateToken(request, response, async () => {
+		authenticateToken(request, response, async () => {
 		const id = request.params.id;
 		try {
 			const profesionalDelete = await Profesional.destroy({
@@ -128,12 +127,12 @@ const deleteProfesional = async (request, response) => {
 			console.error("Error: " + error.message);
 			response.status(500).send({ message: error.message });
 		}
-	// 	});
+		});
 };
 
 // Eliminar un profesional
 const patchProfesional = async (request, response) => {
-	// 	authenticateToken(request, response, async () => {
+		authenticateToken(request, response, async () => {
 		const id = request.params.id;
 		const fieldsToUpdate = request.body;
 		try {
@@ -156,7 +155,7 @@ const patchProfesional = async (request, response) => {
 			console.error("Error: " + error.message);
 			response.status(500).send({ message: error.message });
 		}
-	// 	});
+		});
 };
 
 // Exportamos todas las rutas

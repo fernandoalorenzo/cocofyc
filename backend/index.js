@@ -1,12 +1,13 @@
 import express from "express";
 import cors from "cors";
 import multer from "multer";// Middleware para manejar archivos multipart/form-data
-import fs from "fs";
+import fs, { exists } from "fs";
 
 import profesionalesRouter from "./routes/profesionalesRoute.js";
 import establecimientoRouer from "./routes/establecimientosRoute.js";
 import estadosRouter from "./routes/estadosMatriculaRoute.js";
 import usuariosRouter from "./routes/usuariosRoute.js";
+import rolesRouter from "./routes/rolesRoute.js";
 
 import connect from "./config/db.js";
 
@@ -23,6 +24,7 @@ app.use("/api/establecimientos", establecimientoRouer);
 app.use("/api/estados", estadosRouter);
 app.use("/api/usuarios", usuariosRouter);
 app.use("/api/usuarios/login", usuariosRouter);
+app.use("/api/roles", rolesRouter);
 
 // FUNCION PARA RENOMBRAR EL ARCHIVO
 // function saveFile(file) {
@@ -45,8 +47,6 @@ const upload = multer({ storage });
 
 // Ruta para subir una imagen
 app.post("/api/loadimage/", upload.single("file"), (req, res) => {
-	console.log(req.body);
-	console.log(req.file);
 	return res.send("Archivo subido");
 });
 
@@ -68,6 +68,22 @@ app.delete("/api/deleteimage/:filename", (req, res) => {
 			.status(200)
 			.json({ message: "Archivo eliminado correctamente" });
 	});
+});
+
+// Ruta para verificar la existencia de una imagen
+app.get("/api/checkimage/:filename", (req, res) => {
+    const filename = req.params.filename;
+
+	// Verificar si el archivo existe en el sistema de archivos
+	console.log("Ruta para verificar la existencia de una imagen: ", `./../frontend/public/uploads/${filename}`);
+    fs.access(`./../frontend/public/uploads/${filename}`, fs.constants.F_OK, (err) => {
+        if (err) {
+			console.error("El archivo no existe:", err);
+			return res.status(200).json({ exists: false });
+        }
+        console.log("El archivo existe");
+        return res.status(200).json({ exists: true }); // El archivo existe
+    });
 });
 
 // CONEXION A LA BASE DE DATOS

@@ -19,10 +19,6 @@ const UserRegister = () => {
 		try {
 			const url = "http://localhost:5000/api/usuarios/";
 			const method = "POST";
-
-			console.log("formData: ", formData);
-			console.log("url: ", url);
-			console.log("method: ", method);
 			const response = await fetch(url, {
 				method: method,
 				headers: {

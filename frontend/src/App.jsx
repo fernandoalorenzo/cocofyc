@@ -8,6 +8,7 @@ import {
 } from "react-router-dom";
 import AuthHandler from "./utils/AuthHandler.jsx";
 import LoginForm from "./components/users/LoginForm";
+import Perfil from "./components/users/PerfilForm.jsx";
 // import UserRegister from "./components/users/UserRegister";
 // import UserPasswordForm from "./components/users/UserPasswordForm";
 import Footer from "./components/footer/Footer";
@@ -15,6 +16,7 @@ import Home from "./components/home/Home";
 import Header from "./components/header/Header";
 import SideBar from "./components/sidebar/SideBar";
 import Profesionales from "./components/profesionales/profesionales";
+import Roles from "./components/roles/roles";
 
 const Layout = ({ children }) => (
 	<>
@@ -53,6 +55,26 @@ const App = () => {
 							<AuthHandler>
 								<Layout>
 									<Profesionales />
+								</Layout>
+							</AuthHandler>
+						}
+					/>
+					<Route
+						path="/perfil"
+						element={
+							<AuthHandler>
+								<Layout>
+									<Perfil />
+								</Layout>
+							</AuthHandler>
+						}
+					/>
+					<Route
+						path="/roles"
+						element={
+							<AuthHandler>
+								<Layout>
+									<Roles />
 								</Layout>
 							</AuthHandler>
 						}

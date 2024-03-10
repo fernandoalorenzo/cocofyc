@@ -1,4 +1,5 @@
 /* eslint-disable no-unused-vars */
+import { useState, useEffect } from "react";
 import { Link, useNavigate, NavLink } from "react-router-dom";
 import { Logo } from "../logo/logo";
 
@@ -8,11 +9,23 @@ export default function SideBar() {
 	const user = JSON.parse(localStorage.getItem("user"));
 	const userName = user ? user.nombre : null;
 
+	const defaultAvatar = "./../../assets/img/noimage.png";
+	const [userAvatar, setUserAvatar] = useState(""); // Estado para almacenar el avatar del usuario
+
 	const handleLogout = () => {
 		localStorage.removeItem("user");
 		localStorage.removeItem("token");
 		navigate("/login");
 	};
+
+	// Lógica para cargar el avatar del usuario desde el localStorage al cargar la página
+	useEffect(() => {
+		const userString = localStorage.getItem("user");
+		if (userString) {
+			const user = JSON.parse(userString);
+			setUserAvatar(user.avatar);
+		}
+	}, []);
 
 	return (
 		<>
@@ -31,13 +44,11 @@ export default function SideBar() {
 					<div className="user-panel mt-3 pb-3 mb-3 d-flex align-items-center justify-content-between">
 						<div className="image">
 							<img
-								src="dist/img/user2-160x160.jpg"
+								src="./src/assets/img/default_user.png"
 								className="img-circle elevation-2"
 								alt="Avatar"
 							/>
-							<a className="ms-3">
-								{userName}
-							</a>
+							<a className="ms-3">{userName}</a>
 						</div>
 						<div className="info">
 							<div className="d-flex align-items-center">
@@ -46,16 +57,14 @@ export default function SideBar() {
 										className="fa-solid fa-user text-white"
 										style={{ cursor: "pointer" }}
 										title="Perfil"
-									>
-									</i>
+										onClick={() => navigate("/perfil")}></i>
 								</div>
 								<div className="col-auto p-0">
 									<i
 										className="fa-solid fa-power-off text-white"
 										style={{ cursor: "pointer" }}
 										title="Logout"
-										onClick={handleLogout}>
-									</i>
+										onClick={handleLogout}></i>
 								</div>
 							</div>
 						</div>
@@ -119,6 +128,15 @@ export default function SideBar() {
 									activeclassname="active">
 									<i className="nav-icon fa-solid fa-user-tie" />
 									<p>Profesionales</p>
+								</NavLink>
+							</li>
+							<li className="nav-item">
+								<NavLink
+									to="/roles"
+									className="nav-link"
+									activeclassname="active">
+									<i className="nav-icon fa-solid fa-people-line" />
+									<p>Roles</p>
 								</NavLink>
 							</li>
 							<li className="nav-item">

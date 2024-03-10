@@ -162,6 +162,28 @@ const ProfesionalesModal = ({
 			return;
 		}
 
+		// Verificar si el archivo es una imagen
+		const acceptedImageTypes = ["image/jpeg", "image/png", "image/gif"]; // Agrega los tipos MIME de las imágenes permitidas
+		if (!acceptedImageTypes.includes(selectedFile.type)) {
+			Swal.fire({
+				icon: "error",
+				title: "Tipo de archivo incorrecto",
+				text: "Por favor, selecciona un archivo de imagen válido (JPEG, PNG o GIF).",
+			});
+			return;
+		}
+
+		// Verificar el tamaño del archivo (1MB = 1048576 bytes)
+		const maxSize = 1048576; // Tamaño máximo permitido en bytes
+		if (selectedFile.size > maxSize) {
+			Swal.fire({
+				icon: "error",
+				title: "Tamaño de archivo excedido",
+				text: "El tamaño del archivo seleccionado supera el límite de 1MB.",
+			});
+			return;
+		}
+
 		inputValues.imagen =
 			"img_profesional_" +
 			inputValues.dni +
@@ -253,17 +275,6 @@ const ProfesionalesModal = ({
 
 	// FUNCION PARA SUBIR LA IMAGEN
 	const handleUpload = async () => {
-		// if (!file) {
-		// 	// Verificar si hay un archivo seleccionado
-		// 	Swal.fire({
-		// 		icon: "error",
-		// 		title: "Oops...",
-		// 		text: "No hay una imagen para subir",
-		// 		confirmButtonText: "Ok",
-		// 	});
-		// 	return false;
-		// }
-
 		const formFile = new FormData();
 		formFile.append("file", file);
 
@@ -308,29 +319,6 @@ const ProfesionalesModal = ({
 		// Subir la imagen
 
 		const imagenSubida = await handleUpload();
-
-		// if (imagenSubida) {
-		// 	// Si la imagen se subió correctamente, actualizar inputValues.imagen a true
-		// 	inputValues.imagen = imagenSubida;
-		// } else {
-		// 	if (inputValues.imagen) {
-		// 		Swal.fire({
-		// 			title: "¿Estás seguro?",
-		// 			text: "Esta acción no se podrá deshacer",
-		// 			icon: "warning",
-		// 			showConfirmButton: true,
-		// 			confirmButtonColor: "#3085d6",
-		// 			cancelButtonColor: "#d33",
-		// 			confirmButtonText: "Sí, eliminar",
-		// 			showCancelButton: true,
-		// 			cancelButtonText: "Cancelar",
-		// 		}).then((result) => {
-		// 			if (result.isConfirmed) {
-		// 				inputValues.imagen = ""; // Reiniciamos el estado del input de imagen
-		// 			}
-		// 		});
-		// 	}
-		// }
 
 		// Crear una copia del formData con los valores transformados
 		const formDataToSend = {
@@ -421,7 +409,6 @@ const ProfesionalesModal = ({
 		if (!showModal) {
 			setImagePreview(""); // Limpiar la vista previa de la imagen al cerrar el modal
 			setFile(null);
-			// data.imagen = "";
 		}
 	}, [showModal]);
 
@@ -790,6 +777,7 @@ const ProfesionalesModal = ({
 																onChange={
 																	handleImageChange
 																}
+																accept="image/*"
 															/>
 														</div>
 													</>

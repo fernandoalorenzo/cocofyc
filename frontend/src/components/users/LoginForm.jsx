@@ -13,6 +13,8 @@ const LoginForm = () => {
 
 	const [loading, setLoading] = useState(false); // Nuevo estado para indicar carga
 
+	const [showPassword, setShowPassword] = useState(false); // Estado para mostrar u ocultar la contraseña
+
 	const navigate = useNavigate();
 
 	const onInputChange = (event) => {
@@ -31,6 +33,10 @@ const LoginForm = () => {
 		return true;
 	};
 
+	const toggleShowPassword = () => {
+		setShowPassword(!showPassword); // Cambiar el estado de mostrar u ocultar contraseña
+	};
+	
 	const onLogin = async (event) => {
 		event.preventDefault();
 
@@ -114,15 +120,27 @@ const LoginForm = () => {
 						<label htmlFor="password" className="form-label">
 							Contraseña
 						</label>
-						<input
-							type="password"
-							className="form-control"
-							id="password"
-							name="password"
-							value={loginData.password}
-							onChange={onInputChange}
-							required
-						/>
+						<div className="input-group mb-3">
+							<input
+								type={showPassword ? "text" : "password"}
+								className="form-control"
+								id="password"
+								name="password"
+								value={loginData.password}
+								onChange={onInputChange}
+								required
+							/>
+							<i
+								onClick={toggleShowPassword}
+								className={
+									"fa-regular " +
+									(showPassword ? "fa-eye-slash" : "fa-eye") +
+									" input-group-text"
+								}
+								alt={
+									showPassword ? "hidepass" : "viewpass"
+								}></i>
+						</div>
 					</div>
 					{error && <div className="alert alert-danger">{error}</div>}
 					<button

@@ -122,9 +122,6 @@ const ProfesionalesTabla = () => {
 					headers
 				);
 
-				// setData(data.filter((row) => row.id !== id));
-				// setData(data.data);
-			
 				Swal.fire({
 					title: "Eliminado",
 					text: "El registro ha sido eliminado correctamente",
@@ -134,7 +131,6 @@ const ProfesionalesTabla = () => {
 				});
 
 				// Actualizar la tabla llamando a fetchProfesionales
-				
 				setTimeout(() => {
 					fetchProfesionales();
 				}, 2500);
@@ -286,10 +282,6 @@ const ProfesionalesTabla = () => {
 		const value = e.target.value || "";
 		setFilterText(value);
 	};
-
-	// const handleClearFilter = () => {
-	// 	setFilterText("");
-	// };
 
 	const handlePageSizeChange = (e) => {
 		const size = parseInt(e.target.value, 10);
