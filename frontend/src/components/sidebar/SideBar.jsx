@@ -140,6 +140,15 @@ export default function SideBar() {
 								</NavLink>
 							</li>
 							<li className="nav-item">
+								<NavLink
+									to="/usuarios"
+									className="nav-link"
+									activeclassname="active">
+									<i className="nav-icon fa-regular fa-address-book" />
+									<p>Usuarios</p>
+								</NavLink>
+							</li>
+							<li className="nav-item">
 								<a
 									href="pages/widgets.html"
 									className="nav-link">

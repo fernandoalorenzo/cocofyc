@@ -17,6 +17,7 @@ import Header from "./components/header/Header";
 import SideBar from "./components/sidebar/SideBar";
 import Profesionales from "./components/profesionales/profesionales";
 import Roles from "./components/roles/roles";
+import Usuarios from "./components/users/Usuarios.jsx";
 
 const Layout = ({ children }) => (
 	<>
@@ -75,6 +76,16 @@ const App = () => {
 							<AuthHandler>
 								<Layout>
 									<Roles />
+								</Layout>
+							</AuthHandler>
+						}
+					/>
+					<Route
+						path="/usuarios"
+						element={
+							<AuthHandler>
+								<Layout>
+									<Usuarios />
 								</Layout>
 							</AuthHandler>
 						}

@@ -16,7 +16,7 @@ const createUsuario = async (request, response) => {
 				password: hashedPassword,
 			});
 			response.status(201).json({
-				message: "El profesional fue creado exitosamente!",
+				message: "El usuario fue creado exitosamente!",
 				data: usuario,
 			});
 		} catch (error) {
@@ -30,10 +30,9 @@ const createUsuario = async (request, response) => {
 const getUsuarios = async (request, response) => {
 	authenticateToken(request, response, async () => {
 		try {
-			const usuarios = await Profesional.findAll(request.body);
-
+			const usuarios = await Usuario.findAll(request.body);
 			response.status(201).json({
-				message: "El listado de profesionales fue creado exitosamente!",
+				message: "El listado de usuarios fue creado exitosamente!",
 				data: usuarios,
 			});
 		} catch (error) {
@@ -105,7 +104,7 @@ const deleteUsuario = async (request, response) => {
 	authenticateToken(request, response, async () => {
 		try {
 			const { id } = request.params;
-			const result = await Profesional.destroy({
+			const result = await Usuario.destroy({
 				where: { id: id },
 			});
 

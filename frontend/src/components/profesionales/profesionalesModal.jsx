@@ -54,7 +54,7 @@ const ProfesionalesModal = ({
 			[name]: value,
 		});
 	};
-
+handleInputChange;
 	// FORMATO PARA EL NOMBRE
 	// const [nombre, setNombre] = useState("");
 	const handleChangeNombre = (event) => {
@@ -472,7 +472,6 @@ const ProfesionalesModal = ({
 							onClick={closeModalAndResetData}></button>
 					</div>
 					<form onSubmit={handleFormSubmit}>
-						{/* <form> */}
 						<div className="modal-body">
 							<div className="container-fluid">
 								<div className="row">
@@ -704,7 +703,7 @@ const ProfesionalesModal = ({
 														? handleSwitchChange
 														: null
 												}
-												readOnly={
+												disabled={
 													modalMode === "mostrar"
 												}
 											/>

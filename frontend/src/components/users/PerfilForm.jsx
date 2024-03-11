@@ -48,6 +48,27 @@ const Perfil = () => {
 		});
 	};
 
+	const handleRolChange = (e) => {
+		const selectedRoleId = e.target.value;
+		setSelectedRolId(selectedRoleId);
+		if (selectedRoleId) {
+			const selectedRole = roles.find((rol) => rol.id === selectedRoleId);
+			setInputValues((prevState) => ({
+				...prevState,
+				rol: selectedRole.id, // Actualiza inputValues.rol con el ID del rol seleccionado
+			}));
+		} else {
+			setInputValues((prevState) => ({
+				...prevState,
+				rol: "", // Si el valor seleccionado es undefined, establece el ID del rol como una cadena vacía
+			}));
+		}
+	};
+
+	const isRolSelected = () => {
+		return !!selectedRolId; // Devuelve true si selectedRolId no es nulo ni vacío
+	};
+
 	const handleCancel = () => {
 		setInputValues({
 			nombre: "",
@@ -61,6 +82,19 @@ const Perfil = () => {
 	};
 
 	const handleSave = async () => {
+
+		if (!isRolSelected()) {
+			// Si no se ha seleccionado un rol válido, muestra un mensaje de error y no guarda
+			Swal.fire({
+				icon: "error",
+				title: "Error al guardar el registro",
+				text: "Por favor, selecciona un rol antes de guardar.",
+				showConfirmButton: false,
+				timer: 2500,
+			});
+			return; // Salir de la función handleSave si no se ha seleccionado un rol válido
+		}
+		
 		const user = JSON.parse(localStorage.getItem("user"));
 		const endpoint = "http://localhost:5000/api/usuarios/";
 		const direction = user.id;
@@ -84,6 +118,17 @@ const Perfil = () => {
 			if (response) {
 				localStorage.setItem("user", JSON.stringify(body));
 				setUser(body);
+
+				Swal.fire({
+					icon: "success",
+					title: "Operación exitosa!",
+					text: "Registro guardado exitosamente.",
+					showConfirmButton: false,
+					timer: 2500,
+				});
+				setTimeout(() => {
+					navigate("/");
+				}, 2500);
 			}
 		} catch (error) {
 			Swal.fire({
@@ -172,29 +217,16 @@ const Perfil = () => {
 					<div className="row mb-3">
 						<div className="col-3">
 							<label htmlFor="rol">Rol</label>
-							{/* <input
-								type="text"
-								className="form-control"
-								id="rol"
-								name="rol"
-								value={inputValues.rol}
-								onChange={handleChange}
-								required
-							/> */}
 							<select
 								className="form-select"
 								id="rol"
 								name="rol"
 								value={selectedRolId}
-								onChange={(e) => {
-									console.log(e.target.value);
-									setSelectedRolId(e.target.value)
-								}
-								}
+								onChange={handleRolChange}
 								required>
 								<option value="">Selecciona un rol</option>
 								{roles.map((rol) => (
-									<option key={rol.id} value={rol.rol}>
+									<option key={rol.id} value={rol.id}>
 										{rol.rol}
 									</option>
 								))}
