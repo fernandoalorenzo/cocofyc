@@ -185,10 +185,13 @@ const Usuarios = () => {
 								type="checkbox"
 								checked={row.original.activo}
 								onChange={() => false}
+								id={`activo-checkbox-${row.index}`}
 							/>
-							<label className="form-check-label" hidden>
-								{row.original.activo ? "1" : "0"}
-							</label>
+							<input
+								type="hidden"
+								name={`activo-${row.index}`}
+								value={row.original.activo ? "1" : "0"}
+							/>
 						</div>
 					</>
 				),
@@ -212,10 +215,13 @@ const Usuarios = () => {
 								type="checkbox"
 								checked={row.original.administrador}
 								onChange={() => false}
+								id={`administrador-checkbox-${row.index}`}
 							/>
-							<label className="form-check-label" hidden>
-								{row.original.administrador ? "1" : "0"}
-							</label>
+							<input
+								type="hidden"
+								name={`administrador-${row.index}`}
+								value={row.original.administrador ? "1" : "0"}
+							/>
 						</div>
 					</>
 				),
@@ -347,6 +353,7 @@ const Usuarios = () => {
 									<input
 										type="text"
 										className="form-control"
+										name="filterText"
 										placeholder="Filtrar..."
 										value={filterText}
 										onChange={handleFilterChange}
@@ -434,7 +441,7 @@ const Usuarios = () => {
 																	"Administrador"
 																	? "text-center"
 																	: "" ||
-																	cell
+																	  cell
 																			.column
 																			.Header ===
 																			"Acciones"
@@ -464,24 +471,28 @@ const Usuarios = () => {
 										</div>
 										<button
 											className="btn btn-sm btn-outline-primary ms-1"
+											name="first"
 											onClick={() => gotoPage(0)}
 											disabled={!canPreviousPage}>
 											<i className="fa-solid fa-backward-step"></i>
 										</button>{" "}
 										<button
 											className="btn btn-sm btn-outline-primary ms-1"
+											name="previous"
 											onClick={() => previousPage()}
 											disabled={!canPreviousPage}>
 											<i className="fa-solid fa-caret-left"></i>
 										</button>{" "}
 										<button
 											className="btn btn-sm btn-outline-primary ms-1"
+											name="next"
 											onClick={() => nextPage()}
 											disabled={!canNextPage}>
 											<i className="fa-solid fa-caret-right"></i>
 										</button>{" "}
 										<button
 											className="btn btn-sm btn-outline-primary ms-1"
+											name="last"
 											onClick={() =>
 												gotoPage(pageCount - 1)
 											}
@@ -501,6 +512,7 @@ const Usuarios = () => {
 										<input
 											className="form-control form-control-sm"
 											type="number"
+											name="page"
 											defaultValue={pageIndex + 1}
 											onChange={(e) => {
 												const page = e.target.value
@@ -516,6 +528,7 @@ const Usuarios = () => {
 										<select
 											className="form-select form-select-sm w-25"
 											value={selectedPageSize}
+											name="pageSize"
 											onChange={handlePageSizeChange}>
 											{[10, 25, 50, 100].map((size) => (
 												<option key={size} value={size}>

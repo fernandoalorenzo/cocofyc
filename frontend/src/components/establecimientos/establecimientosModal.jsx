@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import apiConnection from "../../../../backend/functions/apiConnection";
 import Swal from "sweetalert2";
+import apiConnection from "../../../../backend/functions/apiConnection";
 import { useForm } from "react-hook-form";
 
 const EstablecimientosModal = ({
@@ -14,7 +14,6 @@ const EstablecimientosModal = ({
 		register,
 		formState: { errors },
 		handleSubmit,
-		getValues,
 		reset,
 		setValue,
 	} = useForm();
@@ -65,8 +64,6 @@ const EstablecimientosModal = ({
 	};
 
 	const onSubmit = async (formData, id) => {
-		// const formData = getValues();
-
 		try {
 			const endpoint = "http://127.0.0.1:5000/api/establecimientos/";
 			const direction = id ? `${id}` : "";
@@ -317,19 +314,25 @@ const EstablecimientosModal = ({
 							style={{
 								display: modalMode !== "mostrar" ? "" : "none",
 							}}>
-							<button
-								type="button"
-								className="btn btn-secondary col-md-2"
-								onClick={closeModal}>
-								<i className="fa-solid fa-ban me-2"></i>
-								Cancelar
-							</button>
-							<button
-								type="submit"
-								className="btn btn-primary col-md-2">
-								<i className="fa-regular fa-floppy-disk me-2"></i>
-								Guardar
-							</button>
+							<div className="row mb-3 justify-content-end">
+								<div className="col-auto">
+									<button
+										type="button"
+										className="btn btn-secondary col-md-2"
+										onClick={closeModal}>
+										<i className="fa-solid fa-ban me-2"></i>
+										Cancelar
+									</button>
+								</div>
+								<div className="col-auto">
+									<button
+										type="submit"
+										className="btn btn-primary col-md-2">
+										<i className="fa-regular fa-floppy-disk me-2"></i>
+										Guardar
+									</button>
+								</div>
+							</div>
 						</div>
 					</form>
 				</div>

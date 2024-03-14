@@ -67,6 +67,7 @@ const updateUsuario = async (request, response) => {
 			const { id } = request.params;
 			const { newPassword, ...updateData } = request.body;
 
+			console.log("request.body: ", request.body);
 			console.log("updateData: ", updateData);
 			console.log("newPassword: ", newPassword);
 
