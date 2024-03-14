@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useTable, useSortBy, usePagination } from "react-table";
+import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import apiConnection from "../../../../backend/functions/apiConnection";
 import ProfesionalesModal from "./profesionalesModal";
@@ -192,13 +193,10 @@ const ProfesionalesTabla = () => {
 								type="checkbox"
 								checked={row.original.activo}
 								onChange={() => false}
-								id={`activo-checkbox-${row.index}`}
 							/>
-							<input
-								type="hidden"
-								name={`activo-${row.index}`}
-								value={row.original.activo ? "1" : "0"}
-							/>
+							<label className="form-check-label" hidden>
+								{row.original.activo ? "1" : "0"}
+							</label>
 						</div>
 					</>
 				),
@@ -322,7 +320,6 @@ const ProfesionalesTabla = () => {
 									<input
 										type="text"
 										className="form-control"
-										name="filterText"
 										placeholder="Filtrar..."
 										value={filterText}
 										onChange={handleFilterChange}
@@ -450,28 +447,24 @@ const ProfesionalesTabla = () => {
 										</div>
 										<button
 											className="btn btn-sm btn-outline-primary ms-1"
-											name="first"
 											onClick={() => gotoPage(0)}
 											disabled={!canPreviousPage}>
 											<i className="fa-solid fa-backward-step"></i>
 										</button>{" "}
 										<button
 											className="btn btn-sm btn-outline-primary ms-1"
-											name="previous"
 											onClick={() => previousPage()}
 											disabled={!canPreviousPage}>
 											<i className="fa-solid fa-caret-left"></i>
 										</button>{" "}
 										<button
 											className="btn btn-sm btn-outline-primary ms-1"
-											name="next"
 											onClick={() => nextPage()}
 											disabled={!canNextPage}>
 											<i className="fa-solid fa-caret-right"></i>
 										</button>{" "}
 										<button
 											className="btn btn-sm btn-outline-primary ms-1"
-											name="last"
 											onClick={() =>
 												gotoPage(pageCount - 1)
 											}
@@ -491,7 +484,6 @@ const ProfesionalesTabla = () => {
 										<input
 											className="form-control form-control-sm"
 											type="number"
-											name="page"
 											defaultValue={pageIndex + 1}
 											onChange={(e) => {
 												const page = e.target.value
@@ -507,7 +499,6 @@ const ProfesionalesTabla = () => {
 										<select
 											className="form-select form-select-sm w-25"
 											value={selectedPageSize}
-											name="pageSize"
 											onChange={handlePageSizeChange}>
 											{[10, 25, 50, 100].map((size) => (
 												<option key={size} value={size}>

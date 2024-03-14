@@ -203,7 +203,7 @@ const EstablecimientosModal = ({
 											className="form-control text-center"
 											id="cuit"
 											readOnly={modalMode === "mostrar"}
-											maxLength={13}
+											maxLength="13"
 											{...register("cuit", {
 												required: true,
 												maxLength: 13,

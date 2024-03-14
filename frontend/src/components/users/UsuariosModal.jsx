@@ -113,8 +113,8 @@ const UsuariosModal = ({
 		}
 	};
 
-	const password1 = watch("password1"); // Obtenemos el valor del campo password1
-	const password2 = watch("password2"); // Obtenemos el valor del campo password2
+	const password1 = watch("password1");
+	const password2 = watch("password2");
 
 	// FUNCION PARA CONTROLAR EL CHECKBOX
 	const handleSwitchChange = (e) => {
@@ -151,10 +151,6 @@ const UsuariosModal = ({
 							aria-label="Close"
 							onClick={closeModal}></button>
 					</div>
-					{/* <form
-						onSubmit={handleSubmit((formData) =>
-							onSubmit(formData, data && data.id ? data.id : null)
-						)}> */}
 					<form onSubmit={handleSubmit(onSubmit)}>
 						<div className="modal-body">
 							<div className="container-fluid">
@@ -168,16 +164,8 @@ const UsuariosModal = ({
 										<input
 											type="text"
 											className="form-control"
-											// className={`form-control ${
-											// 	validationErrors.nombre &&
-											// 	"is-invalid"
-											// }`}
 											id="nombre"
-											// name="nombre"
 											readOnly={modalMode === "mostrar"}
-											// value={formData.nombre}
-											// onChange={handleInputChange}
-											// required
 											{...register("nombre", {
 												required: true,
 											})}
@@ -197,16 +185,8 @@ const UsuariosModal = ({
 										<input
 											type="text"
 											className="form-control"
-											// className={`form-control ${
-											// 	validationErrors.apellido &&
-											// 	"is-invalid"
-											// }`}
 											id="apellido"
-											// name="apellido"
 											readOnly={modalMode === "mostrar"}
-											// value={formData.apellido}
-											// onChange={handleInputChange}
-											// required
 											{...register("apellido", {
 												required: true,
 											})}
@@ -220,26 +200,6 @@ const UsuariosModal = ({
 									</div>
 								</div>
 								<div className="row mb-3">
-									{/* <div className="col-3">
-									<label htmlFor="rol">Rol</label>
-									<select
-										className="form-select"
-										id="rol"
-										name="rol"
-										disabled={modalMode === "mostrar"}
-										value={selectedRolId}
-										onChange={handleRolChange}
-										required>
-										<option value="">
-											Selecciona un rol
-										</option>
-										{roles.map((rol) => (
-											<option key={rol.id} value={rol.id}>
-												{rol.rol}
-											</option>
-										))}
-									</select>
-								</div> */}
 									<div className="col-7">
 										<label
 											htmlFor="email"
@@ -249,17 +209,9 @@ const UsuariosModal = ({
 										<input
 											type="email"
 											className="form-control"
-											// className={`form-control ${
-											// 	validationErrors.email &&
-											// 	"is-invalid"
-											// }`}
 											autoComplete="off"
 											id="email"
-											// name="email"
 											readOnly={modalMode === "mostrar"}
-											// value={formData.email}
-											// onChange={handleInputChange}
-											// required
 											{...register("email", {
 												required: true,
 											})}
@@ -281,14 +233,9 @@ const UsuariosModal = ({
 												type="checkbox"
 												className="form-check-input"
 												id="activo"
-												// name="activo"
-												// value={setFormData.activo}
-												// checked={formData.activo}
-												// onChange={
-												// 	modalMode !== "mostrar"
-												// 		? handleSwitchChange
-												// 		: () => false
-												// }
+												disabled={
+													modalMode === "mostrar"
+												}
 												{...register("activo")}
 											/>
 										</div>
@@ -304,88 +251,96 @@ const UsuariosModal = ({
 												type="checkbox"
 												className="form-check-input"
 												id="administrador"
-												// name="administrador"
-												// value={setFormData.administrador}
-												// checked={formData.administrador}
-												// onChange={
-												// 	modalMode !== "mostrar"
-												// 		? handleSwitchChange
-												// 		: () => false
-												// }
+												disabled={
+													modalMode === "mostrar"
+												}
 												{...register("administrador")}
 											/>
 										</div>
 									</div>
 								</div>
 								{modalMode === "agregar" && (
-									<div className="row mb-3 border border-3 bg-dark border-danger border-rounded rounded-3 p-2 ">
-										<>
-											<div className="col-6">
-												<label
-													htmlFor="password1"
-													className="form-label mb-0">
-													Contraseña
-												</label>
-												<input
-													type="password"
-													className="form-control"
-													id="password1"
-													{...register("password1", {
-														required: true,
-													})}
-												/>
-												{errors.password1?.type ===
-													"required" && (
-													<span className="row text-warning m-1">
-														La CONTRASEÑA es
-														requerida
-													</span>
-												)}
-											</div>
-											<div className="col-6">
-												<label
-													htmlFor="password2"
-													className="form-label mb-0">
-													Confirmar Contraseña
-												</label>
-												<input
-													type="password"
-													className="form-control"
-													id="password2"
-													{...register("password2", {
-														required: true,
-														validate: (value) =>
-															value ===
-																password1 ||
-															"Las contraseñas no coinciden",
-													})}
-												/>
-												{errors.password2?.type ===
-													"required" && (
-													<span className="row text-warning m-1">
-														La CONFIRMACIÓN DE
-														CONTRASEÑA es requerida
-													</span>
-												)}
-												{errors.password2?.type ===
-													"validate" && (
-													<span className="row text-warning m-1">
-														{
-															errors.password2
-																.message
-														}
-													</span>
-												)}
-											</div>
-										</>
-									</div>
+									<>
+										<span className="text-warning">
+											Establecer contraseña
+										</span>
+										<div className="row mb-3 border border-3 bg-dark border-warning border-rounded rounded-3 p-3 m-0">
+											<>
+												<div className="col-6">
+													<label
+														htmlFor="password1"
+														className="form-label mb-0">
+														Contraseña
+													</label>
+													<input
+														type="password"
+														className="form-control"
+														id="password1"
+														{...register(
+															"password1",
+															{
+																required: true,
+															}
+														)}
+													/>
+													{errors.password1?.type ===
+														"required" && (
+														<span className="row text-warning m-1">
+															La CONTRASEÑA es
+															requerida
+														</span>
+													)}
+												</div>
+												<div className="col-6">
+													<label
+														htmlFor="password2"
+														className="form-label mb-0">
+														Confirmar Contraseña
+													</label>
+													<input
+														type="password"
+														className="form-control"
+														id="password2"
+														{...register(
+															"password2",
+															{
+																required: true,
+																validate: (
+																	value
+																) =>
+																	value ===
+																		password1 ||
+																	"Las contraseñas no coinciden",
+															}
+														)}
+													/>
+													{errors.password2?.type ===
+														"required" && (
+														<span className="row text-warning m-1">
+															La CONFIRMACIÓN DE
+															CONTRASEÑA es
+															requerida
+														</span>
+													)}
+													{errors.password2?.type ===
+														"validate" && (
+														<span className="row text-warning m-1">
+															{
+																errors.password2
+																	.message
+															}
+														</span>
+													)}
+												</div>
+											</>
+										</div>
+									</>
 								)}
 							</div>
 						</div>
 						{/* Botones */}
 						<div
 							className="modal-footer bg-dark"
-							// LO MUESTRA SI ESTA EDITANDO O AGREGANDO REGISTROS
 							style={{
 								display: modalMode != "mostrar" ? "" : "none",
 							}}>
@@ -402,9 +357,7 @@ const UsuariosModal = ({
 								<div className="col-auto">
 									<button
 										type="submit"
-										className="btn btn-primary"
-										// onClick={onSubmit}
-									>
+										className="btn btn-primary">
 										<i className="fas fa-save me-1"></i>{" "}
 										Guardar
 									</button>
