@@ -8,7 +8,6 @@ config();
 // Crear un nuevo rol
 const createRol = async (request, response) => {
 	authenticateToken(request, response, async () => {
-		console.log(request.body);
 		try {
 			const rol = await Rol.create({
 				...request.body,

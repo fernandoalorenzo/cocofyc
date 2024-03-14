@@ -10,16 +10,22 @@ const Establecimiento = sequelize.define(
 			primaryKey: true,
 		},
 		establecimiento: {
-			type: DataTypes.STRING,
+			type: DataTypes.STRING(100),
 			allowNull: false,
 		},
-		titular: DataTypes.STRING,
-		allowNull: false,
-		telefono: DataTypes.STRING,
-		email: DataTypes.STRING,
-		cuit: DataTypes.STRING,
-		domicilio: DataTypes.STRING,
-		localidad: DataTypes.STRING,
+		titular: {
+			type: DataTypes.STRING(50),
+			allowNull: false,
+		},
+		cuit: {
+			type: DataTypes.STRING(13),
+			allowNull: false,
+			defaultValue: null,
+		},
+		telefono: { type: DataTypes.STRING(30), allowNull: false },
+		email: { type: DataTypes.STRING(255), allowNull: false },
+		domicilio: DataTypes.STRING(60),
+		localidad: DataTypes.STRING(30),
 	},
 	{
 		timestamps: true,
@@ -27,4 +33,4 @@ const Establecimiento = sequelize.define(
 	}
 );
 
-export default Establecimiento
+export default Establecimiento;

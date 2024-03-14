@@ -14,13 +14,16 @@ const UsuariosModal = ({
 		apellido: "",
 		email: "",
 		password: "",
+		administrador: false,
 		activo: false,
-		rol: "",
+		// rol: "",
 	};
 
 	const [formData, setFormData] = useState(initialState);
-	const [roles, setRoles] = useState([]);
-	const [selectedRolId, setSelectedRolId] = useState("");
+	const [validationErrors, setValidationErrors] = useState({});
+
+	// const [roles, setRoles] = useState([]);
+	// const [selectedRolId, setSelectedRolId] = useState("");
 
 	// DEFINE EL TITULO DEL MODAL
 	let modalTitle = "";
@@ -36,28 +39,60 @@ const UsuariosModal = ({
 	useEffect(() => {
 		if (modalMode === "agregar") {
 			setFormData(initialState);
-			setSelectedRolId("");
+			// setSelectedRolId("");
 		} else if (data) {
 			setFormData(data);
-			setSelectedRolId(data.rol);
+			// setSelectedRolId(data.rol);
 		} else {
 			setFormData(initialState);
 		}
 	}, [modalMode, data]);
 
-	useEffect(() => {
-		fetchRoles();
-	}, []);
+	// useEffect(() => {
+	// 	fetchRoles();
+	// }, []);
 
 	// FUNCION PARA ACTUALIZAR LOS DATOS
 	const handleFormSubmit = async (e) => {
-		if (!isRolSelected()) {
+		// if (!isRolSelected()) {
+		// 	Swal.fire({
+		// 		icon: "error",
+		// 		title: "Error al guardar el registro",
+		// 		text: "Por favor, selecciona un rol antes de guardar.",
+		// 		showConfirmButton: true,
+		// 	});
+		// 	return;
+		// }
+
+		// VALIDAR CAMPOS OBLIGATORIOS
+
+		console.log(formData);
+		
+		if (!formData.nombre || !formData.apellido || !formData.email) {
 			Swal.fire({
 				icon: "error",
 				title: "Error al guardar el registro",
-				text: "Por favor, selecciona un rol antes de guardar.",
+				text: "Por favor, completa todos los campos obligatorios.",
 				showConfirmButton: true,
 			});
+
+			const errors = {};
+			if (!formData.nombre) {
+				errors.nombre = "El nombre es requerido";
+			}
+			if (!formData.apellido) {
+				errors.apellido = "El apellido es requerido";
+			}
+			if (!formData.email) {
+				errors.email = "El email es requerido";
+			}
+
+			// Comprueba si hay errores
+			if (Object.keys(errors).length > 0) {
+				setValidationErrors(errors);
+				return;
+			}
+
 			return;
 		}
 
@@ -117,6 +152,12 @@ const UsuariosModal = ({
 			...formData,
 			[name]: value,
 		});
+
+		// Limpiar errores al cambiar el valor del campo
+		setValidationErrors({
+			...validationErrors,
+			[name]: undefined,
+		});
 	};
 
 	// FUNCION PARA CONTROLAR EL CHECKBOX
@@ -129,53 +170,53 @@ const UsuariosModal = ({
 	};
 
 	// FUNCION PARA CONTROLAR EL SELECT
-	const handleRolChange = (e) => {
-		const selectedRoleId = e.target.value;
-		setSelectedRolId(selectedRoleId);
-		setFormData({
-			...formData,
-			rol: selectedRoleId,
-		});
-	};
+	// const handleRolChange = (e) => {
+	// 	const selectedRoleId = e.target.value;
+	// 	setSelectedRolId(selectedRoleId);
+	// 	setFormData({
+	// 		...formData,
+	// 		rol: selectedRoleId,
+	// 	});
+	// };
 
 	// FUNCION PARA OBTENER LOS ROLES
-	const fetchRoles = async () => {
-		try {
-			const endpoint = "http://127.0.0.1:5000/api/roles";
-			const direction = "";
-			const method = "GET";
-			const body = false;
-			const headers = {
-				"Content-Type": "application/json",
-				Authorization: localStorage.getItem("token"),
-			};
+	// const fetchRoles = async () => {
+	// 	try {
+	// 		const endpoint = "http://127.0.0.1:5000/api/roles";
+	// 		const direction = "";
+	// 		const method = "GET";
+	// 		const body = false;
+	// 		const headers = {
+	// 			"Content-Type": "application/json",
+	// 			Authorization: localStorage.getItem("token"),
+	// 		};
 
-			const response = await apiConnection(
-				endpoint,
-				direction,
-				method,
-				body,
-				headers
-			);
+	// 		const response = await apiConnection(
+	// 			endpoint,
+	// 			direction,
+	// 			method,
+	// 			body,
+	// 			headers
+	// 		);
 
-			setRoles(response.data);
-		} catch (error) {
-			console.error("Error:", error.message);
-		}
-	};
+	// 		setRoles(response.data);
+	// 	} catch (error) {
+	// 		console.error("Error:", error.message);
+	// 	}
+	// };
 
 	// CERRAR MODAL
 	const closeModalAndResetData = () => {
 		setFormData(initialState);
 		closeModal();
-		setSelectedRolId("");
+		// setSelectedRolId("");
 		fetchUsuarios();
 	};
 
-	// FUNCION DE VALIDACION DE ROL SELECCIONADO
-	const isRolSelected = () => {
-		return !!selectedRolId; // Devuelve true si selectedRolId no es nulo ni vacío
-	};
+	// // FUNCION DE VALIDACION DE ROL SELECCIONADO
+	// const isRolSelected = () => {
+	// 	return !!selectedRolId; // Devuelve true si selectedRolId no es nulo ni vacío
+	// };
 
 	return (
 		<div
@@ -205,7 +246,11 @@ const UsuariosModal = ({
 									<label htmlFor="nombre">Nombre</label>
 									<input
 										type="text"
-										className="form-control"
+										// className="form-control"
+										className={`form-control ${
+											validationErrors.nombre &&
+											"is-invalid"
+										}`}
 										id="nombre"
 										name="nombre"
 										readOnly={modalMode === "mostrar"}
@@ -218,7 +263,11 @@ const UsuariosModal = ({
 									<label htmlFor="apellido">Apellido</label>
 									<input
 										type="text"
-										className="form-control"
+										// className="form-control"
+										className={`form-control ${
+											validationErrors.apellido &&
+											"is-invalid"
+										}`}
 										id="apellido"
 										name="apellido"
 										readOnly={modalMode === "mostrar"}
@@ -229,7 +278,7 @@ const UsuariosModal = ({
 								</div>
 							</div>
 							<div className="row mb-3">
-								<div className="col-3">
+								{/* <div className="col-3">
 									<label htmlFor="rol">Rol</label>
 									<select
 										className="form-select"
@@ -248,12 +297,16 @@ const UsuariosModal = ({
 											</option>
 										))}
 									</select>
-								</div>
+								</div> */}
 								<div className="col-7">
 									<label htmlFor="email">Email</label>
 									<input
 										type="email"
-										className="form-control"
+										// className="form-control"
+										className={`form-control ${
+											validationErrors.email &&
+											"is-invalid"
+										}`}
 										id="email"
 										name="email"
 										readOnly={modalMode === "mostrar"}
@@ -276,6 +329,28 @@ const UsuariosModal = ({
 											name="activo"
 											value={setFormData.activo}
 											checked={formData.activo}
+											onChange={
+												modalMode !== "mostrar"
+													? handleSwitchChange
+													: () => false
+											}
+										/>
+									</div>
+								</div>
+								<div className="col-2 text-center">
+									<label
+										htmlFor="administrador"
+										className="form-label mb-0">
+										Administrador
+									</label>
+									<div className="form-switch">
+										<input
+											type="checkbox"
+											className="form-check-input"
+											id="administrador"
+											name="administrador"
+											value={setFormData.administrador}
+											checked={formData.administrador}
 											onChange={
 												modalMode !== "mostrar"
 													? handleSwitchChange

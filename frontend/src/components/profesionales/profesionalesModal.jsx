@@ -54,7 +54,7 @@ const ProfesionalesModal = ({
 			[name]: value,
 		});
 	};
-handleInputChange;
+	handleInputChange;
 	// FORMATO PARA EL NOMBRE
 	// const [nombre, setNombre] = useState("");
 	const handleChangeNombre = (event) => {
@@ -78,21 +78,25 @@ handleInputChange;
 		});
 	};
 
-	// FORMATO PARA EL CUIT
-	// const [cuit, setCuit] = useState("");
-	const handleChangeCuit = (event) => {
-		let value = event.target.value.replace(/\D/g, "");
-		value = value.slice(0, 11);
-		if (value.length >= 2) {
-			value = value.slice(0, 2) + "-" + value.slice(2);
+	// Manejador de cambios para el campo CUIT
+	const handleCUITChange = (e) => {
+		const value = e.target.value;
+		// Eliminar cualquier caracter que no sea un número
+		const newValue = value.replace(/[^\d]/g, "");
+		// Aplicar formato 99-99999999-9
+		let formattedValue = "";
+		if (newValue.length <= 2) {
+			formattedValue = newValue;
+		} else if (newValue.length <= 10) {
+			formattedValue = `${newValue.slice(0, 2)}-${newValue.slice(2)}`;
+		} else {
+			formattedValue = `${newValue.slice(0, 2)}-${newValue.slice(
+				2,
+				10
+			)}-${newValue.slice(10, 11)}`;
 		}
-		if (value.length >= 11) {
-			value = value.slice(0, 11) + "-" + value.slice(11);
-		}
-		setFormData({
-			...formData,
-			cuit: value,
-		});
+		// Actualizar el estado con el valor formateado
+		setInputValues({ ...inputValues, cuit: formattedValue });
 	};
 
 	// FUNCION PARA CONTROLAR EL CHECKBOX
@@ -313,19 +317,18 @@ handleInputChange;
 		e.preventDefault();
 
 		// Remover el guion del CUIT y los puntos del DNI
-		const cuitSinGuion = inputValues.cuit.replace(/-/g, "");
-		const dniSinPuntos = inputValues.dni.replace(/\./g, "");
+		// const cuitSinGuion = inputValues.cuit.replace(/-/g, "");
+		// const dniSinPuntos = inputValues.dni.replace(/\./g, "");
 
 		// Subir la imagen
-
 		const imagenSubida = await handleUpload();
 
 		// Crear una copia del formData con los valores transformados
-		const formDataToSend = {
-			...inputValues,
-			cuit: cuitSinGuion,
-			dni: dniSinPuntos,
-		};
+		// const formDataToSend = {
+		// 	...inputValues,
+		// 	cuit: cuitSinGuion,
+		// 	dni: dniSinPuntos,
+		// };
 
 		try {
 			if (modalMode === "agregar") {
@@ -352,7 +355,7 @@ handleInputChange;
 			const endpoint = "http://127.0.0.1:5000/api/profesionales/";
 			const direction = data ? `${data.id}` : ""; // Si hay data, es una actualización, de lo contrario, es una creación
 			const method = data ? "PUT" : "POST"; // Método dependiendo de si es una actualización o una creación
-			const body = formDataToSend;
+			const body = inputValues;
 
 			const headers = {
 				"Content-Type": "application/json",
@@ -524,8 +527,10 @@ handleInputChange;
 											id="cuit"
 											name="cuit"
 											value={inputValues.cuit}
+											onChange={handleCUITChange}
+											maxLength="13"
 											readOnly={modalMode === "mostrar"}
-											onChange={handleChangeCuit}
+											required
 										/>
 									</div>
 								</div>

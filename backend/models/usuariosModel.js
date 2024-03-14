@@ -15,6 +15,11 @@ const Usuario = sequelize.define(
 		apellido: { type: DataTypes.STRING(25), allowNull: false },
 		rol: { type: DataTypes.STRING(36), allowNull: false },
 		avatar: DataTypes.STRING(60),
+		administrador: {
+			type: DataTypes.BOOLEAN,
+			allowNull: false,
+			defaultValue: false,
+		},
 		activo: {
 			type: DataTypes.BOOLEAN,
 			allowNull: false,

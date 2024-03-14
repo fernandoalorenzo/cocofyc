@@ -11,7 +11,7 @@ const Profesional = sequelize.define(
 		},
 		nombre: { type: DataTypes.STRING(50), allowNull: false },
 		dni: { type: DataTypes.STRING(8), allowNull: false, unique: true },
-		cuit: DataTypes.STRING(11),
+		cuit: DataTypes.STRING(13),
 		telefono: DataTypes.STRING(30),
 		email: DataTypes.STRING(50),
 		matricula: { type: DataTypes.STRING(10), allowNull: false },

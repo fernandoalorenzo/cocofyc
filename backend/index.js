@@ -4,7 +4,7 @@ import multer from "multer";// Middleware para manejar archivos multipart/form-d
 import fs, { exists } from "fs";
 
 import profesionalesRouter from "./routes/profesionalesRoute.js";
-import establecimientoRouer from "./routes/establecimientosRoute.js";
+import establecimientosRouter from "./routes/establecimientosRoute.js";
 import estadosRouter from "./routes/estadosMatriculaRoute.js";
 import usuariosRouter from "./routes/usuariosRoute.js";
 import rolesRouter from "./routes/rolesRoute.js";
@@ -20,7 +20,7 @@ app.use(cors());
 
 // RUTAS
 app.use("/api/profesionales", profesionalesRouter);
-app.use("/api/establecimientos", establecimientoRouer);
+app.use("/api/establecimientos", establecimientosRouter);
 app.use("/api/estados", estadosRouter);
 app.use("/api/usuarios", usuariosRouter);
 app.use("/api/usuarios/login", usuariosRouter);

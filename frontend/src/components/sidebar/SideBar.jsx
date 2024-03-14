@@ -8,6 +8,8 @@ export default function SideBar() {
 
 	const user = JSON.parse(localStorage.getItem("user"));
 	const userName = user ? user.nombre : null;
+	const isAdmin = user ? user.administrador : false;
+
 
 	const defaultAvatar = "./../../assets/img/noimage.png";
 	const [userAvatar, setUserAvatar] = useState(""); // Estado para almacenar el avatar del usuario
@@ -19,13 +21,13 @@ export default function SideBar() {
 	};
 
 	// Lógica para cargar el avatar del usuario desde el localStorage al cargar la página
-	useEffect(() => {
-		const userString = localStorage.getItem("user");
-		if (userString) {
-			const user = JSON.parse(userString);
-			setUserAvatar(user.avatar);
-		}
-	}, []);
+	// useEffect(() => {
+	// 	const userString = localStorage.getItem("user");
+	// 	if (userString) {
+	// 		const user = JSON.parse(userString);
+	// 		setUserAvatar(user.avatar);
+	// 	}
+	// }, []);
 
 	return (
 		<>
@@ -42,7 +44,7 @@ export default function SideBar() {
 				<div className="sidebar">
 					{/* Sidebar user panel (optional) */}
 					<div className="user-panel mt-3 pb-3 mb-3 d-flex align-items-center justify-content-between">
-						<div className="image">
+						<div className="image left">
 							<img
 								src="./src/assets/img/default_user.png"
 								className="img-circle elevation-2"
@@ -51,7 +53,7 @@ export default function SideBar() {
 							<a className="ms-3">{userName}</a>
 						</div>
 						<div className="info">
-							<div className="d-flex align-items-center">
+							<div className="right d-flex align-items-center">
 								<div className="col-auto">
 									<i
 										className="fa-solid fa-user text-white"
@@ -132,22 +134,33 @@ export default function SideBar() {
 							</li>
 							<li className="nav-item">
 								<NavLink
+									to="/establecimientos"
+									className="nav-link"
+									activeclassname="active">
+									<i className="nav-icon fa-solid fa-spa" />
+									<p>Establecimientos</p>
+								</NavLink>
+							</li>
+							{/* <li className="nav-item">
+								<NavLink
 									to="/roles"
 									className="nav-link"
 									activeclassname="active">
 									<i className="nav-icon fa-solid fa-people-line" />
 									<p>Roles</p>
 								</NavLink>
-							</li>
-							<li className="nav-item">
-								<NavLink
-									to="/usuarios"
-									className="nav-link"
-									activeclassname="active">
-									<i className="nav-icon fa-regular fa-address-book" />
-									<p>Usuarios</p>
-								</NavLink>
-							</li>
+							</li> */}
+							{isAdmin && (
+								<li className="nav-item">
+									<NavLink
+										to="/usuarios"
+										className="nav-link"
+										activeclassname="active">
+										<i className="nav-icon fa-regular fa-address-book" />
+										<p>Usuarios</p>
+									</NavLink>
+								</li>
+							)}
 							<li className="nav-item">
 								<a
 									href="pages/widgets.html"

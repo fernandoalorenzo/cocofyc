@@ -127,9 +127,7 @@ const deleteUsuario = async (request, response) => {
 const loginUsuario = async (req, res) => {
 	const secret = process.env.SECRET;
 	try {
-		const { email, password, id, nombre, apellido, rol } = req.body;
-
-		// const { email, password } = req.body;
+		const { email, password } = req.body;
 
 		// Verificar si el usuario existe en la base de datos
 		const user = await Usuario.findOne({ where: { email } });
@@ -156,7 +154,8 @@ const loginUsuario = async (req, res) => {
 				nombre: user.nombre,
 				apellido: user.apellido,
 				email: user.email,
-				rol: user.rol,
+				activo: user.activo,
+				administrador: user.administrador,
 			},
 			secret,
 			{
@@ -164,18 +163,18 @@ const loginUsuario = async (req, res) => {
 			}
 		);
 
+		console.log("token: ", token);
+
 		// Devolver el token y la info del usuario logueado
 		res.status(200).json({
 			token,
 			user: {
+				id: user.id,
 				nombre: user.nombre,
 				apellido: user.apellido,
 				email: user.email,
-				password: user.password,
-				rol: user.rol,
-				avatar: user.avatar,
 				activo: user.activo,
-				id: user.id,
+				administrador: user.administrador,
 			},
 		});
 	} catch (error) {

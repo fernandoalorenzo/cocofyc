@@ -9,7 +9,7 @@ import {
 import AuthHandler from "./utils/AuthHandler.jsx";
 import LoginForm from "./components/users/LoginForm";
 import Perfil from "./components/users/PerfilForm.jsx";
-// import UserRegister from "./components/users/UserRegister";
+import UserRegister from "./components/users/UserRegister";
 // import UserPasswordForm from "./components/users/UserPasswordForm";
 import Footer from "./components/footer/Footer";
 import Home from "./components/home/Home";
@@ -18,6 +18,7 @@ import SideBar from "./components/sidebar/SideBar";
 import Profesionales from "./components/profesionales/profesionales";
 import Roles from "./components/roles/roles";
 import Usuarios from "./components/users/Usuarios.jsx";
+import Establecimientos from "./components/establecimientos/establecimientos.jsx";
 
 const Layout = ({ children }) => (
 	<>
@@ -81,6 +82,16 @@ const App = () => {
 						}
 					/>
 					<Route
+						path="/establecimientos"
+						element={
+							<AuthHandler>
+								<Layout>
+									<Establecimientos />
+								</Layout>
+							</AuthHandler>
+						}
+					/>
+					<Route
 						path="/usuarios"
 						element={
 							<AuthHandler>
@@ -90,6 +101,7 @@ const App = () => {
 							</AuthHandler>
 						}
 					/>
+					<Route path="/register" element={<UserRegister />} />
 					<Route path="/login" element={<LoginForm />} />
 				</Routes>
 			</Router>

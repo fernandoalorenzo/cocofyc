@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import backgroundImage from "./../../assets/img/login.jpg";
+import viewImage from "./../../assets/img/view.png";
+import hideImage from "./../../assets/img/hide.png";
 
 const LoginForm = () => {
 	const [loginData, setLoginData] = useState({
@@ -130,16 +132,17 @@ const LoginForm = () => {
 								onChange={onInputChange}
 								required
 							/>
-							<i
+							<img
 								onClick={toggleShowPassword}
-								className={
-									"fa-regular " +
-									(showPassword ? "fa-eye-slash" : "fa-eye") +
-									" input-group-text"
-								}
+								src={showPassword ? hideImage : viewImage}
+								className="input-group-text p-2"
+								style={{ maxWidth: "2.375em", maxHeight: "2.375em" }}
 								alt={
-									showPassword ? "hidepass" : "viewpass"
-								}></i>
+									showPassword
+										? "Ocultar contraseña"
+										: "Mostrar contraseña"
+								}
+							/>
 						</div>
 					</div>
 					{error && <div className="alert alert-danger">{error}</div>}

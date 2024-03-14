@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import apiConnection from "../../../../backend/functions/apiConnection";
+import viewImage from "./../../assets/img/view.png";
+import hideImage from "./../../assets/img/hide.png";
 
 const PasswordModal = ({ showModalPassword, closeModalPassword, usuario }) => {
 	const initialState = {
@@ -11,17 +13,36 @@ const PasswordModal = ({ showModalPassword, closeModalPassword, usuario }) => {
 	const [formData, setFormData] = useState(initialState);
 	const [showPassword1, setShowPassword1] = useState(false); // Estado para mostrar/ocultar contraseña 1
 	const [showPassword2, setShowPassword2] = useState(false); // Estado para mostrar/ocultar contraseña 2
-	const [showPassword, setShowPassword] = useState(false);
+	  const [passwordsMatch, setPasswordsMatch] = useState(true);
+		const [passwordsNotEmpty, setPasswordsNotEmpty] = useState(true);
 
+	// VALIDAR CONTRASEÑAS
+	  useEffect(() => {
+			const checkPasswordsMatch =
+				formData.password1 === formData.password2;
+			setPasswordsMatch(checkPasswordsMatch);
+			const checkPasswordsNotEmpty =
+				formData.password1 !== "" && formData.password2 !== "";
+			setPasswordsNotEmpty(checkPasswordsNotEmpty);
+	  }, [formData.password1, formData.password2]);
+	
 	// FUNCION PARA ACTUALIZAR LOS DATOS
 	const handleFormSubmit = async (e) => {
 		e.preventDefault();
 
+		if (!passwordsMatch || !passwordsNotEmpty) {
+			return;
+		}
+
+		const data = {
+			newPassword: formData.password1,
+		};
+
 		try {
 			const endpoint = "http://127.0.0.1:5000/api/usuarios/";
-			const direction = `${data.id}`;
+			const direction = `${usuario.id}`;
 			const method = "PATCH";
-			const body = formData;
+			const body = data;
 
 			const headers = {
 				"Content-Type": "application/json",
@@ -131,7 +152,7 @@ const PasswordModal = ({ showModalPassword, closeModalPassword, usuario }) => {
 											onChange={handleInputChange}
 											required
 										/>
-										<i
+										{/* <i
 											onClick={toggleShowPassword1}
 											className={
 												"fa-regular " +
@@ -144,7 +165,25 @@ const PasswordModal = ({ showModalPassword, closeModalPassword, usuario }) => {
 												showPassword1
 													? "hidepass"
 													: "viewpass"
-											}></i>
+											}></i> */}
+										<img
+											onClick={toggleShowPassword1}
+											src={
+												showPassword1
+													? hideImage
+													: viewImage
+											}
+											className="input-group-text p-2"
+											style={{
+												maxWidth: "2.375em",
+												maxHeight: "2.375em",
+											}}
+											alt={
+												showPassword1
+													? "Ocultar contraseña"
+													: "Mostrar contraseña"
+											}
+										/>
 									</div>
 								</div>
 							</div>
@@ -167,7 +206,7 @@ const PasswordModal = ({ showModalPassword, closeModalPassword, usuario }) => {
 											onChange={handleInputChange}
 											required
 										/>
-										<i
+										{/* <i
 											onClick={toggleShowPassword2}
 											className={
 												"fa-regular " +
@@ -180,10 +219,47 @@ const PasswordModal = ({ showModalPassword, closeModalPassword, usuario }) => {
 												showPassword2
 													? "hidepass"
 													: "viewpass"
-											}></i>
+											}></i> */}
+										<img
+											onClick={toggleShowPassword2}
+											src={
+												showPassword2
+													? hideImage
+													: viewImage
+											}
+											className="input-group-text p-2"
+											style={{
+												maxWidth: "2.375em",
+												maxHeight: "2.375em",
+											}}
+											alt={
+												showPassword2
+													? "Ocultar contraseña"
+													: "Mostrar contraseña"
+											}
+										/>
 									</div>
 								</div>
 							</div>
+							{!passwordsMatch && (
+								<div className="row mb-3 bg-light border border-5 border-danger rounded-3 p-1">
+									<div className="col">
+										<span style={{ fontSize: "0.9rem" }}>
+											Las contraseñas no coinciden
+										</span>
+									</div>
+								</div>
+							)}
+							{!passwordsNotEmpty && (
+								<div className="row mb-3 bg-light border border-5 border-danger rounded-3 p-1">
+									<div className="col">
+										<span style={{ fontSize: "0.9rem" }}>
+											Ambos campos de contraseña son
+											obligatorios
+										</span>
+									</div>
+								</div>
+							)}
 						</div>
 					</div>
 					{/* Botones */}
@@ -202,7 +278,10 @@ const PasswordModal = ({ showModalPassword, closeModalPassword, usuario }) => {
 								<button
 									type="button"
 									className="btn btn-primary"
-									onClick={handleFormSubmit}>
+									onClick={handleFormSubmit}
+									disabled={
+										!passwordsMatch || !passwordsNotEmpty
+									}>
 									<i className="fas fa-save me-1"></i> Guardar
 								</button>
 							</div>

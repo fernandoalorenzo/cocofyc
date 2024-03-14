@@ -1,24 +1,22 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useTable, useSortBy, usePagination } from "react-table";
-import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import apiConnection from "../../../../backend/functions/apiConnection";
-import UsuariosModal from "./UsuariosModal";
-import UsuariosPasswordModal from "./UsuariosPasswordModal";
+import EstablecimientosModal from "./establecimientosModal";
 
-const Usuarios = () => {
+const EstablecimientosTabla = () => {
 	const [data, setData] = useState([]);
 	const [filterText, setFilterText] = useState("");
 	const [selectedPageSize, setSelectedPageSize] = useState(10);
-	const [showUsuariosModal, setShowUsuariosModal] = useState(false);
-	const [selectedUsuario, setSelectedUsuario] = useState(null);
-	const [modalMode, setModalMode] = useState("");
-	// const [roles, setRoles] = useState([]);
-	const [showPasswordModal, setShowPasswordModal] = useState(false);
+	const [showEstablecimientosModal, setShowEstablecimientosModal] =
+		useState(false);
+	const [selectedEstablecimiento, setSelectedEstablecimiento] =
+		useState(null);
+	const [modalMode, setModalMode] = useState(""); // Definir modalMode como estado
 
-	const fetchUsuarios = async () => {
+	const fetchEstablecimientos = async () => {
 		try {
-			const endpoint = "http://localhost:5000/api/usuarios";
+			const endpoint = "http://localhost:5000/api/establecimientos";
 			const direction = "";
 			const method = "GET";
 			const body = false;
@@ -34,7 +32,6 @@ const Usuarios = () => {
 				body,
 				headers
 			);
-
 			setData(data.data);
 		} catch (error) {
 			console.error("Error:", error.message);
@@ -43,43 +40,8 @@ const Usuarios = () => {
 
 	// OBTENER LISTA DE REGISTROS
 	useEffect(() => {
-		fetchUsuarios();
+		fetchEstablecimientos();
 	}, []);
-
-	// FUNCION PARA ABRIR MODAL PARA CAMBIAR CONTRASEÑA
-	const handlePassword = (usuario) => {
-		setSelectedUsuario(usuario);
-		setShowPasswordModal(true); // Abrir el modal de contraseña
-	};
-
-	// OBTENER LISTA DE ESTADOS DE MATRICULA
-	// const fetchRoles = async () => {
-	// 	try {
-	// 		const endpoint = "http://localhost:5000/api/roles";
-	// 		const direction = "";
-	// 		const method = "GET";
-	// 		const body = false;
-	// 		const headers = {
-	// 			"Content-Type": "application/json",
-	// 			Authorization: localStorage.getItem("token"),
-	// 		};
-
-	// 		const response = await apiConnection(
-	// 			endpoint,
-	// 			direction,
-	// 			method,
-	// 			body,
-	// 			headers
-	// 		);
-	// 		setRoles(response.data);
-	// 	} catch (error) {
-	// 		console.error("Error:", error.message);
-	// 	}
-	// };
-
-	// useEffect(() => {
-	// 	fetchRoles();
-	// }, []);
 
 	const filteredData = useMemo(() => {
 		if (!filterText) return data;
@@ -111,7 +73,7 @@ const Usuarios = () => {
 		// Si el usuario confirma la eliminación
 		if (result.isConfirmed) {
 			try {
-				const endpoint = "http://localhost:5000/api/usuarios/";
+				const endpoint = "http://127.0.0.1:5000/api/establecimientos/";
 				const direction = id;
 				const method = "DELETE";
 				const body = false;
@@ -136,9 +98,9 @@ const Usuarios = () => {
 					timer: 2500,
 				});
 
-				// Actualizar la tabla llamando a fetchUsuarios
+				// Actualizar la tabla llamando a fetchEstablecimientos
 				setTimeout(() => {
-					fetchUsuarios();
+					fetchEstablecimientos();
 				}, 2500);
 			} catch (error) {
 				console.error("Error al eliminar el registro:", error.message);
@@ -155,78 +117,28 @@ const Usuarios = () => {
 	const columns = React.useMemo(
 		() => [
 			{
-				Header: "Nombre",
-				accessor: "nombre",
+				Header: "Establecimiento",
+				accessor: "establecimiento",
 			},
 			{
-				Header: "Apellido",
-				accessor: "apellido",
+				Header: "Titular",
+				accessor: "titular",
+			},
+			{
+				Header: "CUIT",
+				accessor: "cuit",
+			},
+			{
+				Header: "Teléfono",
+				accessor: "telefono",
 			},
 			{
 				Header: "e-Mail",
 				accessor: "email",
 			},
-			// {
-			// 	Header: "Rol",
-			// 	accessor: "rol",
-			// 	Cell: ({ value }) => {
-			// 		const rol = roles.find((rol) => rol.id === value);
-			// 		return rol ? rol.rol : "N/D";
-			// 	},
-			// },
 			{
-				Header: "Activo",
-				accessor: "activo",
-				Cell: ({ row }) => (
-					<>
-						<div className="form-switch">
-							<input
-								className="form-check-input"
-								type="checkbox"
-								checked={row.original.activo}
-								onChange={() => false}
-							/>
-							<label className="form-check-label" hidden>
-								{row.original.activo ? "1" : "0"}
-							</label>
-						</div>
-					</>
-				),
-				sortType: (rowA, rowB, columnId) => {
-					// Convertir los valores a números para que la comparación sea numérica
-					const valueA = rowA.original.activo ? 1 : 0;
-					const valueB = rowB.original.activo ? 1 : 0;
-
-					// Comparar los valores y devolver el resultado
-					return valueA - valueB;
-				},
-			},
-			{
-				Header: "Administrador",
-				accessor: "administrador",
-				Cell: ({ row }) => (
-					<>
-						<div className="form-switch">
-							<input
-								className="form-check-input"
-								type="checkbox"
-								checked={row.original.administrador}
-								onChange={() => false}
-							/>
-							<label className="form-check-label" hidden>
-								{row.original.administrador ? "1" : "0"}
-							</label>
-						</div>
-					</>
-				),
-				sortType: (rowA, rowB, columnId) => {
-					// Convertir los valores a números para que la comparación sea numérica
-					const valueA = rowA.original.administrador ? 1 : 0;
-					const valueB = rowB.original.administrador ? 1 : 0;
-
-					// Comparar los valores y devolver el resultado
-					return valueA - valueB;
-				},
+				Header: "Localidad",
+				accessor: "localidad",
 			},
 			{
 				Header: "Acciones",
@@ -253,19 +165,11 @@ const Usuarios = () => {
 							onClick={() => handleEliminar(row.original.id)}>
 							<i className="fa-regular fa-trash-can"></i> Eliminar
 						</button>
-						<button
-							className="btn btn-secondary mx-2 btn-sm"
-							onClick={() => {
-								handlePassword(row.original);
-							}}>
-							<i className="fa-regular fa-pen-to-square"></i>{" "}
-							Contraseña
-						</button>
 					</div>
 				),
 			},
 		],
-		[Usuarios]
+		[]
 	);
 
 	const {
@@ -290,7 +194,7 @@ const Usuarios = () => {
 			initialState: {
 				pageIndex: 0,
 				pageSize: selectedPageSize,
-				sortBy: [{ id: "nombre", desc: false }],
+				sortBy: [{ id: "establecimiento", desc: false }],
 			},
 			autoResetPage: false,
 			autoResetPageSize: false,
@@ -299,10 +203,10 @@ const Usuarios = () => {
 		usePagination
 	);
 
-	const handleMostrar = (usuario, mode) => {
-		setSelectedUsuario(usuario);
+	const handleMostrar = (establecimiento, mode) => {
+		setSelectedEstablecimiento(establecimiento);
 		setModalMode(mode);
-		setShowUsuariosModal(true);
+		setShowEstablecimientosModal(true);
 	};
 
 	const handleFilterChange = (e) => {
@@ -317,15 +221,16 @@ const Usuarios = () => {
 		updatePageSize(size); // Usar updatePageSize
 	};
 
-	const openUsuariosModal = () => setShowUsuariosModal(true);
+	const openEstablecimientosModal = () => setShowEstablecimientosModal(true);
 
-	const closeUsuariosModal = () => setShowUsuariosModal(false);
+	const closeEstablecimientosModal = () =>
+		setShowEstablecimientosModal(false);
 
 	useEffect(() => {
-		if (!showUsuariosModal) {
-			setSelectedUsuario(null);
+		if (!showEstablecimientosModal) {
+			setSelectedEstablecimiento(null);
 		}
-	}, [showUsuariosModal]);
+	}, [showEstablecimientosModal]);
 
 	return (
 		<>
@@ -334,7 +239,7 @@ const Usuarios = () => {
 					<div className="container-fluid">
 						<div className="row mb-2">
 							<div className="col-sm-6">
-								<h1 className="m-0">Usuarios</h1>
+								<h1 className="m-0">Establecimientos</h1>
 							</div>
 						</div>
 					</div>
@@ -347,6 +252,7 @@ const Usuarios = () => {
 									<input
 										type="text"
 										className="form-control"
+										name="filterText"
 										placeholder="Filtrar..."
 										value={filterText}
 										onChange={handleFilterChange}
@@ -371,7 +277,7 @@ const Usuarios = () => {
 									id="abrirModalAgregar"
 									onClick={() => {
 										setModalMode("agregar");
-										openUsuariosModal();
+										openEstablecimientosModal();
 									}}>
 									<i className="fa-regular fa-square-plus"></i>{" "}
 									Agregar
@@ -392,9 +298,9 @@ const Usuarios = () => {
 														)}
 														className={`${
 															column.Header ===
-																"Activo" ||
+																"CUIT" ||
 															column.Header ===
-																"Administrador" ||
+																"Teléfono" ||
 															column.Header ===
 																"Acciones"
 																? "text-center"
@@ -428,10 +334,10 @@ const Usuarios = () => {
 															className={`${
 																cell.column
 																	.Header ===
-																	"Activo" ||
+																	"CUIT" ||
 																cell.column
 																	.Header ===
-																	"Administrador"
+																	"Teléfono"
 																	? "text-center"
 																	: "" ||
 																	cell
@@ -464,24 +370,28 @@ const Usuarios = () => {
 										</div>
 										<button
 											className="btn btn-sm btn-outline-primary ms-1"
+											name="first"
 											onClick={() => gotoPage(0)}
 											disabled={!canPreviousPage}>
 											<i className="fa-solid fa-backward-step"></i>
 										</button>{" "}
 										<button
 											className="btn btn-sm btn-outline-primary ms-1"
+											name="previous"
 											onClick={() => previousPage()}
 											disabled={!canPreviousPage}>
 											<i className="fa-solid fa-caret-left"></i>
 										</button>{" "}
 										<button
 											className="btn btn-sm btn-outline-primary ms-1"
+											name="next"
 											onClick={() => nextPage()}
 											disabled={!canNextPage}>
 											<i className="fa-solid fa-caret-right"></i>
 										</button>{" "}
 										<button
 											className="btn btn-sm btn-outline-primary ms-1"
+											name="last"
 											onClick={() =>
 												gotoPage(pageCount - 1)
 											}
@@ -501,6 +411,7 @@ const Usuarios = () => {
 										<input
 											className="form-control form-control-sm"
 											type="number"
+											name="page"
 											defaultValue={pageIndex + 1}
 											onChange={(e) => {
 												const page = e.target.value
@@ -516,6 +427,7 @@ const Usuarios = () => {
 										<select
 											className="form-select form-select-sm w-25"
 											value={selectedPageSize}
+											name="pageSize"
 											onChange={handlePageSizeChange}>
 											{[10, 25, 50, 100].map((size) => (
 												<option key={size} value={size}>
@@ -530,20 +442,15 @@ const Usuarios = () => {
 					</section>
 				</div>
 			</div>
-			<UsuariosModal
-				showModal={showUsuariosModal}
-				closeModal={closeUsuariosModal}
-				data={selectedUsuario}
+			<EstablecimientosModal
+				showModal={showEstablecimientosModal}
+				closeModal={closeEstablecimientosModal}
+				data={selectedEstablecimiento}
 				modalMode={modalMode}
-				fetchUsuarios={fetchUsuarios}
-			/>
-			<UsuariosPasswordModal
-				showModalPassword={showPasswordModal}
-				closeModalPassword={() => setShowPasswordModal(false)}
-				usuario={selectedUsuario}
+				fetchEstablecimientos={fetchEstablecimientos}
 			/>
 		</>
 	);
 };
 
-export default Usuarios;
+export default EstablecimientosTabla;

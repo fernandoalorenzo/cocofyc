@@ -27,8 +27,6 @@ const UserRegister = () => {
 				body: JSON.stringify(formData),
 			});
 
-			console.log("response: ", response);
-
 			if (response.ok) {
 				console.log("Usuario registrado exitosamente");
 			} else {
