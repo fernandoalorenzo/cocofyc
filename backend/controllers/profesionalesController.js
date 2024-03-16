@@ -1,20 +1,21 @@
 import Profesional from "../models/profesionalesModel.js";
 import authenticateToken from "../functions/tokenVerify.js";
 
+
 // Crear un nuevo profesional
 const createProfesional = async (request, response) => {
 	authenticateToken(request, response, async () => {
-	try {
-		const nuevoProfesional = await Profesional.create(request.body);
+		try {
+			const nuevoProfesional = await Profesional.create(request.body);
 
-		response.status(201).json({
-			message: "El profesional fue creado exitosamente!",
-			data: nuevoProfesional,
-		});
-	} catch (error) {
-		console.error("Error: " + error.message);
-		response.status(500).send({ message: error.message });
-	}
+			response.status(201).json({
+				message: "El profesional fue creado exitosamente!",
+				data: nuevoProfesional,
+			});
+		} catch (error) {
+			console.error("Error: " + error.message);
+			response.status(500).send({ message: error.message });
+		}
 	});
 };
 

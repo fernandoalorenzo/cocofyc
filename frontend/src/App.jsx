@@ -19,6 +19,7 @@ import Profesionales from "./components/profesionales/profesionales";
 import Roles from "./components/roles/roles";
 import Usuarios from "./components/users/Usuarios.jsx";
 import Establecimientos from "./components/establecimientos/establecimientos.jsx";
+import Prueba from "./components/Prueba.jsx";
 
 const Layout = ({ children }) => (
 	<>
@@ -97,6 +98,16 @@ const App = () => {
 							<AuthHandler>
 								<Layout>
 									<Usuarios />
+								</Layout>
+							</AuthHandler>
+						}
+					/>
+					<Route
+						path="/prueba"
+						element={
+							<AuthHandler>
+								<Layout>
+									<Prueba />
 								</Layout>
 							</AuthHandler>
 						}

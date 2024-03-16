@@ -36,4 +36,4 @@ Establecimiento.belongsToMany(Profesional, {
 	foreignKey: "establecimiento_id",
 });
 
-export default Profesionales_Establecimientos
+export default Profesionales_Establecimientos;

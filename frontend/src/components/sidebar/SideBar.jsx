@@ -11,8 +11,8 @@ export default function SideBar() {
 	const isAdmin = user ? user.administrador : false;
 
 
-	const defaultAvatar = "./../../assets/img/noimage.png";
-	const [userAvatar, setUserAvatar] = useState(""); // Estado para almacenar el avatar del usuario
+	// const defaultAvatar = "./../../assets/img/noimage.png";
+	// const [userAvatar, setUserAvatar] = useState(""); // Estado para almacenar el avatar del usuario
 
 	const handleLogout = () => {
 		localStorage.removeItem("user");

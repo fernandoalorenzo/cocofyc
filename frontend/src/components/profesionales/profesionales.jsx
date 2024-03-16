@@ -3,6 +3,7 @@ import { useTable, useSortBy, usePagination } from "react-table";
 import Swal from "sweetalert2";
 import apiConnection from "../../../../backend/functions/apiConnection";
 import ProfesionalesModal from "./profesionalesModal";
+import EstablecimientosModal from "./profesionalesEstablecimientosModal";
 
 const ProfesionalesTabla = () => {
 	const [data, setData] = useState([]);
@@ -10,8 +11,10 @@ const ProfesionalesTabla = () => {
 	const [selectedPageSize, setSelectedPageSize] = useState(10);
 	const [showProfesionalesModal, setShowProfesionalesModal] = useState(false);
 	const [selectedProfesional, setSelectedProfesional] = useState(null);
-	const [modalMode, setModalMode] = useState(""); // Definir modalMode como estado
+	const [modalMode, setModalMode] = useState("");
 	const [estadosMatriculas, setEstadosMatriculas] = useState([]);
+	const [showEstablecimientosModal, setShowEstablecimientosModal] =	useState(false);
+
 
 	const fetchProfesionales = async () => {
 		try {
@@ -88,7 +91,6 @@ const ProfesionalesTabla = () => {
 	}, [data, filterText]);
 
 	const handleEliminar = async (id) => {
-		
 		const result = await Swal.fire({
 			title: "¿Estás seguro?",
 			text: "Esta acción no se puede deshacer",
@@ -236,6 +238,11 @@ const ProfesionalesTabla = () => {
 							onClick={() => handleEliminar(row.original.id)}>
 							<i className="fa-regular fa-trash-can"></i> Eliminar
 						</button>
+						<button
+							className="btn btn-danger mx-2 btn-sm"
+							onClick={() => mostrarEstablecimientos(row.original)}>
+							<i className="fa-regular fa-trash-can"></i> Establecimientos
+						</button>
 					</div>
 				),
 			},
@@ -280,6 +287,15 @@ const ProfesionalesTabla = () => {
 		setShowProfesionalesModal(true);
 	};
 
+	const mostrarEstablecimientos = (profesional) => {
+		setSelectedProfesional(profesional);
+		setShowEstablecimientosModal(true);
+	};
+
+	const closeEstablecimientosModal = () => {
+		setShowEstablecimientosModal(false);
+	};
+
 	const handleFilterChange = (e) => {
 		const value = e.target.value || "";
 		setFilterText(value);
@@ -301,6 +317,12 @@ const ProfesionalesTabla = () => {
 			setSelectedProfesional(null);
 		}
 	}, [showProfesionalesModal]);
+
+	useEffect(() => {
+		if (!showEstablecimientosModal) {
+			setSelectedProfesional(null);
+		}
+	}, [showEstablecimientosModal]);
 
 	return (
 		<>
@@ -528,6 +550,11 @@ const ProfesionalesTabla = () => {
 				data={selectedProfesional}
 				modalMode={modalMode}
 				fetchProfesionales={fetchProfesionales}
+			/>
+			<EstablecimientosModal
+				showModal={showEstablecimientosModal}
+				closeModal={closeEstablecimientosModal}
+				data={selectedProfesional}
 			/>
 		</>
 	);
