@@ -239,9 +239,11 @@ const ProfesionalesTabla = () => {
 							<i className="fa-regular fa-trash-can"></i> Eliminar
 						</button>
 						<button
-							className="btn btn-danger mx-2 btn-sm"
-							onClick={() => mostrarEstablecimientos(row.original)}>
-							<i className="fa-regular fa-trash-can"></i> Establecimientos
+							className="btn btn-outline-dark bg-secondary mx-2 btn-sm"
+							onClick={() =>
+								mostrarEstablecimientos(row.original)
+							}>
+							<i className="fa-solid fa-spa"></i> Establecimientos
 						</button>
 					</div>
 				),

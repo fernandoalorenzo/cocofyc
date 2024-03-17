@@ -3,6 +3,7 @@ import { useTable, useSortBy, usePagination } from "react-table";
 import Swal from "sweetalert2";
 import apiConnection from "../../../../backend/functions/apiConnection";
 import EstablecimientosModal from "./establecimientosModal";
+import ProfesionalesModal from "./establecimientosProfesionalesModal";
 
 const EstablecimientosTabla = () => {
 	const [data, setData] = useState([]);
@@ -13,6 +14,8 @@ const EstablecimientosTabla = () => {
 	const [selectedEstablecimiento, setSelectedEstablecimiento] =
 		useState(null);
 	const [modalMode, setModalMode] = useState(""); // Definir modalMode como estado
+	const [showProfesionalesModal, setShowProfesionalesModal] =
+		useState(false);
 
 	const fetchEstablecimientos = async () => {
 		try {
@@ -165,6 +168,14 @@ const EstablecimientosTabla = () => {
 							onClick={() => handleEliminar(row.original.id)}>
 							<i className="fa-regular fa-trash-can"></i> Eliminar
 						</button>
+						<button
+							className="btn btn-outline-dark bg-secondary mx-2 btn-sm"
+							onClick={() =>
+								mostrarProfesionales(row.original)
+							}>
+							<i className="fa-solid fa-user-tie"></i>{" "}
+							Profesionales
+						</button>
 					</div>
 				),
 			},
@@ -208,6 +219,15 @@ const EstablecimientosTabla = () => {
 		setModalMode(mode);
 		setShowEstablecimientosModal(true);
 	};
+
+		const mostrarProfesionales = (establecimiento) => {
+			setSelectedEstablecimiento(establecimiento);
+			setShowProfesionalesModal(true);
+		};
+
+		const closeProfesionalesModal = () => {
+			setShowProfesionalesModal(false);
+		};
 
 	const handleFilterChange = (e) => {
 		const value = e.target.value || "";
@@ -340,7 +360,7 @@ const EstablecimientosTabla = () => {
 																	"Teléfono"
 																	? "text-center"
 																	: "" ||
-																	cell
+																	  cell
 																			.column
 																			.Header ===
 																			"Acciones"
@@ -448,6 +468,11 @@ const EstablecimientosTabla = () => {
 				data={selectedEstablecimiento}
 				modalMode={modalMode}
 				fetchEstablecimientos={fetchEstablecimientos}
+			/>
+			<ProfesionalesModal
+				showModal={showProfesionalesModal}
+				closeModal={closeProfesionalesModal}
+				data={selectedEstablecimiento}
 			/>
 		</>
 	);

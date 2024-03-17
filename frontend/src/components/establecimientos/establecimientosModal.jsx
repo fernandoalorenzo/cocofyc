@@ -318,7 +318,7 @@ const EstablecimientosModal = ({
 								<div className="col-auto">
 									<button
 										type="button"
-										className="btn btn-secondary col-md-2"
+										className="btn btn-secondary w-100"
 										onClick={closeModal}>
 										<i className="fa-solid fa-ban me-2"></i>
 										Cancelar
@@ -327,7 +327,7 @@ const EstablecimientosModal = ({
 								<div className="col-auto">
 									<button
 										type="submit"
-										className="btn btn-primary col-md-2">
+										className="btn btn-primary w-100">
 										<i className="fa-regular fa-floppy-disk me-2"></i>
 										Guardar
 									</button>
