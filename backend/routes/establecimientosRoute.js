@@ -6,8 +6,9 @@ import {
 	getEstablecimientos,
 	updateEstablecimiento,
 	getEstablecimientosAsignados,
+	asignarEstablecimiento,
+	desvincularEstablecimiento
 } from "../controllers/establecimientosController.js";
-// import { getEstablecimientosAsignados } from "../controllers/establecimientosAsignadosController.js";
 import authenticateToken from "../functions/tokenVerify.js";
 
 const establecimientosRouter = express.Router();
@@ -25,7 +26,20 @@ establecimientosRouter.delete("/:id", authenticateToken, deleteEstablecimiento);
 // establecimientosRouter.delete("/:id", deleteEstablecimiento);
 
 // Ruta para obtener los establecimientos asignados a un profesional específico
-// establecimientosRouter.get("/asignados/:id", authenticateToken, getEstablecimientosAsignados);
 establecimientosRouter.get("/asignados/:id", getEstablecimientosAsignados);
+
+// Ruta para asignar un establecimiento a un profesional
+establecimientosRouter.post(
+	"/asignar-establecimiento",
+	authenticateToken,
+	asignarEstablecimiento
+);
+
+// Ruta para desvincular un establecimiento de un profesional
+establecimientosRouter.delete(
+	"/desvincular-establecimiento/:profesionalId/:establecimientoId",
+	authenticateToken,
+	desvincularEstablecimiento
+);
 
 export default establecimientosRouter;

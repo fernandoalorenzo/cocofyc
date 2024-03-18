@@ -1,6 +1,8 @@
 import Profesional from "../models/profesionalesModel.js";
+import Profesionales_Establecimientos from "./../models/profesionales_establecimientosModel.js";
 import authenticateToken from "../functions/tokenVerify.js";
-
+import { config } from "dotenv";
+config();
 
 // Crear un nuevo profesional
 const createProfesional = async (request, response) => {
@@ -96,10 +98,6 @@ const updateProfesional = async (request, response) => {
 				{ where: { id: id } }
 			)
 
-			console.log("request body controller:", request.body)
-
-			console.log("Profesional actualizado:", profesionalUpdate)
-
 			response.status(201).json({
 				message: "El profesional fue actualizado exitosamente!",
 				data: profesionalUpdate,
@@ -131,7 +129,7 @@ const deleteProfesional = async (request, response) => {
 		});
 };
 
-// Eliminar un profesional
+// Actualizar un profesional
 const patchProfesional = async (request, response) => {
 		authenticateToken(request, response, async () => {
 		const id = request.params.id;
@@ -159,6 +157,109 @@ const patchProfesional = async (request, response) => {
 		});
 };
 
+const getProfesionalesAsignados = async (request, response) => {
+	authenticateToken(request, response, async () => {
+		try {
+			const { id } = request.params; // ID del establecimiento
+
+			// Buscar los profesionales asignados al profesional en la tabla pivote
+			const asignaciones = await Profesionales_Establecimientos.findAll({
+				where: { establecimiento_id: id },
+			});
+			// Obtener los datos de los profesionales asignados
+			const profesionalesIds = asignaciones.map(
+				(asignacion) => asignacion.profesional_id
+			);
+			const profesionalesAsignados = await Profesional.findAll({
+				where: { id: profesionalesIds },
+			});
+			response.status(200).json(profesionalesAsignados);
+		} catch (error) {
+			console.error(
+				"Error al obtener los profesionales asignados:",
+				error
+			);
+			response.status(500).json({
+				message: "Error al obtener los profesionales asignados",
+			});
+		}
+	});
+};
+
+// Función para asignar un profesional a un establecimiento
+const asignarProfesional = async (request, response) => {
+	authenticateToken(request, response, async () => {
+		try {
+			const { establecimientoId, profesionalId } = request.body;
+
+			// Verificar si el profesional ya está asignado al profesional
+			const asignacionExistente =
+				await Profesionales_Establecimientos.findOne({
+					where: {
+						profesional_id: profesionalId,
+						establecimiento_id: establecimientoId,
+					},
+				});
+
+			if (asignacionExistente) {
+				return response.status(400).json({
+					message:
+						"El profesional ya está asignado al establecimiento.",
+				});
+			}
+
+			// Crear la nueva asignación
+			await Profesionales_Establecimientos.create({
+				profesional_id: profesionalId,
+				establecimiento_id: establecimientoId,
+			});
+
+			response
+				.status(201)
+				.json({ message: "Profesional asignado correctamente." });
+		} catch (error) {
+			console.error("Error al asignar profesional:", error);
+			response
+				.status(500)
+				.json({ message: "Error interno del servidor." });
+		}
+	});
+};
+
+// Función para desvincular un profesional de un profesional
+const desvincularProfesional = async (request, response) => {
+	authenticateToken(request, response, async () => {
+		try {
+			const { profesionalId, establecimientoId } = request.params; // ID del profesional y del profesional pasados en la URL
+
+			// Buscar y eliminar la asignación
+			const asignacion = await Profesionales_Establecimientos.findOne({
+				where: {
+					profesional_id: profesionalId,
+					establecimiento_id: establecimientoId,
+				},
+			});
+
+			if (!asignacion) {
+				return response
+					.status(404)
+					.json({ message: "La asignación no existe." });
+			}
+
+			await asignacion.destroy();
+
+			response.status(200).json({
+				message: "Profesional desvinculado correctamente.",
+			});
+		} catch (error) {
+			console.error("Error al desvincular profesional:", error);
+			response
+				.status(500)
+				.json({ message: "Error interno del servidor." });
+		}
+	});
+};
+
 // Exportamos todas las rutas
 export {
 	createProfesional,
@@ -168,4 +269,7 @@ export {
 	updateProfesional,
 	deleteProfesional,
 	patchProfesional,
+	getProfesionalesAsignados,
+	asignarProfesional,
+	desvincularProfesional,
 };

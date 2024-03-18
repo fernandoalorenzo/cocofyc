@@ -1,20 +1,20 @@
 import React, { useState, useEffect, useMemo } from "react";
 import apiConnection from "../../../../backend/functions/apiConnection";
 
-const EstablecimientosModal = ({ showModal, closeModal, data }) => {
-	const [establecimientos, setEstablecimientos] = useState([]);
-	const [selectedEstablecimiento, setSelectedEstablecimiento] = useState("");
-	const [establecimientosAsignados, setEstablecimientosAsignados] = useState(
+const ProfesionalesModal = ({ showModal, closeModal, data }) => {
+	const [profesionales, setProfesionales] = useState([]);
+	const [selectedProfesional, setSelectedProfesional] = useState("");
+	const [profesionalesAsignados, setProfesionalesAsignados] = useState(
 		[]
 	);
-	const [establecimientosDisponibles, setEstablecimientosDisponibles] =
+	const [profesionalesDisponibles, setProfesionalesDisponibles] =
 		useState([]);
 	
-	const obtenerEstablecimientosAsignados = async (profesionalId) => {
+	const obtenerProfesionalesAsignados = async (establecimientoId) => {
 		try {
 			const endpoint =
-				"http://localhost:5000/api/establecimientos/asignados/";
-			const direction = `${profesionalId}`;
+				"http://localhost:5000/api/profesionales/asignados/";
+			const direction = `${establecimientoId}`;
 			const method = "GET";
 			const body = false;
 			const headers = {
@@ -31,28 +31,28 @@ const EstablecimientosModal = ({ showModal, closeModal, data }) => {
 			);
 
 			if (response) {
-				// Ordenar los establecimientos asignados alfabéticamente por nombre antes de establecer el estado
-				const sortedEstablecimientosAsignados = response.sort((a, b) =>
-					a.establecimiento.localeCompare(b.establecimiento)
+				// Ordenar los profesionales asignados alfabéticamente por nombre antes de establecer el estado
+				const sortedProfesionalesAsignados = response.sort((a, b) =>
+					a.nombre.localeCompare(b.nombre)
 				);
-				setEstablecimientosAsignados(sortedEstablecimientosAsignados);
+				setProfesionalesAsignados(sortedProfesionalesAsignados);
 			} else {
 				console.error(
-					"Error al obtener establecimientos asignados:",
+					"Error al obtener profesionales asignados:",
 					response.statusText
 				);
 			}
 		} catch (error) {
 			console.error(
-				"Error al obtener establecimientos asignados:",
+				"Error al obtener profesionales asignados:",
 				error
 			);
 		}
 	};
 
-	const fetchEstablecimientos = async () => {
+	const fetchProfesionales = async () => {
 		try {
-			const endpoint = "http://localhost:5000/api/establecimientos/";
+			const endpoint = "http://localhost:5000/api/profesionales/";
 			const direction = "";
 			const method = "GET";
 			const body = false;
@@ -69,51 +69,50 @@ const EstablecimientosModal = ({ showModal, closeModal, data }) => {
 				headers
 			);
 
-
 			if (response && response.data) {
-				// Ordenar los establecimientos alfabéticamente por nombre antes de establecer el estado
-				const sortedEstablecimientos = response.data.sort((a, b) =>
-					a.establecimiento.localeCompare(b.establecimiento)
+				// Ordenar los profesionales alfabéticamente por nombre antes de establecer el estado
+				const sortedProfesionales = response.data.sort((a, b) =>
+					a.nombre.localeCompare(b.nombre)
 				);
-				setEstablecimientos(sortedEstablecimientos);
+				setProfesionales(sortedProfesionales);
 			} else {
 				console.error(
-					"Error fetching establecimientos: ",
+					"Error fetching profesionales: ",
 					response.statusText
 				);
 			}
 		} catch (error) {
-			console.error("Error fetching establecimientos: ", error);
+			console.error("Error fetching profesionales: ", error);
 		}
 	};
 
 	useEffect(() => {
 		if (data) {
-			fetchEstablecimientos();
-			obtenerEstablecimientosAsignados(data.id);
+			fetchProfesionales();
+			obtenerProfesionalesAsignados(data.id);
 		}
 	}, [data]);
 
 	useEffect(() => {
-		// Filtrar los establecimientos para excluir aquellos ya asignados
-		const disponibles = establecimientos.filter(
-			(est) =>
-				!establecimientosAsignados.some(
-					(asignado) => asignado.id === est.id
+		// Filtrar los profesionales para excluir aquellos ya asignados
+		const disponibles = profesionales.filter(
+			(prof) =>
+				!profesionalesAsignados.some(
+					(asignado) => asignado.id === prof.id
 				)
 		);
-		setEstablecimientosDisponibles(disponibles);
-	}, [establecimientos, establecimientosAsignados]);
+		setProfesionalesDisponibles(disponibles);
+	}, [profesionales, profesionalesAsignados]);
 
-	const handleEstablecimientoChange = (e) => {
-		setSelectedEstablecimiento(e.target.value);
+	const handleProfesionalChange = (e) => {
+		setSelectedProfesional(e.target.value);
 	};
 
 	const handleAsignarClick = async () => {
-		if (selectedEstablecimiento) {
+		if (selectedProfesional) {
 			try {
 				const endpoint =
-					"http://localhost:5000/api/establecimientos/asignar-establecimiento";
+					"http://localhost:5000/api/profesionales/asignar-profesional";
 				const direction = "";
 				const method = "POST";
 				const headers = {
@@ -121,8 +120,8 @@ const EstablecimientosModal = ({ showModal, closeModal, data }) => {
 					Authorization: localStorage.getItem("token"),
 				};
 				const body = {
-					profesionalId: data.id,
-					establecimientoId: selectedEstablecimiento,
+					establecimientoId: data.id,
+					profesionalId: selectedProfesional,
 				};
 
 				const response = await apiConnection(
@@ -134,25 +133,25 @@ const EstablecimientosModal = ({ showModal, closeModal, data }) => {
 				);
 
 				if (response) {
-					obtenerEstablecimientosAsignados(data.id);
-					setSelectedEstablecimiento(""); // Limpiamos el select
+					obtenerProfesionalesAsignados(data.id);
+					setSelectedProfesional("");
 				} else {
 					console.error(
-						"Error al asignar establecimiento:",
+						"Error al asignar profesional:",
 						response.statusText
 					);
 				}
 			} catch (error) {
-				console.error("Error al asignar establecimiento:", error);
+				console.error("Error al asignar profesional:", error);
 			}
 		}
 	};
 
-	const handleDesvincularClick = async (establecimientoId) => {
+	const handleDesvincularClick = async (profesionalId) => {
 		try {
 			const endpoint =
-				"http://localhost:5000/api/establecimientos/desvincular-establecimiento/";
-			const direction = `${data.id}/${establecimientoId}`;
+				"http://localhost:5000/api/profesionales/desvincular-profesional/";
+			const direction = `${profesionalId}/${data.id}`;
 			const method = "DELETE";
 			const headers = {
 				"Content-Type": "application/json",
@@ -170,11 +169,11 @@ const EstablecimientosModal = ({ showModal, closeModal, data }) => {
 
 			if (response) {
 				// Si la desvinculación fue exitosa, actualizar el estado para reflejar los cambios
-				obtenerEstablecimientosAsignados(data.id);
-				setSelectedEstablecimiento(""); // Limpiamos el select
+				obtenerProfesionalesAsignados(data.id);
+				setSelectedProfesional(""); // Limpiamos el select
 			} else {
 				// Manejar errores si la desvinculación no fue exitosa
-				console.error("Error al desvincular el establecimiento");
+				console.error("Error al desvincular el profesional");
 			}
 		} catch (error) {
 			console.error("Error de red:", error);
@@ -196,7 +195,7 @@ const EstablecimientosModal = ({ showModal, closeModal, data }) => {
 				<div className="modal-content bg-light ">
 					<div className="modal-header bg-primary">
 						<h5 className="modal-title">
-							Asignar establecimientos
+							Asignar profesionales
 							{data && data.nombre ? (
 								<span>
 									{" "}
@@ -220,15 +219,15 @@ const EstablecimientosModal = ({ showModal, closeModal, data }) => {
 							<div className="col-6">
 								<select
 									className="form-select"
-									id="establecimiento"
-									onChange={handleEstablecimientoChange}
-									value={selectedEstablecimiento}>
+									id="profesional"
+									onChange={handleProfesionalChange}
+									value={selectedProfesional}>
 									<option value="">
-										Selecciona un establecimiento
+										Selecciona un profesional
 									</option>
-									{establecimientosDisponibles.map((est) => (
-										<option key={est.id} value={est.id}>
-											{est.establecimiento}
+									{profesionalesDisponibles.map((prof) => (
+										<option key={prof.id} value={prof.id}>
+											{prof.nombre}
 										</option>
 									))}
 								</select>
@@ -253,20 +252,20 @@ const EstablecimientosModal = ({ showModal, closeModal, data }) => {
 									</tr>
 								</thead>
 								<tbody>
-									{establecimientosAsignados.map((est) => (
+									{profesionalesAsignados.map((prof) => (
 										<tr
 											className="align-items-center align-middle"
-											key={est.id}>
-											<td>{est.establecimiento}</td>
-											<td>{est.domicilio}</td>
-											<td>{est.localidad}</td>
+											key={prof.id}>
+											<td>{prof.nombre}</td>
+											<td>{prof.domicilio}</td>
+											<td>{prof.localidad}</td>
 											<td>
 												<button
 													type="button"
 													className="btn btn-danger btn-sm"
 													onClick={() =>
 														handleDesvincularClick(
-															est.id
+															prof.id
 														)
 													}>
 													<i className="fa-solid fa-link-slash"></i>{" "}
@@ -285,4 +284,4 @@ const EstablecimientosModal = ({ showModal, closeModal, data }) => {
 	);
 };
 
-export default EstablecimientosModal;
+export default ProfesionalesModal;

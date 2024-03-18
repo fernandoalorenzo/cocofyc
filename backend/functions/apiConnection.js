@@ -1,5 +1,6 @@
 const apiConnection = async (endpoint, direction, method, body, headers) => {
 	try {
+		// Crear una nueva URL con el endpoint
 		const url = new URL(endpoint);
 		url.pathname += direction;
 

@@ -25,7 +25,6 @@ app.use("/api/estados", estadosRouter);
 app.use("/api/usuarios", usuariosRouter);
 app.use("/api/usuarios/login", usuariosRouter);
 app.use("/api/roles", rolesRouter);
-app.use("/api/establecimientos/", establecimientosRouter);
 
 // FUNCION PARA RENOMBRAR EL ARCHIVO
 // function saveFile(file) {

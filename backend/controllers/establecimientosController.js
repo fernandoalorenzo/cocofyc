@@ -133,6 +133,82 @@ const getEstablecimientosAsignados = async (request, response) => {
 	});
 };
 
+// Función para asignar un establecimiento a un profesional
+const asignarEstablecimiento = async (request, response) => {
+	authenticateToken(request, response, async () => {
+		try {
+			const { profesionalId, establecimientoId } = request.body;
+
+			// Verificar si el establecimiento ya está asignado al profesional
+			const asignacionExistente =
+				await Profesionales_Establecimientos.findOne({
+					where: {
+						profesional_id: profesionalId,
+						establecimiento_id: establecimientoId,
+					},
+				});
+
+			if (asignacionExistente) {
+				return response.status(400).json({
+					message:
+						"El establecimiento ya está asignado al profesional.",
+				});
+			}
+
+			// Crear la nueva asignación
+			await Profesionales_Establecimientos.create({
+				profesional_id: profesionalId,
+				establecimiento_id: establecimientoId,
+			});
+
+			response
+				.status(201)
+				.json({ message: "Establecimiento asignado correctamente." });
+		} catch (error) {
+			console.error("Error al asignar establecimiento:", error);
+			response
+				.status(500)
+				.json({ message: "Error interno del servidor." });
+		}
+	});
+};
+
+// Función para desvincular un establecimiento de un profesional
+const desvincularEstablecimiento = async (request, response) => {
+	authenticateToken(request, response, async () => {
+		try {
+			const { profesionalId, establecimientoId } = request.params; // ID del profesional y del establecimiento pasados en la URL
+
+			// Buscar y eliminar la asignación
+			const asignacion = await Profesionales_Establecimientos.findOne({
+				where: {
+					profesional_id: profesionalId,
+					establecimiento_id: establecimientoId,
+				},
+			});
+
+			if (!asignacion) {
+				return response
+					.status(404)
+					.json({ message: "La asignación no existe." });
+			}
+
+			await asignacion.destroy();
+
+			response
+				.status(200)
+				.json({
+					message: "Establecimiento desvinculado correctamente.",
+				});
+		} catch (error) {
+			console.error("Error al desvincular establecimiento:", error);
+			response
+				.status(500)
+				.json({ message: "Error interno del servidor." });
+		}
+	});
+};
+
 // Exportamos todas las rutas
 export {
 	createEstablecimiento,
@@ -141,4 +217,6 @@ export {
 	updateEstablecimiento,
 	deleteEstablecimiento,
 	getEstablecimientosAsignados,
+	asignarEstablecimiento,
+	desvincularEstablecimiento,
 };
