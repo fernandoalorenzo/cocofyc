@@ -123,6 +123,10 @@ export default function SideBar() {
 									<p>Dashboard</p>
 								</NavLink>
 							</li>
+							{/*---------- CARGA DE DATOS ----------*/}
+							<li className="nav-header text-warning">
+								CARGA DE DATOS
+							</li>
 							<li className="nav-item">
 								<NavLink
 									to="/profesionales"
@@ -161,6 +165,33 @@ export default function SideBar() {
 									</NavLink>
 								</li>
 							)}
+							{/*---------- OPERATORIA ----------*/}
+							<li className="nav-header text-warning">
+								OPERATORIA
+							</li>
+							<li className="nav-item">
+								<NavLink
+									to="/matriculas"
+									className="nav-link"
+									activeclassname="active">
+									<i className="nav-icon fa-solid fa-gear" />
+									<p>Matrículas</p>
+								</NavLink>
+							</li>
+							{/*---------- CONFIGURACION ----------*/}
+							<li className="nav-header text-warning">
+								CONFIGURACION
+							</li>
+							<li className="nav-item">
+								<NavLink
+									to="/parametros"
+									className="nav-link"
+									activeclassname="active">
+									<i className="nav-icon fa-solid fa-gear" />
+									<p>Parámetros</p>
+								</NavLink>
+							</li>
+							<li className="nav-header">EXAMPLES</li>
 							<li className="nav-item">
 								<a
 									href="pages/widgets.html"
@@ -255,7 +286,6 @@ export default function SideBar() {
 									</li>
 								</ul>
 							</li>
-							<li className="nav-header">EXAMPLES</li>
 							<li className="nav-item">
 								<a
 									href="pages/calendar.html"

@@ -2,23 +2,20 @@ import React, { useState, useEffect, useMemo } from "react";
 import { useTable, useSortBy, usePagination } from "react-table";
 import Swal from "sweetalert2";
 import apiConnection from "../../../../backend/functions/apiConnection";
-import ProfesionalesModal from "./profesionalesModal";
-import EstablecimientosModal from "./profesionalesEstablecimientosModal";
+import MatriculasModal from "./matriculasModal";
 
-const ProfesionalesTabla = () => {
+const Matriculas = () => {
 	const [data, setData] = useState([]);
 	const [filterText, setFilterText] = useState("");
 	const [selectedPageSize, setSelectedPageSize] = useState(10);
-	const [showProfesionalesModal, setShowProfesionalesModal] = useState(false);
-	const [selectedProfesional, setSelectedProfesional] = useState(null);
-	const [modalMode, setModalMode] = useState("");
-	const [estadosMatriculas, setEstadosMatriculas] = useState([]);
-	const [showEstablecimientosModal, setShowEstablecimientosModal] =	useState(false);
+	const [showMatriculasModal, setShowMatriculasModal] = useState(false);
+	const [selectedMatricula, setSelectedMatricula] = useState(null);
+	const [modalMode, setModalMode] = useState(""); // Definir modalMode como estado
+	useState(false);
 
-
-	const fetchProfesionales = async () => {
+	const fetchMatriculas = async () => {
 		try {
-			const endpoint = "http://127.0.0.1:5000/api/profesionales";
+			const endpoint = "http://localhost:5000/api/matriculas/";
 			const direction = "";
 			const method = "GET";
 			const body = false;
@@ -34,7 +31,6 @@ const ProfesionalesTabla = () => {
 				body,
 				headers
 			);
-
 			setData(data.data);
 		} catch (error) {
 			console.error("Error:", error.message);
@@ -43,36 +39,7 @@ const ProfesionalesTabla = () => {
 
 	// OBTENER LISTA DE REGISTROS
 	useEffect(() => {
-		fetchProfesionales();
-	}, []);
-
-	// OBTENER LISTA DE ESTADOS DE MATRICULA
-	const fetchEstadosMatriculas = async () => {
-		try {
-			const endpoint = "http://127.0.0.1:5000/api/estados";
-			const direction = "";
-			const method = "GET";
-			const body = false;
-			const headers = {
-				"Content-Type": "application/json",
-				Authorization: localStorage.getItem("token"),
-			};
-
-			const response = await apiConnection(
-				endpoint,
-				direction,
-				method,
-				body,
-				headers
-			);
-			setEstadosMatriculas(response.data);
-		} catch (error) {
-			console.error("Error:", error.message);
-		}
-	};
-
-	useEffect(() =>  {
-		fetchEstadosMatriculas();
+		fetchMatriculas();
 	}, []);
 
 	const filteredData = useMemo(() => {
@@ -91,6 +58,40 @@ const ProfesionalesTabla = () => {
 	}, [data, filterText]);
 
 	const handleEliminar = async (id) => {
+		// Verificar si ya estan generadas las matriculas
+		try {
+			const endpoint =
+				"http://localhost:5000/api/matriculas/matriculas-generadas/";
+			const direction = id;
+			const method = "GET";
+			const body = false;
+			const headers = {
+				"Content-Type": "application/json",
+				Authorization: localStorage.getItem("token"),
+			};
+
+			const data = await apiConnection(
+				endpoint,
+				direction,
+				method,
+				body,
+				headers
+			);
+
+			if (data.data.length > 0) {
+				Swal.fire({
+					title: "Advertencia",
+					text: "Esta matrícula tiene registros relacionados a profesionales. No puede ser eliminada.",
+					icon: "warning",
+					confirmButtonText: "Continuar",
+				});
+				return;
+			}
+		} catch (error) {
+			console.error("Error al generar las matriculas:", error.message);
+		}
+
+		// Confirmar eliminación
 		const result = await Swal.fire({
 			title: "¿Estás seguro?",
 			text: "Esta acción no se puede deshacer",
@@ -105,8 +106,7 @@ const ProfesionalesTabla = () => {
 		// Si el usuario confirma la eliminación
 		if (result.isConfirmed) {
 			try {
-				
-				const endpoint = "http://127.0.0.1:5000/api/profesionales/";
+				const endpoint = "http://127.0.0.1:5000/api/matriculas/";
 				const direction = id;
 				const method = "DELETE";
 				const body = false;
@@ -131,13 +131,13 @@ const ProfesionalesTabla = () => {
 					timer: 2500,
 				});
 
-				// Actualizar la tabla llamando a fetchProfesionales
+				// Actualizar la tabla llamando a fetchMatriculas
 				setTimeout(() => {
-					fetchProfesionales();
+					fetchMatriculas();
 				}, 2500);
 			} catch (error) {
 				console.error("Error al eliminar el registro:", error.message);
-				
+
 				Swal.fire({
 					title: "Error",
 					text: "Ha ocurrido un error al intentar eliminar el registro",
@@ -147,71 +147,112 @@ const ProfesionalesTabla = () => {
 		}
 	};
 
+	const handleGenerar = async (id) => {
+		// Verificar si ya estan generadas las matriculas
+		try {
+			const endpoint =
+				"http://localhost:5000/api/matriculas/matriculas-generadas/";
+			const direction = id;
+			const method = "GET";
+			const body = false;
+			const headers = {
+				"Content-Type": "application/json",
+				Authorization: localStorage.getItem("token"),
+			};
+
+			const data = await apiConnection(
+				endpoint,
+				direction,
+				method,
+				body,
+				headers
+			);
+
+			if (data.data.length > 0) {
+				Swal.fire({
+					title: "Error",
+					text: "Las matriculas ya están generadas",
+					icon: "error",
+					confirmButtonText: "OK",
+				});
+				return;
+			}
+		} catch (error) {
+			console.error("Error al generar las matriculas:", error.message);
+		}
+
+		const result = await Swal.fire({
+			title: "¿Estás seguro?",
+			text: "Esta acción generará la matrícula para cada Profesional activo y no podrá deshacerla.",
+			icon: "warning",
+			showCancelButton: true,
+			showConfirmButton: true,
+			cancelButtonColor: "9B9B9B",
+			confirmButtonText: "Generar",
+			cancelButtonText: "Cancelar",
+		});
+
+		// Si el usuario no confirma la generación, no hace nada
+		if (!result.isConfirmed) return;
+
+		try {
+			const endpoint =
+				"http://localhost:5000/api/profesionales/generar-matriculas/";
+			const direction = "";
+			const method = "POST";
+			const body = {
+				matriculaId: id, // Envía el ID de la matrícula seleccionada al backend
+			};
+			const headers = {
+				"Content-Type": "application/json",
+				Authorization: localStorage.getItem("token"),
+			};
+
+			// Realiza la solicitud al backend
+			const response = await apiConnection(
+				endpoint,
+				direction,
+				method,
+				body,
+				headers
+			);
+
+			// Muestra una notificación o mensaje de éxito
+			Swal.fire({
+				title: "Matrículas generadas",
+				text: "Los registros han sido generados correctamente",
+				icon: "success",
+				showConfirmButton: false,
+				timer: 2500,
+			});
+
+			// Actualiza la tabla llamando a fetchMatriculas
+			fetchMatriculas();
+		} catch (error) {
+			console.error("Error al generar los registros:", error.message);
+
+			// Muestra una notificación o mensaje de error
+			Swal.fire({
+				title: "Error",
+				text: "Ha ocurrido un error al intentar generar los registros",
+				icon: "error",
+			});
+		}
+	};
+
 	const columns = React.useMemo(
 		() => [
 			{
-				Header: "Nombre",
-				accessor: "nombre",
-			},
-			// {
-			// 	Header: "DNI",
-			// 	accessor: "dni",
-			// },
-			{
-				Header: "Matrícula",
+				Header: "Matricula",
 				accessor: "matricula",
 			},
 			{
-				Header: "Teléfono",
-				accessor: "telefono",
+				Header: "Vencimiento",
+				accessor: "vencimiento",
 			},
 			{
-				Header: "e-Mail",
-				accessor: "email",
-			},
-			{
-				Header: "Localidad",
-				accessor: "localidad",
-			},
-			{
-				Header: "Estado Mat.",
-				accessor: "estado_matricula_id",
-				Cell: ({ value }) => {
-					const estado = estadosMatriculas.find(
-						(estado) => estado.id === value
-					);
-					return estado ? estado.estado : "N/D";
-				},
-			},
-			{
-				Header: "Activo",
-				accessor: "activo",
-				Cell: ({ row }) => (
-					<>
-						<div className="form-switch">
-							<input
-								className="form-check-input"
-								type="checkbox"
-								checked={row.original.activo}
-								onChange={() => false}
-								id={`activo-checkbox-${row.index}`}
-							/>
-							<input
-								type="hidden"
-								name={`activo-${row.index}`}
-								value={row.original.activo ? "1" : "0"}
-							/>
-						</div>
-					</>
-				),
-				sortType: (rowA, rowB, columnId) => {
-					// Convertir los valores a números para que la comparación sea numérica
-					const valueA = rowA.original.activo ? 1 : 0;
-					const valueB = rowB.original.activo ? 1 : 0;
-
-					// Comparar los valores y devolver el resultado
-					return valueA - valueB;
-				},
+				Header: "Importe",
+				accessor: "importe",
 			},
 			{
 				Header: "Acciones",
@@ -240,16 +281,15 @@ const ProfesionalesTabla = () => {
 						</button>
 						<button
 							className="btn btn-outline-dark bg-secondary mx-2 btn-sm"
-							onClick={() =>
-								mostrarEstablecimientos(row.original)
-							}>
-							<i className="fa-solid fa-spa"></i> Establecimientos
+							onClick={() => handleGenerar(row.original.id)}>
+							<i className="fa-regular fa-credit-card"></i>{" "}
+							Generar
 						</button>
 					</div>
 				),
 			},
 		],
-		[estadosMatriculas]
+		[]
 	);
 
 	const {
@@ -274,7 +314,7 @@ const ProfesionalesTabla = () => {
 			initialState: {
 				pageIndex: 0,
 				pageSize: selectedPageSize,
-				sortBy: [{ id: "nombre", desc: false }],
+				sortBy: [{ id: "matricula", desc: false }],
 			},
 			autoResetPage: false,
 			autoResetPageSize: false,
@@ -283,19 +323,10 @@ const ProfesionalesTabla = () => {
 		usePagination
 	);
 
-	const handleMostrar = (profesional, mode) => {
-		setSelectedProfesional(profesional);
+	const handleMostrar = (matricula, mode) => {
+		setSelectedMatricula(matricula);
 		setModalMode(mode);
-		setShowProfesionalesModal(true);
-	};
-
-	const mostrarEstablecimientos = (profesional) => {
-		setSelectedProfesional(profesional);
-		setShowEstablecimientosModal(true);
-	};
-
-	const closeEstablecimientosModal = () => {
-		setShowEstablecimientosModal(false);
+		setShowMatriculasModal(true);
 	};
 
 	const handleFilterChange = (e) => {
@@ -310,21 +341,15 @@ const ProfesionalesTabla = () => {
 		updatePageSize(size); // Usar updatePageSize
 	};
 
-	const openProfesionalesModal = () => setShowProfesionalesModal(true);
+	const openMatriculasModal = () => setShowMatriculasModal(true);
 
-	const closeProfesionalesModal = () => setShowProfesionalesModal(false);
-
-	useEffect(() => {
-		if (!showProfesionalesModal) {
-			setSelectedProfesional(null);
-		}
-	}, [showProfesionalesModal]);
+	const closeMatriculasModal = () => setShowMatriculasModal(false);
 
 	useEffect(() => {
-		if (!showEstablecimientosModal) {
-			setSelectedProfesional(null);
+		if (!showMatriculasModal) {
+			setSelectedMatricula(null);
 		}
-	}, [showEstablecimientosModal]);
+	}, [showMatriculasModal]);
 
 	return (
 		<>
@@ -333,7 +358,7 @@ const ProfesionalesTabla = () => {
 					<div className="container-fluid">
 						<div className="row mb-2">
 							<div className="col-sm-6">
-								<h1 className="m-0">Profesionales</h1>
+								<h1 className="m-0">Matriculas</h1>
 							</div>
 						</div>
 					</div>
@@ -371,7 +396,7 @@ const ProfesionalesTabla = () => {
 									id="abrirModalAgregar"
 									onClick={() => {
 										setModalMode("agregar");
-										openProfesionalesModal();
+										openMatriculasModal();
 									}}>
 									<i className="fa-regular fa-square-plus"></i>{" "}
 									Agregar
@@ -392,11 +417,7 @@ const ProfesionalesTabla = () => {
 														)}
 														className={`${
 															column.Header ===
-																"Activo" ||
-															column.Header ===
-																"DNI" ||
-															column.Header ===
-																"Matrícula" ||
+																"CUIT" ||
 															column.Header ===
 																"Teléfono" ||
 															column.Header ===
@@ -432,13 +453,7 @@ const ProfesionalesTabla = () => {
 															className={`${
 																cell.column
 																	.Header ===
-																	"DNI" ||
-																cell.column
-																	.Header ===
-																	"Matrícula" ||
-																cell.column
-																	.Header ===
-																	"Activo" ||
+																	"CUIT" ||
 																cell.column
 																	.Header ===
 																	"Teléfono"
@@ -546,20 +561,15 @@ const ProfesionalesTabla = () => {
 					</section>
 				</div>
 			</div>
-			<ProfesionalesModal
-				showModal={showProfesionalesModal}
-				closeModal={closeProfesionalesModal}
-				data={selectedProfesional}
+			<MatriculasModal
+				showModal={showMatriculasModal}
+				closeModal={closeMatriculasModal}
+				data={selectedMatricula}
 				modalMode={modalMode}
-				fetchProfesionales={fetchProfesionales}
-			/>
-			<EstablecimientosModal
-				showModal={showEstablecimientosModal}
-				closeModal={closeEstablecimientosModal}
-				data={selectedProfesional}
+				fetchMatriculas={fetchMatriculas}
 			/>
 		</>
 	);
 };
 
-export default ProfesionalesTabla;
+export default Matriculas;

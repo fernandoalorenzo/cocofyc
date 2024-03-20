@@ -193,7 +193,7 @@ const EstablecimientosModal = ({ showModal, closeModal, data }) => {
 			aria-labelledby="staticBackdropLabel"
 			aria-hidden={!showModal}>
 			<div className="modal-dialog modal-xl">
-				<div className="modal-content bg-light ">
+				<div className="modal-content bg-secondary">
 					<div className="modal-header bg-primary">
 						<h5 className="modal-title">
 							Asignar establecimientos
@@ -243,7 +243,7 @@ const EstablecimientosModal = ({ showModal, closeModal, data }) => {
 							</div>
 						</div>
 						<div className="row">
-							<table className="table table-hover table-striped table-responsive-sm table-sm table-borderless align-middle">
+							<table className="table bg-light table-hover table-striped table-responsive-sm table-sm table-borderless align-middle ">
 								<thead className="bg-primary">
 									<tr>
 										<th>Nombre</th>

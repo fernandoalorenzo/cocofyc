@@ -8,6 +8,8 @@ import establecimientosRouter from "./routes/establecimientosRoute.js";
 import estadosRouter from "./routes/estadosMatriculaRoute.js";
 import usuariosRouter from "./routes/usuariosRoute.js";
 import rolesRouter from "./routes/rolesRoute.js";
+import parametrosRoutes from "./routes/parametrosRoute.js";
+import matriculasRoutes from "./routes/matriculasRoute.js";
 
 import connect from "./config/db.js";
 
@@ -25,6 +27,8 @@ app.use("/api/estados", estadosRouter);
 app.use("/api/usuarios", usuariosRouter);
 app.use("/api/usuarios/login", usuariosRouter);
 app.use("/api/roles", rolesRouter);
+app.use("/api/parametros", parametrosRoutes);
+app.use("/api/matriculas", matriculasRoutes);
 
 // FUNCION PARA RENOMBRAR EL ARCHIVO
 // function saveFile(file) {

@@ -19,7 +19,8 @@ import Profesionales from "./components/profesionales/profesionales";
 import Roles from "./components/roles/roles";
 import Usuarios from "./components/users/Usuarios.jsx";
 import Establecimientos from "./components/establecimientos/establecimientos.jsx";
-import Prueba from "./components/Prueba.jsx";
+import Parametros from "./components/parametros/parametros.jsx";
+import Matriculas from "./components/matriculas/matriculas.jsx";
 
 const Layout = ({ children }) => (
 	<>
@@ -103,11 +104,21 @@ const App = () => {
 						}
 					/>
 					<Route
-						path="/prueba"
+						path="/parametros"
 						element={
 							<AuthHandler>
 								<Layout>
-									<Prueba />
+									<Parametros />
+								</Layout>
+							</AuthHandler>
+						}
+					/>
+					<Route
+						path="/matriculas"
+						element={
+							<AuthHandler>
+								<Layout>
+									<Matriculas />
 								</Layout>
 							</AuthHandler>
 						}

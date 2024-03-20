@@ -159,7 +159,12 @@ const UsuariosModal = ({
 										<label
 											htmlFor="nombre"
 											className="form-label mb-0">
-											Nombre
+											Nombre{" "}
+											{modalMode !== "mostrar" && (
+												<span className="text-danger">
+													*
+												</span>
+											)}
 										</label>
 										<input
 											type="text"
@@ -180,7 +185,12 @@ const UsuariosModal = ({
 										<label
 											htmlFor="apellido"
 											className="form-label mb-0">
-											Apellido
+											Apellido{" "}
+											{modalMode !== "mostrar" && (
+												<span className="text-danger">
+													*
+												</span>
+											)}
 										</label>
 										<input
 											type="text"
@@ -204,7 +214,12 @@ const UsuariosModal = ({
 										<label
 											htmlFor="email"
 											className="form-label mb-0">
-											Email
+											Email{" "}
+											{modalMode !== "mostrar" && (
+												<span className="text-danger">
+													*
+												</span>
+											)}
 										</label>
 										<input
 											type="email"

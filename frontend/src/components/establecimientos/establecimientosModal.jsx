@@ -130,7 +130,7 @@ const EstablecimientosModal = ({
 								: modalMode === "editar"
 								? "Editar Establecimiento"
 								: modalMode === "agregar"
-								? "Agregar Nuevo Establecimiento"
+								? "Agregar Establecimiento"
 								: ""}
 						</h5>
 						<button
@@ -150,7 +150,12 @@ const EstablecimientosModal = ({
 										<label
 											htmlFor="establecimiento"
 											className="form-label mb-0">
-											Establecimiento
+											Establecimiento{" "}
+											{modalMode !== "mostrar" && (
+												<span className="text-danger">
+													*
+												</span>
+											)}
 										</label>
 										<input
 											type="text"
@@ -172,7 +177,12 @@ const EstablecimientosModal = ({
 										<label
 											htmlFor="titular"
 											className="form-label mb-0">
-											Titular
+											Titular{" "}
+											{modalMode !== "mostrar" && (
+												<span className="text-danger">
+													*
+												</span>
+											)}
 										</label>
 										<input
 											type="text"
@@ -196,7 +206,12 @@ const EstablecimientosModal = ({
 										<label
 											htmlFor="cuit"
 											className="form-label mb-0">
-											CUIT
+											CUIT{" "}
+											{modalMode !== "mostrar" && (
+												<span className="text-danger">
+													*
+												</span>
+											)}
 										</label>
 										<input
 											type="text"
@@ -229,7 +244,12 @@ const EstablecimientosModal = ({
 										<label
 											htmlFor="telefono"
 											className="form-label mb-0">
-											Teléfono
+											Teléfono{" "}
+											{modalMode !== "mostrar" && (
+												<span className="text-danger">
+													*
+												</span>
+											)}
 										</label>
 										<input
 											type="text"
@@ -250,7 +270,12 @@ const EstablecimientosModal = ({
 										<label
 											htmlFor="email"
 											className="form-label mb-0">
-											E-Mail
+											E-Mail{" "}
+											{modalMode !== "mostrar" && (
+												<span className="text-danger">
+													*
+												</span>
+											)}
 										</label>
 										<input
 											type="email"

@@ -243,7 +243,12 @@ const ProfesionalesModal = ({
 										<label
 											htmlFor="nombre"
 											className="form-label mb-0">
-											Nombre Completo
+											Nombre Completo{" "}
+											{modalMode !== "mostrar" && (
+												<span className="text-danger">
+													*
+												</span>
+											)}
 										</label>
 										<input
 											type="text"
@@ -265,7 +270,12 @@ const ProfesionalesModal = ({
 										<label
 											htmlFor="dni"
 											className="form-label mb-0">
-											DNI
+											DNI{" "}
+											{modalMode !== "mostrar" && (
+												<span className="text-danger">
+													*
+												</span>
+											)}
 										</label>
 										<input
 											type="text"
@@ -287,7 +297,12 @@ const ProfesionalesModal = ({
 										<label
 											htmlFor="cuit"
 											className="form-label mb-0">
-											CUIT
+											CUIT{" "}
+											{modalMode !== "mostrar" && (
+												<span className="text-danger">
+													*
+												</span>
+											)}
 										</label>
 										<input
 											type="text"
@@ -338,7 +353,12 @@ const ProfesionalesModal = ({
 										<label
 											htmlFor="email"
 											className="form-label mb-0">
-											E-Mail
+											E-Mail{" "}
+											{modalMode !== "mostrar" && (
+												<span className="text-danger">
+													*
+												</span>
+											)}
 										</label>
 										<input
 											type="email"
@@ -408,7 +428,12 @@ const ProfesionalesModal = ({
 										<label
 											htmlFor="matricula"
 											className="form-label mb-0">
-											Matrícula
+											Matrícula{" "}
+											{modalMode !== "mostrar" && (
+												<span className="text-danger">
+													*
+												</span>
+											)}
 										</label>
 										<input
 											type="text"
@@ -431,7 +456,12 @@ const ProfesionalesModal = ({
 										<label
 											htmlFor="estado_matricula_id"
 											className="form-label mb-0">
-											Estado de Matrícula
+											Estado de Matrícula{" "}
+											{modalMode !== "mostrar" && (
+												<span className="text-danger">
+													*
+												</span>
+											)}
 										</label>
 										<select
 											className="form-select"

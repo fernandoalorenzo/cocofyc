@@ -67,19 +67,11 @@ const updateUsuario = async (request, response) => {
 			const { id } = request.params;
 			const { newPassword, ...updateData } = request.body;
 
-			console.log("request.body: ", request.body);
-			console.log("updateData: ", updateData);
-			console.log("newPassword: ", newPassword);
-
 			if (newPassword) {
 				// Si hay una nueva contraseña, hashea y actualiza
 				const hashedPassword = await bcrypt.hash(newPassword, 10);
 				updateData.password = hashedPassword;
 			}
-
-			// const result = await Usuario.update(request.body, {
-			// 	where: { id: id },
-			// });
 
 			const result = await Usuario.update(updateData, {
 				where: { id: id },
@@ -163,8 +155,6 @@ const loginUsuario = async (req, res) => {
 				expiresIn: process.env.TOKEN_EXPIRES_IN,
 			}
 		);
-
-		console.log("token: ", token);
 
 		// Devolver el token y la info del usuario logueado
 		res.status(200).json({

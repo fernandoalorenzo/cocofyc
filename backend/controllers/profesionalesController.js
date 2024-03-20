@@ -40,28 +40,33 @@ const getProfesionales = async (request, response) => {
 
 // Obtener un profesional por Id
 const getProfesionalById = async (request, response) => {
-		authenticateToken(request, response, async () => {
-	const id = request.params.id;
+	authenticateToken(request, response, async () => {
+		const id = request.params.id;
 		try {
-			const profesional = await Profesional.findOne({ where: { id: id } });
+			const profesional = await Profesional.findOne({
+				where: { id: id },
+			});
 
 			response.status(201).json({
-				message: "Los datos del profesional fueron obtenidos exitosamente!",
+				message:
+					"Los datos del profesional fueron obtenidos exitosamente!",
 				data: profesional,
 			});
 		} catch (error) {
 			console.error("Error: " + error.message);
 			response.status(500).send({ message: error.message });
 		}
-		});
+	});
 };
 
 // Obtener un profesional por DNI
 const getProfesionalByDNI = async (request, response) => {
-		authenticateToken(request, response, async () => {
+	authenticateToken(request, response, async () => {
 		const dni = request.params.dni;
 		try {
-			const profesional = await Profesional.findOne({ where: { dni: dni } });
+			const profesional = await Profesional.findOne({
+				where: { dni: dni },
+			});
 
 			if (profesional) {
 				// Devolver los datos del profesional si se encontró
@@ -85,18 +90,47 @@ const getProfesionalByDNI = async (request, response) => {
 				message: error.message,
 			});
 		}
-		});
+	});
+};
+
+// Obtener todos los profesionales activos
+const getProfesionalesActivos = async (request, response) => {
+	authenticateToken(request, response, async () => {
+		try {
+			// Encuentra todos los profesionales con el atributo 'activo' establecido como true
+			const profesionales = await Profesional.findAll({
+				where: { activo: true },
+			});
+
+			response.status(200).json({
+				message:
+					"Lista de profesionales activos obtenida correctamente",
+				registros: profesionales.length,
+				data: profesionales,
+				
+			});
+		} catch (error) {
+			console.error(
+				"Error al obtener los profesionales activos:",
+				error.message
+			);
+			response
+				.status(500)
+				.json({
+					message: "Error al obtener los profesionales activos",
+				});
+		}
+	});
 };
 
 // Actualizar profesionales
 const updateProfesional = async (request, response) => {
-		authenticateToken(request, response, async () => {
+	authenticateToken(request, response, async () => {
 		const id = request.params.id;
 		try {
-			const profesionalUpdate = await Profesional.update(
-				request.body,
-				{ where: { id: id } }
-			)
+			const profesionalUpdate = await Profesional.update(request.body, {
+				where: { id: id },
+			});
 
 			response.status(201).json({
 				message: "El profesional fue actualizado exitosamente!",
@@ -106,12 +140,12 @@ const updateProfesional = async (request, response) => {
 			console.error("Error: " + error.message);
 			response.status(500).send({ message: error.message });
 		}
-		});
+	});
 };
 
 // Eliminar un profesional
 const deleteProfesional = async (request, response) => {
-		authenticateToken(request, response, async () => {
+	authenticateToken(request, response, async () => {
 		const id = request.params.id;
 		try {
 			const profesionalDelete = await Profesional.destroy({
@@ -126,12 +160,12 @@ const deleteProfesional = async (request, response) => {
 			console.error("Error: " + error.message);
 			response.status(500).send({ message: error.message });
 		}
-		});
+	});
 };
 
 // Actualizar un profesional
 const patchProfesional = async (request, response) => {
-		authenticateToken(request, response, async () => {
+	authenticateToken(request, response, async () => {
 		const id = request.params.id;
 		const fieldsToUpdate = request.body;
 		try {
@@ -154,9 +188,10 @@ const patchProfesional = async (request, response) => {
 			console.error("Error: " + error.message);
 			response.status(500).send({ message: error.message });
 		}
-		});
+	});
 };
 
+// Obtener los profesionales asignados a un establecimiento
 const getProfesionalesAsignados = async (request, response) => {
 	authenticateToken(request, response, async () => {
 		try {
@@ -226,7 +261,7 @@ const asignarProfesional = async (request, response) => {
 	});
 };
 
-// Función para desvincular un profesional de un profesional
+// Función para desvincular un profesional de un establecimiento
 const desvincularProfesional = async (request, response) => {
 	authenticateToken(request, response, async () => {
 		try {
@@ -260,7 +295,6 @@ const desvincularProfesional = async (request, response) => {
 	});
 };
 
-// Exportamos todas las rutas
 export {
 	createProfesional,
 	getProfesionales,
@@ -272,4 +306,5 @@ export {
 	getProfesionalesAsignados,
 	asignarProfesional,
 	desvincularProfesional,
+	getProfesionalesActivos,
 };

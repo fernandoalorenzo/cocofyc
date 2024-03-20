@@ -201,7 +201,7 @@ const ProfesionalesModal = ({ showModal, closeModal, data }) => {
 									{" "}
 									a{" "}
 									<span className="text-warning">
-										{data.nombre}
+										{data.establecimiento}
 									</span>
 								</span>
 							) : (
