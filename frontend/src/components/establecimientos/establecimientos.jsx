@@ -267,41 +267,50 @@ const EstablecimientosTabla = () => {
 				<div>
 					<section className="content">
 						<div className="container-fluid">
-							<div className="d-grid gap-2 d-md-flex justify-content-md-end mb-3">
-								<div className="input-group col-4 me-md-2">
-									<input
-										type="text"
-										className="form-control"
-										name="filterText"
-										placeholder="Filtrar..."
-										value={filterText}
-										onChange={handleFilterChange}
-									/>
-									{filterText && (
-										<div className="input-group-append">
-											<button
-												className="btn bg-white"
-												title="Limpiar búsqueda"
-												type="button"
-												onClick={() =>
-													setFilterText("")
-												}>
-												<i className="fa-regular fa-circle-xmark"></i>
-											</button>
+							<div className="row d-flex mb-2 m-0">
+								<label className="form-label m-0">
+									Opciones de Filtro:
+								</label>
+								<div className="col d-flex justify-content-start border rounded border-primary py-2">
+									<div className="col">
+										<div className="input-group">
+											<input
+												type="text"
+												className="form-control"
+												name="filterText"
+												placeholder="Filtrar..."
+												value={filterText}
+												onChange={handleFilterChange}
+											/>
+											{filterText && (
+												<div className="input-group-append">
+													<button
+														className="btn btn-outline-primary bg-white"
+														title="Limpiar búsqueda"
+														type="button"
+														onClick={() =>
+															setFilterText("")
+														}>
+														<i className="fa-regular fa-circle-xmark"></i>
+													</button>
+												</div>
+											)}
 										</div>
-									)}
+									</div>
 								</div>
-								<button
-									type="button"
-									className="btn btn-primary"
-									id="abrirModalAgregar"
-									onClick={() => {
-										setModalMode("agregar");
-										openEstablecimientosModal();
-									}}>
-									<i className="fa-regular fa-square-plus"></i>{" "}
-									Agregar
-								</button>
+								<div className="col-6 justify-content-end text-end align-items-center d-flex">
+									<button
+										type="button"
+										className="btn btn-primary"
+										id="abrirModalAgregar"
+										onClick={() => {
+											setModalMode("agregar");
+											openEstablecimientosModal();
+										}}>
+										<i className="fa-regular fa-square-plus"></i>{" "}
+										Agregar
+									</button>
+								</div>
 							</div>
 							<table
 								{...getTableProps()}
