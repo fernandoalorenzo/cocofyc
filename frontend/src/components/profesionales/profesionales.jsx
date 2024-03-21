@@ -13,8 +13,10 @@ const ProfesionalesTabla = () => {
 	const [selectedProfesional, setSelectedProfesional] = useState(null);
 	const [modalMode, setModalMode] = useState("");
 	const [estadosMatriculas, setEstadosMatriculas] = useState([]);
-	const [showEstablecimientosModal, setShowEstablecimientosModal] =	useState(false);
-
+	const [showEstablecimientosModal, setShowEstablecimientosModal] =
+		useState(false);
+	const [showActive, setShowActive] = useState(true);
+	const [showInactive, setShowInactive] = useState(true);
 
 	const fetchProfesionales = async () => {
 		try {
@@ -71,24 +73,78 @@ const ProfesionalesTabla = () => {
 		}
 	};
 
-	useEffect(() =>  {
+	useEffect(() => {
 		fetchEstadosMatriculas();
 	}, []);
 
+	// const filteredData = useMemo(() => {
+	// 	if (!filterText) return data;
+
+	// 	return data.filter((row) => {
+	// 		const estadoMatricula = estadosMatriculas.find(
+	// 			(estado) => estado.id === row.estado_matricula_id
+	// 		);
+
+	// 		return Object.entries(row).some(([key, cellValue]) => {
+	// 			if (key === "estado_matricula_id" && estadoMatricula) {
+	// 				return estadoMatricula.estado
+	// 					.toLowerCase()
+	// 					.includes(filterText.toLowerCase());
+	// 			}
+	// 			return (
+	// 				key !== "id" &&
+	// 				cellValue &&
+	// 				cellValue
+	// 					.toString()
+	// 					.toLowerCase()
+	// 					.includes(filterText.toLowerCase())
+	// 			);
+	// 		});
+	// 	});
+	// }, [data, filterText, estadosMatriculas]);
+
 	const filteredData = useMemo(() => {
-		if (!filterText) return data;
-		return data.filter((row) =>
-			Object.entries(row).some(
-				([key, cellValue]) =>
-					key !== "id" &&
-					cellValue &&
-					cellValue
-						.toString()
-						.toLowerCase()
-						.includes(filterText.toLowerCase())
-			)
-		);
-	}, [data, filterText]);
+		if (!filterText && showActive && showInactive) return data;
+
+		return data.filter((row) => {
+			const estadoMatricula = estadosMatriculas.find(
+				(estado) => estado.id === row.estado_matricula_id
+			);
+
+			const isActive = row.activo;
+
+			// Filtrar por estado de matrícula
+			if (
+				estadoMatricula &&
+				estadoMatricula.estado
+					.toLowerCase()
+					.includes(filterText.toLowerCase())
+			) {
+				if ((!showActive && isActive) || (!showInactive && !isActive))
+					return false; // Verificar estado activo/inactivo
+				return true;
+			}
+
+			if (filterText) {
+				const isFiltered = Object.entries(row).some(
+					([key, cellValue]) =>
+						key !== "id" &&
+						cellValue &&
+						cellValue
+							.toString()
+							.toLowerCase()
+							.includes(filterText.toLowerCase())
+				);
+
+				if (!isFiltered) return false;
+			}
+
+			if ((!showActive && isActive) || (!showInactive && !isActive))
+				return false; // Verificar estado activo/inactivo
+
+			return true;
+		});
+	}, [data, filterText, estadosMatriculas, showActive, showInactive]);
 
 	const handleEliminar = async (id) => {
 		const result = await Swal.fire({
@@ -105,7 +161,6 @@ const ProfesionalesTabla = () => {
 		// Si el usuario confirma la eliminación
 		if (result.isConfirmed) {
 			try {
-				
 				const endpoint = "http://127.0.0.1:5000/api/profesionales/";
 				const direction = id;
 				const method = "DELETE";
@@ -137,7 +192,7 @@ const ProfesionalesTabla = () => {
 				}, 2500);
 			} catch (error) {
 				console.error("Error al eliminar el registro:", error.message);
-				
+
 				Swal.fire({
 					title: "Error",
 					text: "Ha ocurrido un error al intentar eliminar el registro",
@@ -153,10 +208,6 @@ const ProfesionalesTabla = () => {
 				Header: "Nombre",
 				accessor: "nombre",
 			},
-			// {
-			// 	Header: "DNI",
-			// 	accessor: "dni",
-			// },
 			{
 				Header: "Matrícula",
 				accessor: "matricula",
@@ -303,6 +354,11 @@ const ProfesionalesTabla = () => {
 		setFilterText(value);
 	};
 
+	const handleSwitchChange = (type) => {
+		if (type === "active") setShowActive(!showActive);
+		else if (type === "inactive") setShowInactive(!showInactive);
+	};
+
 	const handlePageSizeChange = (e) => {
 		const size = parseInt(e.target.value, 10);
 		setSelectedPageSize(size);
@@ -340,46 +396,91 @@ const ProfesionalesTabla = () => {
 				</div>
 				<div>
 					<section className="content">
-						<div className="container-fluid">
-							<div className="d-grid gap-2 d-md-flex justify-content-md-end mb-3">
-								<div className="input-group col-4 me-md-2">
-									<input
-										type="text"
-										className="form-control"
-										name="filterText"
-										placeholder="Filtrar..."
-										value={filterText}
-										onChange={handleFilterChange}
-									/>
-									{filterText && (
-										<div className="input-group-append">
-											<button
-												className="btn bg-white"
-												title="Limpiar búsqueda"
-												type="button"
-												onClick={() =>
-													setFilterText("")
-												}>
-												<i className="fa-regular fa-circle-xmark"></i>
-											</button>
+						<div className="container-fluid mt-0">
+							<div className="row d-flex mb-2 m-0">
+								<label className="form-label m-0">
+									Opciones de Filtro:
+								</label>
+								<div className="col d-flex justify-content-start border rounded border-primary pt-2 ms-1">
+									{/* <div className="col-1"> */}
+									{/* </div> */}
+									<div className="col-2">
+										<input
+											type="checkbox"
+											className="btn-check"
+											id="showActive"
+											autoComplete="off"
+											checked={showActive}
+											onChange={() =>
+												handleSwitchChange("active")
+											}
+										/>
+										<label
+											className="btn btn-outline-primary"
+											htmlFor="showActive">
+											Activos
+										</label>
+									</div>
+									<div className="col-2">
+										<input
+											type="checkbox"
+											className="btn-check"
+											id="showInactive"
+											autoComplete="off"
+											checked={showInactive}
+											onChange={() =>
+												handleSwitchChange("inactive")
+											}
+										/>
+										<label
+											className="btn btn-outline-primary"
+											htmlFor="showInactive">
+											Inactivos
+										</label>
+									</div>
+									<div className="col">
+										<div className="input-group">
+											<input
+												type="text"
+												className="form-control"
+												name="filterText"
+												placeholder="Filtrar..."
+												value={filterText}
+												onChange={handleFilterChange}
+											/>
+											{filterText && (
+												<div className="input-group-append">
+													<button
+														className="btn btn-outline-primary bg-white"
+														title="Limpiar búsqueda"
+														type="button"
+														onClick={() =>
+															setFilterText("")
+														}>
+														<i className="fa-regular fa-circle-xmark"></i>
+													</button>
+												</div>
+											)}
 										</div>
-									)}
+									</div>
 								</div>
-								<button
-									type="button"
-									className="btn btn-primary"
-									id="abrirModalAgregar"
-									onClick={() => {
-										setModalMode("agregar");
-										openProfesionalesModal();
-									}}>
-									<i className="fa-regular fa-square-plus"></i>{" "}
-									Agregar
-								</button>
+								<div className="col-6 justify-content-end text-end align-items-center d-flex">
+									<button
+										type="button"
+										className="btn btn-primary"
+										id="abrirModalAgregar"
+										onClick={() => {
+											setModalMode("agregar");
+											openProfesionalesModal();
+										}}>
+										<i className="fa-regular fa-square-plus"></i>{" "}
+										Agregar
+									</button>
+								</div>
 							</div>
 							<table
 								{...getTableProps()}
-								className="table table-hover table-striped table-responsive-sm table-sm table-borderless align-middle">
+								className="table table-hover table-striped table-responsive-sm table-sm table-borderless align-middle mt-3">
 								<thead className="bg-primary">
 									{headerGroups.map((headerGroup) => (
 										<tr
@@ -393,8 +494,6 @@ const ProfesionalesTabla = () => {
 														className={`${
 															column.Header ===
 																"Activo" ||
-															column.Header ===
-																"DNI" ||
 															column.Header ===
 																"Matrícula" ||
 															column.Header ===
@@ -430,9 +529,6 @@ const ProfesionalesTabla = () => {
 														<td
 															{...cell.getCellProps()}
 															className={`${
-																cell.column
-																	.Header ===
-																	"DNI" ||
 																cell.column
 																	.Header ===
 																	"Matrícula" ||
