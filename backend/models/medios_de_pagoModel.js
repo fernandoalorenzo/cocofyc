@@ -1,15 +1,15 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../config/sequelizeConfig.js";
 
-const Rol = sequelize.define(
-	"tb_roles",
+const MedioDePago = sequelize.define(
+	"tb_medios_de_pagos",
 	{
 		id: {
 			type: DataTypes.UUID,
 			defaultValue: DataTypes.UUIDV4,
 			primaryKey: true,
 		},
-		rol: { type: DataTypes.STRING(20), allowNull: false , unique: true},
+		medio: { type: DataTypes.STRING(20), allowNull: false },
 	},
 	{
 		timestamps: true,
@@ -17,4 +17,4 @@ const Rol = sequelize.define(
 	}
 );
 
-export default Rol;
+export default MedioDePago;

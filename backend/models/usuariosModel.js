@@ -32,17 +32,4 @@ const Usuario = sequelize.define(
 	}
 );
 
-// Antes de crear o actualizar un usuario, hashea la contraseña
-// Usuario.beforeCreate(async (usuario) => {
-// 	if (usuario.password) {
-// 		usuario.password_hash = await bcrypt.hash(usuario.password, 10);
-// 	}
-// });
-
-// Usuario.beforeUpdate(async (usuario) => {
-// 	if (usuario.changed("password")) {
-// 		usuario.password_hash = await bcrypt.hash(usuario.password, 10);
-// 	}
-// });
-
 export default Usuario;

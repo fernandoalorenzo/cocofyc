@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import apiConnection from "../../../../backend/functions/apiConnection";
 import backgroundImage from "./../../assets/img/login.jpg";
 import viewImage from "./../../assets/img/view.png";
 import hideImage from "./../../assets/img/hide.png";
@@ -38,7 +39,7 @@ const LoginForm = () => {
 	const toggleShowPassword = () => {
 		setShowPassword(!showPassword); // Cambiar el estado de mostrar u ocultar contraseña
 	};
-	
+
 	const onLogin = async (event) => {
 		event.preventDefault();
 
@@ -63,6 +64,52 @@ const LoginForm = () => {
 				// Guarda la info de usuario en localStorage
 				localStorage.setItem("token", token);
 				localStorage.setItem("user", JSON.stringify(user));
+
+				const fetchParametros = async () => {
+					try {
+						const endpoint =
+							"http://localhost:5000/api/parametros/";
+						const direction = "1";
+						const method = "GET";
+						const body = false;
+						const headers = {
+							"Content-Type": "application/json",
+							Authorization: localStorage.getItem("token"),
+						};
+
+						const response = await apiConnection(
+							endpoint,
+							direction,
+							method,
+							body,
+							headers
+						);
+
+						if (response) {
+							return response.data;
+						} else {
+							console.error(
+								"Error al obtener los datos de los parametros:",
+								response.statusText
+							);
+						}
+					} catch (error) {
+						console.error(
+							"Error al obtener los datos de los parametros:",
+							error
+						);
+					}
+				};
+
+				const parametrosResponse = await fetchParametros();
+
+				if (parametrosResponse) {
+					localStorage.setItem(
+						"parametros",
+						JSON.stringify(parametrosResponse)
+					);
+				}
+
 				navigate("/");
 			} else {
 				const data = await response.json();
@@ -136,7 +183,10 @@ const LoginForm = () => {
 								onClick={toggleShowPassword}
 								src={showPassword ? hideImage : viewImage}
 								className="input-group-text p-2"
-								style={{ maxWidth: "2.375em", maxHeight: "2.375em" }}
+								style={{
+									maxWidth: "2.375em",
+									maxHeight: "2.375em",
+								}}
 								alt={
 									showPassword
 										? "Ocultar contraseña"

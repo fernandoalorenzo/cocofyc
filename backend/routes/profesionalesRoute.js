@@ -12,7 +12,7 @@ import {
 	desvincularProfesional,
 	getProfesionalesActivos,
 } from "../controllers/profesionalesController.js";
-import { generarProfesionalesMatriculas } from "../controllers/profesionalesMatriculasController.js";
+import { generarProfesionalesCuotas } from "../controllers/profesionalesCuotasController.js";
 import authenticateToken from "../functions/tokenVerify.js";
 
 const profesionalesRouter = express.Router();
@@ -54,9 +54,9 @@ profesionalesRouter.delete(
 );
 	
 profesionalesRouter.post(
-	"/generar-matriculas/",
+	"/generar-cuotas/",
 	authenticateToken,
-	generarProfesionalesMatriculas
+	generarProfesionalesCuotas
 );
 		
 export default profesionalesRouter;		

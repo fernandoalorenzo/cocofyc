@@ -1,10 +1,10 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../config/sequelizeConfig.js";
 import Profesional from "./profesionalesModel.js";
-import Matricula from "./matriculasModel.js";
+import Cuota from "./cuotasModel.js";
 
-const Profesionales_Matriculas = sequelize.define(
-	"tb_profesionales_matriculas",
+const Profesionales_Cuotas = sequelize.define(
+	"tb_profesionales_cuotas",
 	{
 		id: {
 			type: DataTypes.UUID, // Tipo UUID
@@ -15,11 +15,11 @@ const Profesionales_Matriculas = sequelize.define(
 			type: DataTypes.CHAR(36),
 			allowNull: false,
 		},
-		matricula_id: {
+		cuota_id: {
 			type: DataTypes.CHAR(36),
 			allowNull: false,
 		},
-		pago_id: {
+		movimiento_id: {
 			type: DataTypes.CHAR(36),
 		},
 	},
@@ -29,14 +29,14 @@ const Profesionales_Matriculas = sequelize.define(
 	}
 );
 
-Profesional.belongsToMany(Matricula, {
-	through: Profesionales_Matriculas,
+Profesional.belongsToMany(Cuota, {
+	through: Profesionales_Cuotas,
 	foreignKey: "profesional_id",
 });
 
-Matricula.belongsToMany(Profesional, {
-	through: Profesionales_Matriculas,
-	foreignKey: "matricula_id",
+Cuota.belongsToMany(Profesional, {
+	through: Profesionales_Cuotas,
+	foreignKey: "cuota_id",
 });
 
-export default Profesionales_Matriculas;
+export default Profesionales_Cuotas;

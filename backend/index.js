@@ -7,9 +7,10 @@ import profesionalesRouter from "./routes/profesionalesRoute.js";
 import establecimientosRouter from "./routes/establecimientosRoute.js";
 import estadosRouter from "./routes/estadosMatriculaRoute.js";
 import usuariosRouter from "./routes/usuariosRoute.js";
-import rolesRouter from "./routes/rolesRoute.js";
 import parametrosRoutes from "./routes/parametrosRoute.js";
-import matriculasRoutes from "./routes/matriculasRoute.js";
+import cuotasRoutes from "./routes/cuotasRoute.js";
+import movimientosRoutes from "./routes/movimientosRoute.js";
+import medios_de_pagoRoutes from "./routes/medios_de_pagoRoute.js";
 
 import connect from "./config/db.js";
 
@@ -26,9 +27,10 @@ app.use("/api/establecimientos", establecimientosRouter);
 app.use("/api/estados", estadosRouter);
 app.use("/api/usuarios", usuariosRouter);
 app.use("/api/usuarios/login", usuariosRouter);
-app.use("/api/roles", rolesRouter);
 app.use("/api/parametros", parametrosRoutes);
-app.use("/api/matriculas", matriculasRoutes);
+app.use("/api/cuotas", cuotasRoutes);
+app.use("/api/movimientos", movimientosRoutes);
+app.use("/api/mediosdepago", medios_de_pagoRoutes)
 
 // FUNCION PARA RENOMBRAR EL ARCHIVO
 // function saveFile(file) {

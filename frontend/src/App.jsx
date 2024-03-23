@@ -10,17 +10,15 @@ import AuthHandler from "./utils/AuthHandler.jsx";
 import LoginForm from "./components/users/LoginForm";
 import Perfil from "./components/users/PerfilForm.jsx";
 import UserRegister from "./components/users/UserRegister";
-// import UserPasswordForm from "./components/users/UserPasswordForm";
 import Footer from "./components/footer/Footer";
 import Home from "./components/home/Home";
 import Header from "./components/header/Header";
 import SideBar from "./components/sidebar/SideBar";
 import Profesionales from "./components/profesionales/profesionales";
-import Roles from "./components/roles/roles";
 import Usuarios from "./components/users/Usuarios.jsx";
 import Establecimientos from "./components/establecimientos/establecimientos.jsx";
 import Parametros from "./components/parametros/parametros.jsx";
-import Matriculas from "./components/matriculas/matriculas.jsx";
+import Cuotas from "./components/cuotas/cuotas.jsx";
 
 const Layout = ({ children }) => (
 	<>
@@ -74,16 +72,6 @@ const App = () => {
 						}
 					/>
 					<Route
-						path="/roles"
-						element={
-							<AuthHandler>
-								<Layout>
-									<Roles />
-								</Layout>
-							</AuthHandler>
-						}
-					/>
-					<Route
 						path="/establecimientos"
 						element={
 							<AuthHandler>
@@ -114,11 +102,11 @@ const App = () => {
 						}
 					/>
 					<Route
-						path="/matriculas"
+						path="/cuotas"
 						element={
 							<AuthHandler>
 								<Layout>
-									<Matriculas />
+									<Cuotas />
 								</Layout>
 							</AuthHandler>
 						}

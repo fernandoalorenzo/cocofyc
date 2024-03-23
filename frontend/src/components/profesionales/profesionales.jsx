@@ -4,6 +4,7 @@ import Swal from "sweetalert2";
 import apiConnection from "../../../../backend/functions/apiConnection";
 import ProfesionalesModal from "./profesionalesModal";
 import EstablecimientosModal from "./profesionalesEstablecimientosModal";
+import MovimientosModal from "./profesionalesMovimientosModal";
 
 const ProfesionalesTabla = () => {
 	const [data, setData] = useState([]);
@@ -15,6 +16,8 @@ const ProfesionalesTabla = () => {
 	const [estadosMatriculas, setEstadosMatriculas] = useState([]);
 	const [showEstablecimientosModal, setShowEstablecimientosModal] =
 		useState(false);
+	const [showMovimientosModal, setShowMovimientosModal] =
+			useState(false);
 	const [showActive, setShowActive] = useState(true);
 	const [showInactive, setShowInactive] = useState(true);
 
@@ -294,7 +297,13 @@ const ProfesionalesTabla = () => {
 							onClick={() =>
 								mostrarEstablecimientos(row.original)
 							}>
-							<i className="fa-solid fa-spa"></i> Establecimientos
+							<i className="fa-solid fa-spa"></i> Asignar
+						</button>
+						<button
+							className="btn btn-outline-success bg-white border-3 mx-2 btn-sm"
+							onClick={() => mostrarMovimientos(row.original)}>
+							<i className="fa-solid fa-money-check-dollar"></i>{" "}
+							Gestión
 						</button>
 					</div>
 				),
@@ -345,8 +354,17 @@ const ProfesionalesTabla = () => {
 		setShowEstablecimientosModal(true);
 	};
 
+	const mostrarMovimientos = (profesional) => {
+		setSelectedProfesional(profesional);
+		setShowMovimientosModal(true);
+	};
+
 	const closeEstablecimientosModal = () => {
 		setShowEstablecimientosModal(false);
+	};
+
+	const closeMovimientosModal = () => {
+		setShowMovimientosModal(false);
 	};
 
 	const handleFilterChange = (e) => {
@@ -398,7 +416,9 @@ const ProfesionalesTabla = () => {
 					<section className="content">
 						<div className="container-fluid mt-0">
 							<div className="row d-flex mb-2 m-0">
-								<label className="form-label m-0">
+								<label
+									htmlFor="filterText"
+									className="form-label m-0">
 									Opciones de Filtro:
 								</label>
 								<div className="col d-flex justify-content-start border rounded border-primary pt-2 ms-1">
@@ -443,6 +463,7 @@ const ProfesionalesTabla = () => {
 											<input
 												type="text"
 												className="form-control"
+												id="filterText"
 												name="filterText"
 												placeholder="Filtrar..."
 												value={filterText}
@@ -481,7 +502,7 @@ const ProfesionalesTabla = () => {
 							<table
 								{...getTableProps()}
 								className="table table-hover table-striped table-responsive-sm table-sm table-borderless align-middle mt-3">
-								<thead className="bg-primary">
+								<thead className="table-primary">
 									{headerGroups.map((headerGroup) => (
 										<tr
 											{...headerGroup.getHeaderGroupProps()}>
@@ -652,6 +673,11 @@ const ProfesionalesTabla = () => {
 			<EstablecimientosModal
 				showModal={showEstablecimientosModal}
 				closeModal={closeEstablecimientosModal}
+				data={selectedProfesional}
+			/>
+			<MovimientosModal
+				showModal={showMovimientosModal}
+				closeModal={closeMovimientosModal}
 				data={selectedProfesional}
 			/>
 		</>

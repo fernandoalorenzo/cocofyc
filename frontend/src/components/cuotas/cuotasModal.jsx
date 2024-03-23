@@ -3,12 +3,12 @@ import Swal from "sweetalert2";
 import apiConnection from "../../../../backend/functions/apiConnection";
 import { useForm } from "react-hook-form";
 
-const MatriculasModal = ({
+const CuotasModal = ({
 	showModal,
 	closeModal,
 	data,
 	modalMode,
-	fetchMatriculas,
+	fetchCuotas,
 }) => {
 	const {
 		register,
@@ -19,7 +19,7 @@ const MatriculasModal = ({
 	} = useForm();
 
 	const initialState = {
-		matricula: "",
+		cuota: "",
 		vencimiento: "",
 		importe: "",
 	};
@@ -27,18 +27,22 @@ const MatriculasModal = ({
 	useEffect(() => {
 		if (modalMode === "agregar") {
 			reset(initialState);
+			setValue(
+				"importe",
+				JSON.parse(localStorage.getItem("parametros")).importe_cuota
+			);
 		} else if (data) {
 			reset(data);
 		}
 	}, [modalMode, data, reset]);
 
 	const onSubmit = async (formData, id) => {
-		const matricula = formData.matricula;
+		const cuota = formData.cuota;
 
 		if (modalMode === "agregar") {
 			try {
-				const endpoint = "http://127.0.0.1:5000/api/matriculas/";
-				const direction = matricula;
+				const endpoint = "http://127.0.0.1:5000/api/cuotas/";
+				const direction = cuota;
 				const method = "GET";
 				const body = "";
 				const headers = {
@@ -58,7 +62,7 @@ const MatriculasModal = ({
 					Swal.fire({
 						icon: "error",
 						title: "Operación fallida",
-						text: "La matricula ya existe en la base de datos.",
+						text: "La cuota ya existe en la base de datos.",
 						confirmButtonText: "Continuar",
 					});
 					return; // Detener la ejecución
@@ -80,7 +84,7 @@ const MatriculasModal = ({
 		formData = { ...formData, user_id: user.id };
 
 		try {
-			const endpoint = "http://127.0.0.1:5000/api/matriculas/";
+			const endpoint = "http://127.0.0.1:5000/api/cuotas/";
 			const direction = id ? `${id}` : "";
 			const method = id ? "PATCH" : "POST";
 			const body = formData;
@@ -108,7 +112,7 @@ const MatriculasModal = ({
 
 				setTimeout(() => {
 					closeModal();
-					fetchMatriculas();
+					fetchCuotas();
 				}, 2500);
 			} else {
 				console.error("Error en la operación:", response.error);
@@ -141,11 +145,11 @@ const MatriculasModal = ({
 					<div className="modal-header bg-primary">
 						<h5 className="modal-title">
 							{modalMode === "mostrar"
-								? "Mostrar Matrícula"
+								? "Mostrar Cuota"
 								: modalMode === "editar"
-								? "Editar Matrícula"
+								? "Editar Cuota"
 								: modalMode === "agregar"
-								? "Agregar Matrícula"
+								? "Agregar Cuota"
 								: ""}
 						</h5>
 						<button
@@ -163,9 +167,9 @@ const MatriculasModal = ({
 								<div className="row">
 									<div className="col-4 mb-3">
 										<label
-											htmlFor="matricula"
+											htmlFor="cuota"
 											className="form-label mb-0">
-											Matricula{" "}
+											Cuota{" "}
 											{modalMode !== "mostrar" && (
 												<span className="text-danger">
 													*
@@ -175,16 +179,16 @@ const MatriculasModal = ({
 										<input
 											type="text"
 											className="form-control"
-											id="matricula"
+											id="cuota"
 											readOnly={modalMode === "mostrar"}
-											{...register("matricula", {
+											{...register("cuota", {
 												required: true,
 											})}
 										/>
-										{errors.matricula?.type ===
+										{errors.cuota?.type ===
 											"required" && (
 											<span className="row text-warning m-1">
-												MATRICULA es requerida
+												CONCEPTO es requerido
 											</span>
 										)}
 									</div>
@@ -277,4 +281,4 @@ const MatriculasModal = ({
 	);
 };
 
-export default MatriculasModal;
+export default CuotasModal;

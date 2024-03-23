@@ -17,7 +17,7 @@ const Profesional = sequelize.define(
 		matricula: { type: DataTypes.STRING(10), allowNull: false },
 		domicilio: DataTypes.STRING(50),
 		localidad: DataTypes.STRING(50),
-		fecha_nacimiento: DataTypes.DATE,
+		fecha_nacimiento: DataTypes.DATEONLY,
 		imagen: DataTypes.STRING(50),
 		activo: {
 			type: DataTypes.BOOLEAN,
@@ -31,18 +31,5 @@ const Profesional = sequelize.define(
 		underscored: true,
 	}
 );
-
-// Definir la asociación con Estado
-// Profesional.associate = (models) => {
-// 	Profesional.belongsTo(models.Estado, {
-// 		foreignKey: "estado_matricula_id",
-// 		as: "estadoMatricula",
-// 	});
-// };
-
-// Profesional.belongsTo(Estado, {
-// 	foreignKey: "estado_matricula_id",
-// 	as: "estadoMatricula",
-// });
 
 export default Profesional;

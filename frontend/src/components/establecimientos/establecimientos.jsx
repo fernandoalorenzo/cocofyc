@@ -174,7 +174,7 @@ const EstablecimientosTabla = () => {
 								mostrarProfesionales(row.original)
 							}>
 							<i className="fa-solid fa-user-tie"></i>{" "}
-							Profesionales
+							Asignar
 						</button>
 					</div>
 				),
@@ -268,7 +268,7 @@ const EstablecimientosTabla = () => {
 					<section className="content">
 						<div className="container-fluid">
 							<div className="row d-flex mb-2 m-0">
-								<label className="form-label m-0">
+								<label htmlFor="filterText" className="form-label m-0">
 									Opciones de Filtro:
 								</label>
 								<div className="col d-flex justify-content-start border rounded border-primary py-2">
@@ -315,7 +315,7 @@ const EstablecimientosTabla = () => {
 							<table
 								{...getTableProps()}
 								className="table table-hover table-striped table-responsive-sm table-sm table-borderless align-middle">
-								<thead className="bg-primary">
+								<thead className="table-primary">
 									{headerGroups.map((headerGroup) => (
 										<tr
 											{...headerGroup.getHeaderGroupProps()}>

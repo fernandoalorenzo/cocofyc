@@ -1,8 +1,8 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../config/sequelizeConfig.js";
 
-const Matricula = sequelize.define(
-	"tb_matriculas",
+const Cuota = sequelize.define(
+	"tb_cuotas",
 	{
 		id: {
 			type: DataTypes.UUID,
@@ -10,8 +10,8 @@ const Matricula = sequelize.define(
 			primaryKey: true,
 		},
 		user_id: { type: DataTypes.STRING(36), allowNull: false },
-		matricula: { type: DataTypes.STRING(10), allowNull: false, unique: true },
-		vencimiento: { type: DataTypes.DATE, allowNull: false },
+		cuota: { type: DataTypes.STRING(10), allowNull: false, unique: true },
+		vencimiento: { type: DataTypes.DATEONLY, allowNull: false },
 		importe: { type: DataTypes.DECIMAL(20, 2), allowNull: false },
 	},
 	{
@@ -20,4 +20,4 @@ const Matricula = sequelize.define(
 	}
 );
 
-export default Matricula;
+export default Cuota;

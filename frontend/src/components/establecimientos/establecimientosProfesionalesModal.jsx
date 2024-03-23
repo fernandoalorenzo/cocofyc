@@ -195,8 +195,8 @@ const ProfesionalesModal = ({ showModal, closeModal, data }) => {
 				<div className="modal-content bg-light ">
 					<div className="modal-header bg-primary">
 						<h5 className="modal-title">
-							Asignar profesionales
-							{data && data.nombre ? (
+							Asignar pofesionales
+							{data && data.establecimiento ? (
 								<span>
 									{" "}
 									a{" "}

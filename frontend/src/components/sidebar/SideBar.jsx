@@ -10,7 +10,6 @@ export default function SideBar() {
 	const userName = user ? user.nombre : null;
 	const isAdmin = user ? user.administrador : false;
 
-
 	// const defaultAvatar = "./../../assets/img/noimage.png";
 	// const [userAvatar, setUserAvatar] = useState(""); // Estado para almacenar el avatar del usuario
 
@@ -145,6 +144,15 @@ export default function SideBar() {
 									<p>Establecimientos</p>
 								</NavLink>
 							</li>
+							<li className="nav-item">
+								<NavLink
+									to="/cuotas"
+									className="nav-link"
+									activeclassname="active">
+									<i className="nav-icon fa-solid fa-gear" />
+									<p>Cuotas</p>
+								</NavLink>
+							</li>
 							{/* <li className="nav-item">
 								<NavLink
 									to="/roles"
@@ -154,44 +162,37 @@ export default function SideBar() {
 									<p>Roles</p>
 								</NavLink>
 							</li> */}
-							{isAdmin && (
-								<li className="nav-item">
-									<NavLink
-										to="/usuarios"
-										className="nav-link"
-										activeclassname="active">
-										<i className="nav-icon fa-regular fa-address-book" />
-										<p>Usuarios</p>
-									</NavLink>
-								</li>
-							)}
 							{/*---------- OPERATORIA ----------*/}
-							<li className="nav-header text-warning">
+							{/* <li className="nav-header text-warning">
 								OPERATORIA
-							</li>
-							<li className="nav-item">
-								<NavLink
-									to="/matriculas"
-									className="nav-link"
-									activeclassname="active">
-									<i className="nav-icon fa-solid fa-gear" />
-									<p>Matrículas</p>
-								</NavLink>
-							</li>
+							</li> */}
 							{/*---------- CONFIGURACION ----------*/}
-							<li className="nav-header text-warning">
-								CONFIGURACION
-							</li>
-							<li className="nav-item">
-								<NavLink
-									to="/parametros"
-									className="nav-link"
-									activeclassname="active">
-									<i className="nav-icon fa-solid fa-gear" />
-									<p>Parámetros</p>
-								</NavLink>
-							</li>
-							<li className="nav-header">EXAMPLES</li>
+							{isAdmin && (
+								<>
+									<li className="nav-header text-warning">
+										CONFIGURACION
+									</li>
+									<li className="nav-item">
+										<NavLink
+											to="/usuarios"
+											className="nav-link"
+											activeclassname="active">
+											<i className="nav-icon fa-regular fa-address-book" />
+											<p>Usuarios</p>
+										</NavLink>
+									</li>
+									<li className="nav-item">
+										<NavLink
+											to="/parametros"
+											className="nav-link"
+											activeclassname="active">
+											<i className="nav-icon fa-solid fa-gear" />
+											<p>Parámetros</p>
+										</NavLink>
+									</li>
+								</>
+							)}
+							{/* <li className="nav-header text-warning">EXAMPLES</li>
 							<li className="nav-item">
 								<a
 									href="pages/widgets.html"
@@ -315,7 +316,6 @@ export default function SideBar() {
 									<p>Kanban Board</p>
 								</a>
 							</li>
-
 							<li className="nav-header">LABELS</li>
 							<li className="nav-item">
 								<a href="#" className="nav-link">
@@ -334,7 +334,7 @@ export default function SideBar() {
 									<i className="nav-icon far fa-circle text-info" />
 									<p>Informational</p>
 								</a>
-							</li>
+							</li> */}
 						</ul>
 					</nav>
 					{/* /.sidebar-menu */}

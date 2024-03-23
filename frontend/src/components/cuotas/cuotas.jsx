@@ -2,20 +2,20 @@ import React, { useState, useEffect, useMemo } from "react";
 import { useTable, useSortBy, usePagination } from "react-table";
 import Swal from "sweetalert2";
 import apiConnection from "../../../../backend/functions/apiConnection";
-import MatriculasModal from "./matriculasModal";
+import CuotasModal from "./cuotasModal";
 
-const Matriculas = () => {
+const Cuotas = () => {
 	const [data, setData] = useState([]);
 	const [filterText, setFilterText] = useState("");
 	const [selectedPageSize, setSelectedPageSize] = useState(10);
-	const [showMatriculasModal, setShowMatriculasModal] = useState(false);
-	const [selectedMatricula, setSelectedMatricula] = useState(null);
+	const [showCuotasModal, setShowCuotasModal] = useState(false);
+	const [selectedCuota, setSelectedCuota] = useState(null);
 	const [modalMode, setModalMode] = useState(""); // Definir modalMode como estado
 	useState(false);
 
-	const fetchMatriculas = async () => {
+	const fetchCuotas = async () => {
 		try {
-			const endpoint = "http://localhost:5000/api/matriculas/";
+			const endpoint = "http://localhost:5000/api/cuotas/";
 			const direction = "";
 			const method = "GET";
 			const body = false;
@@ -39,7 +39,7 @@ const Matriculas = () => {
 
 	// OBTENER LISTA DE REGISTROS
 	useEffect(() => {
-		fetchMatriculas();
+		fetchCuotas();
 	}, []);
 
 	const filteredData = useMemo(() => {
@@ -58,10 +58,10 @@ const Matriculas = () => {
 	}, [data, filterText]);
 
 	const handleEliminar = async (id) => {
-		// Verificar si ya estan generadas las matriculas
+		// Verificar si ya estan generadas las cuotas
 		try {
 			const endpoint =
-				"http://localhost:5000/api/matriculas/matriculas-generadas/";
+				"http://localhost:5000/api/cuotas/cuotas-generadas/";
 			const direction = id;
 			const method = "GET";
 			const body = false;
@@ -81,14 +81,14 @@ const Matriculas = () => {
 			if (data.data.length > 0) {
 				Swal.fire({
 					title: "Advertencia",
-					text: "Esta matrícula tiene registros relacionados a profesionales. No puede ser eliminada.",
+					text: "Esta cuota tiene registros relacionados con profesionales. No puede ser eliminada.",
 					icon: "warning",
 					confirmButtonText: "Continuar",
 				});
 				return;
 			}
 		} catch (error) {
-			console.error("Error al generar las matriculas:", error.message);
+			console.error("Error al generar las cuotas:", error.message);
 		}
 
 		// Confirmar eliminación
@@ -106,7 +106,7 @@ const Matriculas = () => {
 		// Si el usuario confirma la eliminación
 		if (result.isConfirmed) {
 			try {
-				const endpoint = "http://127.0.0.1:5000/api/matriculas/";
+				const endpoint = "http://127.0.0.1:5000/api/cuotas/";
 				const direction = id;
 				const method = "DELETE";
 				const body = false;
@@ -131,9 +131,9 @@ const Matriculas = () => {
 					timer: 2500,
 				});
 
-				// Actualizar la tabla llamando a fetchMatriculas
+				// Actualizar la tabla llamando a fetchCuotas
 				setTimeout(() => {
-					fetchMatriculas();
+					fetchCuotas();
 				}, 2500);
 			} catch (error) {
 				console.error("Error al eliminar el registro:", error.message);
@@ -148,10 +148,10 @@ const Matriculas = () => {
 	};
 
 	const handleGenerar = async (id) => {
-		// Verificar si ya estan generadas las matriculas
+		// Verificar si ya estan generadas las cuotas
 		try {
 			const endpoint =
-				"http://localhost:5000/api/matriculas/matriculas-generadas/";
+				"http://localhost:5000/api/cuotas/cuotas-generadas/";
 			const direction = id;
 			const method = "GET";
 			const body = false;
@@ -171,19 +171,19 @@ const Matriculas = () => {
 			if (data.data.length > 0) {
 				Swal.fire({
 					title: "Error",
-					text: "Las matriculas ya están generadas",
+					text: "Las cuotas ya están generadas",
 					icon: "error",
 					confirmButtonText: "OK",
 				});
 				return;
 			}
 		} catch (error) {
-			console.error("Error al generar las matriculas:", error.message);
+			console.error("Error al generar las cuotas:", error.message);
 		}
 
 		const result = await Swal.fire({
 			title: "¿Estás seguro?",
-			text: "Esta acción generará la matrícula para cada Profesional activo y no podrá deshacerla.",
+			text: "Esta acción generará una cuota para cada Profesional activo y no podrá deshacerla.",
 			icon: "warning",
 			showCancelButton: true,
 			showConfirmButton: true,
@@ -197,11 +197,11 @@ const Matriculas = () => {
 
 		try {
 			const endpoint =
-				"http://localhost:5000/api/profesionales/generar-matriculas/";
+				"http://localhost:5000/api/profesionales/generar-cuotas/";
 			const direction = "";
 			const method = "POST";
 			const body = {
-				matriculaId: id, // Envía el ID de la matrícula seleccionada al backend
+				cuotaId: id, // Envía el ID de la cuota seleccionada al backend
 			};
 			const headers = {
 				"Content-Type": "application/json",
@@ -219,15 +219,15 @@ const Matriculas = () => {
 
 			// Muestra una notificación o mensaje de éxito
 			Swal.fire({
-				title: "Matrículas generadas",
+				title: "Cuotas generadas",
 				text: "Los registros han sido generados correctamente",
 				icon: "success",
 				showConfirmButton: false,
 				timer: 2500,
 			});
 
-			// Actualiza la tabla llamando a fetchMatriculas
-			fetchMatriculas();
+			// Actualiza la tabla llamando a fetchCuotas
+			fetchCuotas();
 		} catch (error) {
 			console.error("Error al generar los registros:", error.message);
 
@@ -243,12 +243,24 @@ const Matriculas = () => {
 	const columns = React.useMemo(
 		() => [
 			{
-				Header: "Matricula",
-				accessor: "matricula",
+				Header: "Cuota",
+				accessor: "cuota",
 			},
 			{
 				Header: "Vencimiento",
 				accessor: "vencimiento",
+				Cell: ({ value }) => {
+					// Dividir la cadena de fecha en año, mes y día
+					const [year, month, day] = value.split("-");
+					// Crear un nuevo objeto de fecha
+					const date = new Date(year, month - 1, day); // Restar 1 al mes porque en JavaScript los meses van de 0 a 11
+					// Obtener el día, mes y año con el formato deseado
+					const formattedDate = `${day.padStart(
+						2,
+						"0"
+					)}-${month.padStart(2, "0")}-${year}`;
+					return formattedDate;
+				},
 			},
 			{
 				Header: "Importe",
@@ -314,7 +326,7 @@ const Matriculas = () => {
 			initialState: {
 				pageIndex: 0,
 				pageSize: selectedPageSize,
-				sortBy: [{ id: "matricula", desc: false }],
+				sortBy: [{ id: "cuota", desc: false }],
 			},
 			autoResetPage: false,
 			autoResetPageSize: false,
@@ -323,10 +335,10 @@ const Matriculas = () => {
 		usePagination
 	);
 
-	const handleMostrar = (matricula, mode) => {
-		setSelectedMatricula(matricula);
+	const handleMostrar = (cuota, mode) => {
+		setSelectedCuota(cuota);
 		setModalMode(mode);
-		setShowMatriculasModal(true);
+		setShowCuotasModal(true);
 	};
 
 	const handleFilterChange = (e) => {
@@ -341,15 +353,15 @@ const Matriculas = () => {
 		updatePageSize(size); // Usar updatePageSize
 	};
 
-	const openMatriculasModal = () => setShowMatriculasModal(true);
+	const openCuotasModal = () => setShowCuotasModal(true);
 
-	const closeMatriculasModal = () => setShowMatriculasModal(false);
+	const closeCuotasModal = () => setShowCuotasModal(false);
 
 	useEffect(() => {
-		if (!showMatriculasModal) {
-			setSelectedMatricula(null);
+		if (!showCuotasModal) {
+			setSelectedCuota(null);
 		}
-	}, [showMatriculasModal]);
+	}, [showCuotasModal]);
 
 	return (
 		<>
@@ -358,7 +370,7 @@ const Matriculas = () => {
 					<div className="container-fluid">
 						<div className="row mb-2">
 							<div className="col-sm-6">
-								<h1 className="m-0">Matriculas</h1>
+								<h1 className="m-0">Cuotas</h1>
 							</div>
 						</div>
 					</div>
@@ -367,7 +379,9 @@ const Matriculas = () => {
 					<section className="content">
 						<div className="container-fluid">
 							<div className="row d-flex mb-2 m-0">
-								<label className="form-label m-0">
+								<label
+									htmlFor="filterText"
+									className="form-label m-0">
 									Opciones de Filtro:
 								</label>
 								<div className="col d-flex justify-content-start border rounded border-primary py-2">
@@ -404,7 +418,7 @@ const Matriculas = () => {
 										id="abrirModalAgregar"
 										onClick={() => {
 											setModalMode("agregar");
-											openMatriculasModal();
+											openCuotasModal();
 										}}>
 										<i className="fa-regular fa-square-plus"></i>{" "}
 										Agregar
@@ -415,7 +429,7 @@ const Matriculas = () => {
 							<table
 								{...getTableProps()}
 								className="table table-hover table-striped table-responsive-sm table-sm table-borderless align-middle">
-								<thead className="bg-primary">
+								<thead className="table-primary">
 									{headerGroups.map((headerGroup) => (
 										<tr
 											{...headerGroup.getHeaderGroupProps()}>
@@ -571,15 +585,15 @@ const Matriculas = () => {
 					</section>
 				</div>
 			</div>
-			<MatriculasModal
-				showModal={showMatriculasModal}
-				closeModal={closeMatriculasModal}
-				data={selectedMatricula}
+			<CuotasModal
+				showModal={showCuotasModal}
+				closeModal={closeCuotasModal}
+				data={selectedCuota}
 				modalMode={modalMode}
-				fetchMatriculas={fetchMatriculas}
+				fetchCuotas={fetchCuotas}
 			/>
 		</>
 	);
 };
 
-export default Matriculas;
+export default Cuotas;

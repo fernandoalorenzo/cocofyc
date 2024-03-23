@@ -42,7 +42,7 @@ const Parametros = sequelize.define(
 			type: DataTypes.STRING(13),
 			allowNull: false,
 		},
-		importe_matricula: {
+		importe_cuota: {
 			type: DataTypes.DECIMAL(20, 2),
 		},
 	},

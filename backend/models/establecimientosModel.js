@@ -33,16 +33,4 @@ const Establecimiento = sequelize.define(
 	}
 );
 
-// Funciones de búsqueda
-// async function buscarEstablecimientos() {
-//     const establecimientos = await Establecimiento.findAll();
-//     return establecimientos;
-// }
-
-// async function buscarEstablecimientoPorId(id) {
-//     const establecimiento = await Establecimiento.findByPk(id);
-//     return establecimiento;
-// }
-
-// export default { Establecimiento, buscarEstablecimientos, buscarEstablecimientoPorId };
 export default Establecimiento;
