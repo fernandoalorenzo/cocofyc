@@ -3,8 +3,7 @@ import { useTable, useSortBy, usePagination } from "react-table";
 import Swal from "sweetalert2";
 import apiConnection from "../../../../backend/functions/apiConnection";
 import ProfesionalesModal from "./profesionalesModal";
-import EstablecimientosModal from "./profesionalesEstablecimientosModal";
-import MovimientosModal from "./profesionalesMovimientosModal";
+import GestionesModal from "./profesionalesGestionModal";
 
 const ProfesionalesTabla = () => {
 	const [data, setData] = useState([]);
@@ -14,9 +13,7 @@ const ProfesionalesTabla = () => {
 	const [selectedProfesional, setSelectedProfesional] = useState(null);
 	const [modalMode, setModalMode] = useState("");
 	const [estadosMatriculas, setEstadosMatriculas] = useState([]);
-	const [showEstablecimientosModal, setShowEstablecimientosModal] =
-		useState(false);
-	const [showMovimientosModal, setShowMovimientosModal] =
+	const [showGestionesModal, setShowGestionesModal] =
 			useState(false);
 	const [showActive, setShowActive] = useState(true);
 	const [showInactive, setShowInactive] = useState(true);
@@ -79,32 +76,6 @@ const ProfesionalesTabla = () => {
 	useEffect(() => {
 		fetchEstadosMatriculas();
 	}, []);
-
-	// const filteredData = useMemo(() => {
-	// 	if (!filterText) return data;
-
-	// 	return data.filter((row) => {
-	// 		const estadoMatricula = estadosMatriculas.find(
-	// 			(estado) => estado.id === row.estado_matricula_id
-	// 		);
-
-	// 		return Object.entries(row).some(([key, cellValue]) => {
-	// 			if (key === "estado_matricula_id" && estadoMatricula) {
-	// 				return estadoMatricula.estado
-	// 					.toLowerCase()
-	// 					.includes(filterText.toLowerCase());
-	// 			}
-	// 			return (
-	// 				key !== "id" &&
-	// 				cellValue &&
-	// 				cellValue
-	// 					.toString()
-	// 					.toLowerCase()
-	// 					.includes(filterText.toLowerCase())
-	// 			);
-	// 		});
-	// 	});
-	// }, [data, filterText, estadosMatriculas]);
 
 	const filteredData = useMemo(() => {
 		if (!filterText && showActive && showInactive) return data;
@@ -293,15 +264,8 @@ const ProfesionalesTabla = () => {
 							<i className="fa-regular fa-trash-can"></i> Eliminar
 						</button>
 						<button
-							className="btn btn-outline-dark bg-secondary mx-2 btn-sm"
-							onClick={() =>
-								mostrarEstablecimientos(row.original)
-							}>
-							<i className="fa-solid fa-spa"></i> Asignar
-						</button>
-						<button
 							className="btn btn-outline-success bg-white border-3 mx-2 btn-sm"
-							onClick={() => mostrarMovimientos(row.original)}>
+							onClick={() => mostrarGestiones(row.original)}>
 							<i className="fa-solid fa-money-check-dollar"></i>{" "}
 							Gestión
 						</button>
@@ -349,22 +313,14 @@ const ProfesionalesTabla = () => {
 		setShowProfesionalesModal(true);
 	};
 
-	const mostrarEstablecimientos = (profesional) => {
+	const mostrarGestiones = (profesional) => {
 		setSelectedProfesional(profesional);
-		setShowEstablecimientosModal(true);
+		setShowGestionesModal(true);
 	};
 
-	const mostrarMovimientos = (profesional) => {
-		setSelectedProfesional(profesional);
-		setShowMovimientosModal(true);
-	};
-
-	const closeEstablecimientosModal = () => {
-		setShowEstablecimientosModal(false);
-	};
-
-	const closeMovimientosModal = () => {
-		setShowMovimientosModal(false);
+	const closeGestionesModal = () => {
+		setShowGestionesModal(false);
+		setSelectedProfesional(null); // Limpiar el estado del profesional seleccionado
 	};
 
 	const handleFilterChange = (e) => {
@@ -393,12 +349,6 @@ const ProfesionalesTabla = () => {
 			setSelectedProfesional(null);
 		}
 	}, [showProfesionalesModal]);
-
-	useEffect(() => {
-		if (!showEstablecimientosModal) {
-			setSelectedProfesional(null);
-		}
-	}, [showEstablecimientosModal]);
 
 	return (
 		<>
@@ -502,7 +452,7 @@ const ProfesionalesTabla = () => {
 							<table
 								{...getTableProps()}
 								className="table table-hover table-striped table-responsive-sm table-sm table-borderless align-middle mt-3">
-								<thead className="table-primary">
+								<thead className="table-dark">
 									{headerGroups.map((headerGroup) => (
 										<tr
 											{...headerGroup.getHeaderGroupProps()}>
@@ -670,14 +620,9 @@ const ProfesionalesTabla = () => {
 				modalMode={modalMode}
 				fetchProfesionales={fetchProfesionales}
 			/>
-			<EstablecimientosModal
-				showModal={showEstablecimientosModal}
-				closeModal={closeEstablecimientosModal}
-				data={selectedProfesional}
-			/>
-			<MovimientosModal
-				showModal={showMovimientosModal}
-				closeModal={closeMovimientosModal}
+			<GestionesModal
+				showModal={showGestionesModal}
+				closeModal={closeGestionesModal}
 				data={selectedProfesional}
 			/>
 		</>

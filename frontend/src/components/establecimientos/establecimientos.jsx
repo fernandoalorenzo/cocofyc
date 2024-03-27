@@ -315,7 +315,7 @@ const EstablecimientosTabla = () => {
 							<table
 								{...getTableProps()}
 								className="table table-hover table-striped table-responsive-sm table-sm table-borderless align-middle">
-								<thead className="table-primary">
+								<thead className="table-dark">
 									{headerGroups.map((headerGroup) => (
 										<tr
 											{...headerGroup.getHeaderGroupProps()}>

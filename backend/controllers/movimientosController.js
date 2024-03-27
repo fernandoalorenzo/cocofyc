@@ -126,6 +126,27 @@ const patchMovimiento = async (request, response) => {
 	});
 };
 
+// Obtener un movimiento por Id Profesional
+const getMovimientosByProfesionalId = async (request, response) => {
+	authenticateToken(request, response, async () => {
+		const idProfesional = request.params.idProfesional;
+		try {
+			const movimientos = await Movimiento.findAll({
+				where: { profesional_id: idProfesional },
+			});
+
+			response.status(201).json({
+				message:
+					"Los datos de movimientos del profesional fueron obtenidos exitosamente!",
+				data: movimientos,
+			});
+		} catch (error) {
+			console.error("Error: " + error.message);
+			response.status(500).send({ message: error.message });
+		}
+	});
+};
+
 export {
 	createMovimiento,
 	getMovimientos,
@@ -133,4 +154,5 @@ export {
 	updateMovimiento,
 	deleteMovimiento,
 	patchMovimiento,
+	getMovimientosByProfesionalId,
 };

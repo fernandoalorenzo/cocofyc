@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import apiConnection from "../../../../backend/functions/apiConnection";
 
-const EstablecimientosModal = ({ showModal, closeModal, data }) => {
+const EstablecimientosTab = ({ profesionalId }) => {
 	const [establecimientos, setEstablecimientos] = useState([]);
 	const [selectedEstablecimiento, setSelectedEstablecimiento] = useState("");
 	const [establecimientosAsignados, setEstablecimientosAsignados] = useState(
@@ -9,7 +9,7 @@ const EstablecimientosModal = ({ showModal, closeModal, data }) => {
 	);
 	const [establecimientosDisponibles, setEstablecimientosDisponibles] =
 		useState([]);
-	
+
 	const obtenerEstablecimientosAsignados = async (profesionalId) => {
 		try {
 			const endpoint =
@@ -50,6 +50,12 @@ const EstablecimientosModal = ({ showModal, closeModal, data }) => {
 		}
 	};
 
+	useEffect(() => {
+		if (profesionalId) {
+			obtenerEstablecimientosAsignados(profesionalId);
+		}
+	}, [profesionalId]);
+
 	const fetchEstablecimientos = async () => {
 		try {
 			const endpoint = "http://localhost:5000/api/establecimientos/";
@@ -69,7 +75,6 @@ const EstablecimientosModal = ({ showModal, closeModal, data }) => {
 				headers
 			);
 
-
 			if (response && response.data) {
 				// Ordenar los establecimientos alfabéticamente por nombre antes de establecer el estado
 				const sortedEstablecimientos = response.data.sort((a, b) =>
@@ -88,26 +93,24 @@ const EstablecimientosModal = ({ showModal, closeModal, data }) => {
 	};
 
 	useEffect(() => {
-		if (data) {
-			fetchEstablecimientos();
-			obtenerEstablecimientosAsignados(data.id);
-		}
-	}, [data]);
+		// Lógica para obtener los establecimientos disponibles desde la API
+		fetchEstablecimientos();
+	}, []); // Se ejecuta solo una vez al montar el componente
+
+	const handleEstablecimientoChange = (event) => {
+		setSelectedEstablecimiento(event.target.value);
+	};
 
 	useEffect(() => {
-		// Filtrar los establecimientos para excluir aquellos ya asignados
+		// Filtrar los establecimientos disponibles excluyendo los establecimientos asignados
 		const disponibles = establecimientos.filter(
 			(est) =>
-				!establecimientosAsignados.some(
+				!establecimientosAsignados.find(
 					(asignado) => asignado.id === est.id
 				)
 		);
 		setEstablecimientosDisponibles(disponibles);
 	}, [establecimientos, establecimientosAsignados]);
-
-	const handleEstablecimientoChange = (e) => {
-		setSelectedEstablecimiento(e.target.value);
-	};
 
 	const handleAsignarClick = async () => {
 		if (selectedEstablecimiento) {
@@ -121,7 +124,7 @@ const EstablecimientosModal = ({ showModal, closeModal, data }) => {
 					Authorization: localStorage.getItem("token"),
 				};
 				const body = {
-					profesionalId: data.id,
+					profesionalId: profesionalId,
 					establecimientoId: selectedEstablecimiento,
 				};
 
@@ -134,7 +137,7 @@ const EstablecimientosModal = ({ showModal, closeModal, data }) => {
 				);
 
 				if (response) {
-					obtenerEstablecimientosAsignados(data.id);
+					obtenerEstablecimientosAsignados(profesionalId);
 					setSelectedEstablecimiento(""); // Limpiamos el select
 				} else {
 					console.error(
@@ -152,7 +155,7 @@ const EstablecimientosModal = ({ showModal, closeModal, data }) => {
 		try {
 			const endpoint =
 				"http://localhost:5000/api/establecimientos/desvincular-establecimiento/";
-			const direction = `${data.id}/${establecimientoId}`;
+			const direction = `${profesionalId}/${establecimientoId}`;
 			const method = "DELETE";
 			const headers = {
 				"Content-Type": "application/json",
@@ -170,7 +173,7 @@ const EstablecimientosModal = ({ showModal, closeModal, data }) => {
 
 			if (response) {
 				// Si la desvinculación fue exitosa, actualizar el estado para reflejar los cambios
-				obtenerEstablecimientosAsignados(data.id);
+				obtenerEstablecimientosAsignados(profesionalId);
 				setSelectedEstablecimiento(""); // Limpiamos el select
 			} else {
 				// Manejar errores si la desvinculación no fue exitosa
@@ -182,107 +185,71 @@ const EstablecimientosModal = ({ showModal, closeModal, data }) => {
 	};
 
 	return (
-		<div
-			className={`modal fade ${showModal ? "show" : ""}`}
-			tabIndex="-1"
-			style={{ display: showModal ? "block" : "none" }}
-			id="staticBackdrop"
-			data-bs-target="#staticBackdrop"
-			data-bs-backdrop="static"
-			data-bs-keyboard="false"
-			aria-labelledby="staticBackdropLabel"
-			aria-hidden={!showModal}>
-			<div className="modal-dialog modal-xl">
-				<div className="modal-content bg-secondary">
-					<div className="modal-header bg-primary">
-						<h5 className="modal-title">
-							Asignar establecimientos
-							{data && data.nombre ? (
-								<span>
-									{" "}
-									a{" "}
-									<span className="text-warning">
-										{data.nombre}
-									</span>
-								</span>
-							) : (
-								<span></span>
-							)}
-						</h5>
+		<div>
+			<div className="modal-body">
+				<div className="row mb-3 align-items-center">
+					<div className="col-6">
+						<select
+							className="form-select"
+							id="establecimiento"
+							onChange={handleEstablecimientoChange}
+							value={selectedEstablecimiento}>
+							<option value="">
+								Seleccione un establecimiento
+							</option>
+							{establecimientosDisponibles.map((est) => (
+								<option key={est.id} value={est.id}>
+									{est.establecimiento}
+								</option>
+							))}
+						</select>
+					</div>
+					<div className="col-6">
 						<button
 							type="button"
-							className="btn-close"
-							aria-label="Close"
-							onClick={closeModal}></button>
+							className="btn btn-primary btn-sm"
+							onClick={handleAsignarClick}>
+							<i className="fa-solid fa-link"></i> Asignar
+						</button>
 					</div>
-					<div className="modal-body">
-						<div className="row mb-3 align-items-center">
-							<div className="col-6">
-								<select
-									className="form-select"
-									id="establecimiento"
-									onChange={handleEstablecimientoChange}
-									value={selectedEstablecimiento}>
-									<option value="">
-										Selecciona un establecimiento
-									</option>
-									{establecimientosDisponibles.map((est) => (
-										<option key={est.id} value={est.id}>
-											{est.establecimiento}
-										</option>
-									))}
-								</select>
-							</div>
-							<div className="col-6">
-								<button
-									type="button"
-									className="btn btn-primary btn-sm"
-									onClick={handleAsignarClick}>
-									<i className="fa-solid fa-link"></i> Asignar
-								</button>
-							</div>
-						</div>
-						<div className="row">
-							<table className="table bg-light table-hover table-striped table-responsive-sm table-sm table-borderless align-middle ">
-								<thead className="bg-primary">
-									<tr>
-										<th>Nombre</th>
-										<th>Domicilio</th>
-										<th>Localidad</th>
-										<th>Acciones</th>
-									</tr>
-								</thead>
-								<tbody>
-									{establecimientosAsignados.map((est) => (
-										<tr
-											className="align-items-center align-middle"
-											key={est.id}>
-											<td>{est.establecimiento}</td>
-											<td>{est.domicilio}</td>
-											<td>{est.localidad}</td>
-											<td>
-												<button
-													type="button"
-													className="btn btn-danger btn-sm"
-													onClick={() =>
-														handleDesvincularClick(
-															est.id
-														)
-													}>
-													<i className="fa-solid fa-link-slash"></i>{" "}
-													Desvincular
-												</button>
-											</td>
-										</tr>
-									))}
-								</tbody>
-							</table>
-						</div>
-					</div>
+				</div>
+				<div className="row">
+					<table className="table bg-light table-hover table-striped table-responsive-sm table-sm table-borderless align-middle ">
+						<thead className="table-dark">
+							<tr>
+								<th>Nombre</th>
+								<th>Domicilio</th>
+								<th>Localidad</th>
+								<th>Acciones</th>
+							</tr>
+						</thead>
+						<tbody>
+							{establecimientosAsignados.map((est) => (
+								<tr
+									className="align-items-center align-middle"
+									key={est.id}>
+									<td>{est.establecimiento}</td>
+									<td>{est.domicilio}</td>
+									<td>{est.localidad}</td>
+									<td>
+										<button
+											type="button"
+											className="btn btn-danger btn-sm"
+											onClick={() =>
+												handleDesvincularClick(est.id)
+											}>
+											<i className="fa-solid fa-link-slash"></i>{" "}
+											Desvincular
+										</button>
+									</td>
+								</tr>
+							))}
+						</tbody>
+					</table>
 				</div>
 			</div>
 		</div>
 	);
 };
 
-export default EstablecimientosModal;
+export default EstablecimientosTab;

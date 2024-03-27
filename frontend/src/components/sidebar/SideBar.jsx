@@ -33,7 +33,7 @@ export default function SideBar() {
 			{/* <!-- Main Sidebar Container --> */}
 			<aside className="main-sidebar sidebar-dark-primary elevation-4">
 				{/* Brand Logo */}
-				<Link to="/" className="brand-link">
+				<Link to="/" className="brand-link text-decoration-none ">
 					<Logo />
 					<span className="brand-text font-weight-light ms-3">
 						CoCoFyC
@@ -49,7 +49,9 @@ export default function SideBar() {
 								className="img-circle elevation-2"
 								alt="Avatar"
 							/>
-							<a className="ms-3">{userName}</a>
+							<a className="text-decoration-none ms-3">
+								{userName}
+							</a>
 						</div>
 						<div className="info">
 							<div className="right d-flex align-items-center">

@@ -1,6 +1,8 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../config/sequelizeConfig.js";
 import Usuario from "./usuariosModel.js";
+import MedioDePago from "./medios_de_pagoModel.js";
+import Profesional from "./profesionalesModel.js";
 
 const Movimientos = sequelize.define(
 	"tb_movimientos",
@@ -11,6 +13,7 @@ const Movimientos = sequelize.define(
 			primaryKey: true,
 		},
 		user_id: { type: DataTypes.STRING(36) },
+		profesional_id: { type: DataTypes.STRING(36) },
 		tipo_operacion: { type: DataTypes.STRING(7), allowNull: false },
 		fecha: { type: DataTypes.DATEONLY, allowNull: false },
 		importe: { type: DataTypes.DECIMAL(20, 2), allowNull: false },
@@ -26,6 +29,7 @@ const Movimientos = sequelize.define(
 
 // Definir relaciones
 Movimientos.belongsTo(Usuario, { foreignKey: 'user_id' }); // Un movimiento pertenece a un usuario
-// Movimientos.belongsTo(Medio, { foreignKey: 'medio_id' }); // Un movimiento pertenece a un medio
+Movimientos.belongsTo(MedioDePago, { foreignKey: "medio_id" }); // Un movimiento pertenece a un medio
+Movimientos.belongsTo(Profesional, { foreignKey: "profesional_id" }); // Un movimiento pertenece a un profesional
 
 export default Movimientos;

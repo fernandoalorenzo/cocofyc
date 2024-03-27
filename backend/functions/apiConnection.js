@@ -4,10 +4,27 @@ const apiConnection = async (endpoint, direction, method, body, headers) => {
 		const url = new URL(endpoint);
 		url.pathname += direction;
 
+		
 		// Verifica si existe la propiedad 'Authorization' en el objeto de headers
 		if (!headers || !headers.Authorization) {
 			throw new Error("Token no encontrado en los encabezados");
 		}
+		
+		// if (endpoint == "http://localhost:5000/api/movimientos/profesional/") {
+		// 	console.log(
+		// 		"***************************************************************************"
+		// 	);
+		// 	console.log("endpoint: ", endpoint);
+		// 	console.log("direction: ", direction);
+		// 	console.log("method: ", method);
+		// 	console.log("body: ", body);
+		// 	console.log("headers: ", headers);
+		// 	console.log("url: ", url.href);
+		// 	console.log(
+		// 		"***************************************************************************"
+		// 	);
+		// 	return;
+		// }
 
 		const response = await fetch(url.href, {
 			method,

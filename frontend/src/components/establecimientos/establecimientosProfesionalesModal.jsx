@@ -243,7 +243,7 @@ const ProfesionalesModal = ({ showModal, closeModal, data }) => {
 						</div>
 						<div className="row">
 							<table className="table table-hover table-striped table-responsive-sm table-sm table-borderless align-middle">
-								<thead className="bg-primary">
+								<thead className="table-dark">
 									<tr>
 										<th>Nombre</th>
 										<th>Domicilio</th>

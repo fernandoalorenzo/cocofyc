@@ -6,8 +6,10 @@ import {
 	Route,
 	useNavigate,
 } from "react-router-dom";
+
 import AuthHandler from "./utils/AuthHandler.jsx";
 import LoginForm from "./components/users/LoginForm";
+
 import Perfil from "./components/users/PerfilForm.jsx";
 import UserRegister from "./components/users/UserRegister";
 import Footer from "./components/footer/Footer";
