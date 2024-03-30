@@ -5,8 +5,8 @@ const Profesional = sequelize.define(
 	"tb_profesionales",
 	{
 		id: {
-			type: DataTypes.UUID, // Tipo UUID
-			defaultValue: DataTypes.UUIDV4, // Valor por defecto generado por la función UUIDV4
+			type: DataTypes.UUID,
+			defaultValue: DataTypes.UUIDV4,
 			primaryKey: true,
 		},
 		nombre: { type: DataTypes.STRING(50), allowNull: false },
@@ -14,7 +14,7 @@ const Profesional = sequelize.define(
 		cuit: { type: DataTypes.STRING(13), allowNull: true },
 		telefono: DataTypes.STRING(30),
 		email: DataTypes.STRING(50),
-		matricula: { type: DataTypes.STRING(10), allowNull: false },
+		matricula: { type: DataTypes.STRING(10) },
 		domicilio: DataTypes.STRING(50),
 		localidad: DataTypes.STRING(50),
 		fecha_nacimiento: DataTypes.DATEONLY,
@@ -24,7 +24,7 @@ const Profesional = sequelize.define(
 			allowNull: false,
 			defaultValue: false,
 		},
-		estado_matricula_id: DataTypes.CHAR(36),
+		estado_matricula_id: DataTypes.UUID,
 	},
 	{
 		timestamps: true,

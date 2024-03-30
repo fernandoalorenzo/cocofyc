@@ -3,10 +3,13 @@ import { useForm } from "react-hook-form";
 import Swal from "sweetalert2";
 import apiConnection from "../../../../backend/functions/apiConnection";
 
-const CargarPagosTab = ({ closeModal, data }) => {
+const CargarPagosTab = ({ profesionalId }) => {
 	const [archivoSeleccionado, setArchivoSeleccionado] = useState(null);
-    const [profesionalId, setProfesionalId] = useState(null);
-    const [mediosDePago, setMediosDePago] = useState([]);
+	const [mediosDePago, setMediosDePago] = useState([]);
+
+	// const [cuotas, setCuotas] = useState([]);
+	const [selectedCuota, setSelectedCuota] = useState("");
+	const [cuotasGeneradas, setCuotasGeneradas] = useState([]);
 
 	const user = JSON.parse(localStorage.getItem("user"));
 
@@ -68,12 +71,19 @@ const CargarPagosTab = ({ closeModal, data }) => {
 		fetchMediosDePago();
 	}, []);
 
+	useEffect(() => {
+		fetchCuotasGeneradas();
+		// Aquí llamamos a fetchCuotas al cargar el componente para obtener las cuotas disponibles
+		fetchCuotasGeneradas();
+	}, [profesionalId]);
+
 	const onSubmitCargarPago = async (data) => {
 		// Agregar el campo tipo_operacion con el valor "INGRESO"
 		const newData = {
 			...data,
 			tipo_operacion: "INGRESO",
 			user_id: user.id,
+			profesional_id: profesionalId,
 		};
 		try {
 			const endpoint = "http://localhost:5000/api/movimientos/";
@@ -99,6 +109,12 @@ const CargarPagosTab = ({ closeModal, data }) => {
 				icon: "success",
 				timer: 2500,
 			});
+
+			// Asignar el ID del movimiento al campo movimiento_id de la cuota seleccionada
+			if (selectedCuota) {
+				await asignarMovimientoACuota(selectedCuota, response.data.id);
+			}
+			
 			// Resetear el formulario después de guardar los cambios
 			reset();
 		} catch (error) {
@@ -111,16 +127,131 @@ const CargarPagosTab = ({ closeModal, data }) => {
 		}
 	};
 
+	const asignarMovimientoACuota = async (cuotaId, movimientoId) => {
+		console.log("movimientoId:", movimientoId, " / cuotaId:", cuotaId);
+		try {
+			const endpoint = `http://localhost:5000/api/profesionales/asignar-movimiento-a-cuota/`;
+			const direction = `${cuotaId}/${movimientoId}`;
+			const method = "PATCH";
+			const body = { id: cuotaId, movimiento_id: movimientoId };
+			const headers = {
+				"Content-Type": "application/json",
+				Authorization: localStorage.getItem("token"),
+			};
+
+			const response = await apiConnection(
+				endpoint,
+				direction,
+				method,
+				body,
+				headers
+			);
+
+			if (response) {
+				console.log("Asignación exitosa");
+			} else {
+				console.error(
+					"Error al asignar movimiento a cuota: ",
+					response.statusText
+				);
+			}
+		} catch (error) {
+			console.error("Error al asignar movimiento a cuota: ", error);
+		}
+	};
+
 	const handleFileChange = (event) => {
 		const file = event.target.files[0];
 		setArchivoSeleccionado(file);
 	};
 
 	useEffect(() => {
-		if (data) {
-			setProfesionalId(data.id);
+		if (profesionalId) {
+			fetchCuotasGeneradas(profesionalId);
 		}
-	}, [data]);
+	}, [profesionalId]);
+	
+	const fetchCuotasGeneradas = async (profesionalId) => {
+		try {
+			const endpoint = `http://localhost:5000/api/profesionales/cuotas-generadas-profesional/${profesionalId}`;
+			const direction = "";
+			const method = "GET";
+			const body = false;
+			const headers = {
+				"Content-Type": "application/json",
+				Authorization: localStorage.getItem("token"),
+			};
+
+			const response = await apiConnection(
+				endpoint,
+				direction,
+				method,
+				body,
+				headers
+			);
+
+			if (response && response.data) {
+				// Para cada cuota generada, obtenemos los detalles de la cuota
+				const cuotasWithDetails = await Promise.all(
+					response.data.map(async (cuotaGenerada) => {
+						const cuotaDetails = await fetchCuotaDetails(
+							cuotaGenerada.cuota_id
+						);
+						return { ...cuotaGenerada, ...cuotaDetails };
+					})
+				);
+
+				// Filtrar las cuotas generadas que no tienen movimiento_id
+				const cuotasSinMovimiento = cuotasWithDetails.filter(
+					(cuota) => !cuota.movimiento_id
+				);
+				setCuotasGeneradas(cuotasSinMovimiento);
+			} else {
+				console.error(
+					"Error fetching cuotas generadas: ",
+					response.statusText
+				);
+			}
+		} catch (error) {
+			console.error("Error fetching cuotas generadas: ", error);
+		}
+	};
+
+	const fetchCuotaDetails = async (cuotaId) => {
+		try {
+			const endpoint = `http://localhost:5000/api/cuotas/${cuotaId}`;
+			const direction = "";
+			const method = "GET";
+			const body = false;
+			const headers = {
+				"Content-Type": "application/json",
+				Authorization: localStorage.getItem("token"),
+			};
+
+			const response = await apiConnection(
+				endpoint,
+				direction,
+				method,
+				body,
+				headers
+			);
+
+			if (response && response.data) {
+				return {
+					cuota: response.data.cuota,
+					vencimiento: response.data.vencimiento,
+					importe: response.data.importe,
+				};
+			} else {
+				console.error(
+					"Error fetching cuota details: ",
+					response.statusText
+				);
+			}
+		} catch (error) {
+			console.error("Error fetching cuota details: ", error);
+		}
+	};
 
 	return (
 		<div className="container-fluid">
@@ -223,15 +354,37 @@ const CargarPagosTab = ({ closeModal, data }) => {
 							/>
 						)}
 					</div>
+					<div className="row mt-2">
+						{/* cuotas generadas para asignar al pago */}
+						<div className="col-6">
+							<label htmlFor="cuotas">Asignar Pago a Cuota</label>
+							<select
+								className="form-select"
+								id="cuotasGeneradas"
+								onChange={(e) =>
+									setSelectedCuota(e.target.value)
+								}
+								value={selectedCuota}
+								{...register("cuotasGeneradas")}>
+								<option value="">Seleccione una Cuota</option>
+								{cuotasGeneradas.map((cuotaGenerada) => (
+									<option
+										key={cuotaGenerada.id}
+										value={cuotaGenerada.id}>
+										{cuotaGenerada.cuota}
+									</option>
+								))}
+							</select>
+							{errors.concepto?.type === "required" && (
+								<span className="row text-danger m-1">
+									Este campo es requerido
+								</span>
+							)}
+						</div>
+					</div>
 				</div>
 				<div className="my-4 border-top border-secondary border-opacity-25">
 					<div className="row mt-3 mb-0 d-flex justify-content-end">
-						<button
-							type="button"
-							className="btn btn-secondary col-md-2 mx-2"
-							onClick={closeModal}>
-							Cancelar
-						</button>
 						<button
 							type="submit"
 							className="btn btn-primary col-md-2 mx-2">

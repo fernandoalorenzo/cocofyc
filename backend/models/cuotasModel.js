@@ -9,7 +9,7 @@ const Cuota = sequelize.define(
 			defaultValue: DataTypes.UUIDV4,
 			primaryKey: true,
 		},
-		user_id: { type: DataTypes.STRING(36), allowNull: false },
+		user_id: { type: DataTypes.UUID, allowNull: false },
 		cuota: { type: DataTypes.STRING(10), allowNull: false, unique: true },
 		vencimiento: { type: DataTypes.DATEONLY, allowNull: false },
 		importe: { type: DataTypes.DECIMAL(20, 2), allowNull: false },

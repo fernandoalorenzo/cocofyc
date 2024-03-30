@@ -13,8 +13,7 @@ const ProfesionalesTabla = () => {
 	const [selectedProfesional, setSelectedProfesional] = useState(null);
 	const [modalMode, setModalMode] = useState("");
 	const [estadosMatriculas, setEstadosMatriculas] = useState([]);
-	const [showGestionesModal, setShowGestionesModal] =
-			useState(false);
+	const [showGestionesModal, setShowGestionesModal] = useState(false);
 	const [showActive, setShowActive] = useState(true);
 	const [showInactive, setShowInactive] = useState(true);
 
@@ -176,6 +175,98 @@ const ProfesionalesTabla = () => {
 		}
 	};
 
+	// ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ OBTENER MOVIMIENTOS DEL PROFESIONAL ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+	const [movimientos, setMovimientos] = useState([]);
+	const fetchMovimientos = async (profesional) => {
+		const profesionalId = profesional.id;
+		try {
+			const endpoint =
+				"http://localhost:5000/api/movimientos/profesional/";
+			const direction = profesionalId;
+			const method = "GET";
+			const body = false;
+			const headers = {
+				"Content-Type": "application/json",
+				Authorization: localStorage.getItem("token"),
+			};
+
+			const response = await apiConnection(
+				endpoint,
+				direction,
+				method,
+				body,
+				headers
+			);
+
+			if (response.data && response.data.length > 0) {
+				const movimientos = [];
+
+				// Filtrar los movimientos por tipo de operación "INGRESO"
+				const movimientosIngresos = response.data.filter(
+					(movimiento) => movimiento.tipo_operacion === "INGRESO"
+				);
+
+				// Iterar sobre los movimientos filtrados y realizar el fetch del medio de pago
+				for (const movimiento of movimientosIngresos) {
+					try {
+						const medio = await fetchMedioDePago(
+							movimiento.medio_id
+						);
+						const ingreso = {
+							fecha: movimiento.fecha,
+							importe: movimiento.importe,
+							medio: medio,
+							concepto: movimiento.concepto,
+						};
+						movimientos.push(ingreso);
+					} catch (error) {
+						// Manejar errores de fetchMedioDePago, si es necesario
+						console.error("Error al obtener medio de pago:", error);
+					}
+				}
+				setMovimientos(movimientos);
+			} else {
+				setMovimientos([]);
+			}
+		} catch (error) {
+			console.error("Error:", error.message);
+			Swal.fire({
+				icon: "error",
+				title: "Error al cargar datos",
+				text: "Hubo un problema al obtener los datos de los movimientos.",
+			});
+		}
+	};
+
+	const fetchMedioDePago = async (medioId) => {
+		try {
+			const endpoint = `http://localhost:5000/api/mediosdepago/${medioId}`;
+			const direction = "";
+			const method = "GET";
+			const body = false;
+			const headers = {
+				"Content-Type": "application/json",
+				Authorization: localStorage.getItem("token"),
+			};
+
+			const response = await apiConnection(
+				endpoint,
+				direction,
+				method,
+				body,
+				headers
+			);
+
+			const mediosDePago = response.data;
+
+			return mediosDePago.medio;
+		} catch (error) {
+			console.error("Error:", error.message);
+			return "Nombre de medio no encontrado";
+		}
+	};
+	// ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ OBTENER MOVIMIENTOS DEL PROFESIONAL ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+
 	const columns = React.useMemo(
 		() => [
 			{
@@ -311,16 +402,19 @@ const ProfesionalesTabla = () => {
 		setSelectedProfesional(profesional);
 		setModalMode(mode);
 		setShowProfesionalesModal(true);
+
 	};
 
 	const mostrarGestiones = (profesional) => {
 		setSelectedProfesional(profesional);
+		fetchMovimientos(profesional);
 		setShowGestionesModal(true);
 	};
 
 	const closeGestionesModal = () => {
 		setShowGestionesModal(false);
-		setSelectedProfesional(null); // Limpiar el estado del profesional seleccionado
+		setSelectedProfesional(null);
+		setMovimientos([]);
 	};
 
 	const handleFilterChange = (e) => {
@@ -372,8 +466,6 @@ const ProfesionalesTabla = () => {
 									Opciones de Filtro:
 								</label>
 								<div className="col d-flex justify-content-start border rounded border-primary pt-2 ms-1">
-									{/* <div className="col-1"> */}
-									{/* </div> */}
 									<div className="col-2">
 										<input
 											type="checkbox"
@@ -624,6 +716,7 @@ const ProfesionalesTabla = () => {
 				showModal={showGestionesModal}
 				closeModal={closeGestionesModal}
 				data={selectedProfesional}
+				movimientos={movimientos}
 			/>
 		</>
 	);

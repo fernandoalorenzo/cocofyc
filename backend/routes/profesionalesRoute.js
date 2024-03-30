@@ -12,7 +12,15 @@ import {
 	desvincularProfesional,
 	getProfesionalesActivos,
 } from "../controllers/profesionalesController.js";
-import { generarProfesionalesCuotas } from "../controllers/profesionalesCuotasController.js";
+
+import {
+	generarProfesionalesCuotas,
+	getCuotasGeneradasById,
+	getCuotasGeneradasByProfesional,
+	generarProfesionalesCuota,
+	asignarMovimientoACuota,
+} from "../controllers/profesionalesCuotasController.js";
+
 import authenticateToken from "../functions/tokenVerify.js";
 
 const profesionalesRouter = express.Router();
@@ -37,26 +45,60 @@ profesionalesRouter.patch("/:id", authenticateToken, patchProfesional);
 // profesionalesRouter.patch("/:id", patchProfesional);
 
 // Ruta para obtener los profesionales asignados a un establecimiento específico
-profesionalesRouter.get("/asignados/:id", authenticateToken, 			getProfesionalesAsignados);
+profesionalesRouter.get(
+	"/asignados/:id",
+	authenticateToken,
+	getProfesionalesAsignados
+);
 
 // Ruta para asignar un profesional a un establecimiento
 profesionalesRouter.post(
 	"/asignar-profesional",
 	authenticateToken,
 	asignarProfesional
-	);
-	
+);
+
+// Ruta para asignar un movimiento a una cuota
+profesionalesRouter.patch(
+	"/asignar-movimiento-a-cuota/:id_cuota/:id_movimiento",
+	authenticateToken,
+	asignarMovimientoACuota
+);
+
 // Ruta para desvincular un profesional de un establecimiento
 profesionalesRouter.delete(
 	"/desvincular-profesional/:profesionalId/:establecimientoId",
 	authenticateToken,
 	desvincularProfesional
 );
-	
+
+// Ruta para generar cuotas a todos los profesionales activos
 profesionalesRouter.post(
 	"/generar-cuotas/",
 	authenticateToken,
 	generarProfesionalesCuotas
 );
-		
-export default profesionalesRouter;		
+
+// Ruta para generar una cuota a un profesional
+profesionalesRouter.post(
+	"/generar-cuota/",
+	authenticateToken,
+	generarProfesionalesCuota
+);
+
+// Ruta para obtener las cuotas generadas por un id de una cuota
+profesionalesRouter.get(
+	"/cuotas-generadas/:id",
+	authenticateToken,
+	getCuotasGeneradasById
+);
+
+// Ruta para obtener las cuotas generadas por un id de un profesional
+profesionalesRouter.get(
+	"/cuotas-generadas-profesional/:id",
+	authenticateToken,
+	getCuotasGeneradasByProfesional
+);
+
+
+export default profesionalesRouter;

@@ -7,16 +7,16 @@ const Profesionales_Establecimientos = sequelize.define(
 	"tb_profesionales_establecimientos",
 	{
 		id: {
-			type: DataTypes.UUID, // Tipo UUID
-			defaultValue: DataTypes.UUIDV4, // Valor por defecto generado por la función UUIDV4
+			type: DataTypes.UUID,
+			defaultValue: DataTypes.UUIDV4,
 			primaryKey: true,
 		},
 		profesional_id: {
-			type: DataTypes.CHAR(36),
+			type: DataTypes.UUID,
 			allowNull: false,
 		},
 		establecimiento_id: {
-			type: DataTypes.CHAR(36),
+			type: DataTypes.UUID,
 			allowNull: false,
 		},
 	},

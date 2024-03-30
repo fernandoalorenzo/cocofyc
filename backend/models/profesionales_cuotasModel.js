@@ -7,20 +7,24 @@ const Profesionales_Cuotas = sequelize.define(
 	"tb_profesionales_cuotas",
 	{
 		id: {
-			type: DataTypes.UUID, // Tipo UUID
-			defaultValue: DataTypes.UUIDV4, // Valor por defecto generado por la función UUIDV4
+			type: DataTypes.UUID,
+			defaultValue: DataTypes.UUIDV4,
 			primaryKey: true,
 		},
+		user_id: {
+			type: DataTypes.UUID,
+			allowNull: false,
+		},
 		profesional_id: {
-			type: DataTypes.CHAR(36),
+			type: DDataTypes.UUID,
 			allowNull: false,
 		},
 		cuota_id: {
-			type: DataTypes.CHAR(36),
+			type: DDataTypes.UUID,
 			allowNull: false,
 		},
 		movimiento_id: {
-			type: DataTypes.CHAR(36),
+			type: DDataTypes.UUID,
 		},
 	},
 	{

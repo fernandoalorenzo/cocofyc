@@ -187,8 +187,8 @@ const EstablecimientosTab = ({ profesionalId }) => {
 	return (
 		<div>
 			<div className="modal-body">
-				<div className="row mb-3 align-items-center">
-					<div className="col-6">
+				<div className="row mb-3 align-items-center px-0">
+					<div className="col-6 px-0">
 						<select
 							className="form-select"
 							id="establecimiento"
@@ -214,8 +214,8 @@ const EstablecimientosTab = ({ profesionalId }) => {
 					</div>
 				</div>
 				<div className="row">
-					<table className="table bg-light table-hover table-striped table-responsive-sm table-sm table-borderless align-middle ">
-						<thead className="table-dark">
+					<table className="table table-hover table-responsive-sm table-sm align-middle">
+						<thead className="table-warning">
 							<tr>
 								<th>Nombre</th>
 								<th>Domicilio</th>

@@ -3,212 +3,27 @@ import { useTable, useSortBy, useFilters, usePagination } from "react-table";
 import { useForm } from "react-hook-form";
 import Swal from "sweetalert2";
 import apiConnection from "../../../../backend/functions/apiConnection";
-import CargarPagosTab from "./profesionalesPagosTab";
+import CargarPagosTab from "./tabProfesionalesPagos";
+import MovimientosTab from "./tabProfesionalesMovimientos";
+import EstablecimientosTab from "./tabProfesionalesEstablecimientos.jsx";
+import GenerarCuotaTab from "./tabProfesionalesGenerarCuota.jsx";
+import DenunciasTab from "./tabProfesionalesDenuncias.jsx";
 
-const GestionesModal = ({ showModal, closeModal, data }) => {
-	const [profesionalId, setProfesionalId] = useState(null);
-	const [movimientos, setMovimientos] = useState([]);
-	const [activeTab, setActiveTab] = useState("cargarPago");
-	const [loading, setLoading] = useState(false);
-	const [globalFilter, setGlobalFilter] = useState("");
-
+const GestionesModal = ({ showModal, closeModal, data, movimientos }) => {
+	const profesionalId = data ? data.id : null;
+	const [activeTab, setActiveTab] = useState("cargarPago"); // Estado local para controlar la pestaña activa
 	const user = JSON.parse(localStorage.getItem("user")) || {};
 
 	useEffect(() => {
-		if (showModal && data && data.id) {
-			fetchMovimientos(data.id);
-		} else {
-			setMovimientos([]);
-		}
-	}, [showModal, data]);
-
-	useEffect(() => {
-		if (data && data.id) {
-			setProfesionalId(data.id);
-		}
-	}, [data]);
-
-	useEffect(() => {
 		if (showModal) {
+			// Cuando el modal se muestra, establece la pestaña "Cargar Pago" como activa
 			setActiveTab("cargarPago");
-		} else {
-			setActiveTab("cargarPago");
-			setProfesionalId("");
-			setMovimientos([]);
 		}
 	}, [showModal]);
 
 	const handleTabChange = (tabId) => {
-		setActiveTab(tabId);
+		setActiveTab(tabId); // Función para cambiar la pestaña activa
 	};
-
-	useEffect(() => {
-		if (profesionalId) {
-			fetchMovimientos();
-		}
-	}, [profesionalId]);
-
-	useEffect(() => {
-		if (profesionalId) {
-			fetchMovimientos();
-		}
-	}, [showModal]);
-
-	const fetchMovimientos = async () => {
-		try {
-			const endpoint =
-				"http://localhost:5000/api/movimientos/profesional/";
-			const direction = profesionalId;
-			const method = "GET";
-			const body = false;
-			const headers = {
-				"Content-Type": "application/json",
-				Authorization: localStorage.getItem("token"),
-			};
-
-			const response = await apiConnection(
-				endpoint,
-				direction,
-				method,
-				body,
-				headers
-			);
-
-			if (response.data && response.data.length > 0) {
-				const movimientos = [];
-
-				// Filtrar los movimientos por tipo de operación "INGRESO"
-				const movimientosIngresos = response.data.filter(
-					(movimiento) => movimiento.tipo_operacion === "INGRESO"
-				);
-
-				// Iterar sobre los movimientos filtrados y realizar el fetch del medio de pago
-				for (const movimiento of movimientosIngresos) {
-					try {
-						const medio = await fetchMedioDePago(
-							movimiento.medio_id
-						);
-						const ingreso = {
-							fecha: movimiento.fecha,
-							importe: movimiento.importe,
-							medio: medio,
-							concepto: movimiento.concepto,
-						};
-						movimientos.push(ingreso);
-					} catch (error) {
-						// Manejar errores de fetchMedioDePago, si es necesario
-						console.error("Error al obtener medio de pago:", error);
-					}
-				}
-				setMovimientos(movimientos);
-			} else {
-				setMovimientos([]);
-			}
-		} catch (error) {
-			console.error("Error:", error.message);
-			Swal.fire({
-				icon: "error",
-				title: "Error al cargar datos",
-				text: "Hubo un problema al obtener los datos de los movimientos.",
-			});
-		}
-	};
-
-	const fetchMedioDePago = async (medioId) => {
-		try {
-			const endpoint = `http://localhost:5000/api/mediosdepago/${medioId}`;
-			const direction = "";
-			const method = "GET";
-			const body = false;
-			const headers = {
-				"Content-Type": "application/json",
-				Authorization: localStorage.getItem("token"),
-			};
-
-			const response = await apiConnection(
-				endpoint,
-				direction,
-				method,
-				body,
-				headers
-			);
-
-			const mediosDePago = response.data;
-
-			return mediosDePago.medio;
-		} catch (error) {
-			console.error("Error:", error.message);
-			return "Nombre de medio no encontrado";
-		}
-	};
-
-	const columns = useMemo(
-		() => [
-			{
-				Header: "Fecha",
-				accessor: "fecha",
-			},
-			{
-				Header: "Importe",
-				accessor: "importe",
-			},
-			{
-				Header: "Medio de Pago",
-				accessor: "medio",
-			},
-			{
-				Header: "Concepto",
-				accessor: "concepto",
-			},
-		],
-		[movimientos]
-	);
-
-	const {
-		getTableProps,
-		getTableBodyProps,
-		headerGroups,
-		rows,
-		prepareRow,
-		state: { pageIndex, pageSize },
-	} = useTable(
-		{
-			columns,
-			data: movimientos,
-			initialState: {
-				sortBy: [{ id: "fecha", desc: true }],
-			},
-			filterTypes: {
-				text: (rows, id, filterValue) => {
-					return rows.filter((row) => {
-						const rowValue = row.values[id];
-						return rowValue !== undefined
-							? String(rowValue)
-									.toLowerCase()
-									.includes(filterValue.toLowerCase())
-							: true;
-					});
-				},
-			},
-			autoResetFilters: false, // Deshabilitar el reinicio automático de los filtros
-		},
-		useFilters,
-		useSortBy,
-		usePagination
-	);
-
-	const handleFilterChange = (e) => {
-		const value = e.target.value || undefined; // Si el valor es vacío, establece undefined para eliminar el filtro
-		setGlobalFilter(value);
-	};
-
-	const filteredRows = globalFilter
-		? rows.filter((row) =>
-				row.values.fecha
-					.toLowerCase()
-					.includes(globalFilter.toLowerCase())
-		  )
-		: rows;
 
 	return (
 		<div
@@ -265,8 +80,7 @@ const GestionesModal = ({ showModal, closeModal, data }) => {
 									data-bs-target="#cargarPago"
 									type="button"
 									role="tab"
-									aria-controls="cargarPago"
-									aria-selected={activeTab === "cargarPago"}>
+									aria-controls="cargarPago">
 									Cargar Pago
 								</button>
 							</li>
@@ -286,13 +100,66 @@ const GestionesModal = ({ showModal, closeModal, data }) => {
 									data-bs-target="#movimientos"
 									type="button"
 									role="tab"
-									aria-controls="movimientos"
-									aria-selected={
-										activeTab === "movimientos"
-											? "true"
-											: "false"
-									}>
-									Movimientos
+									aria-controls="movimientos">
+									Pagos
+								</button>
+							</li>
+							{/********************** GENERAR CUOTA **********************/}
+							<li className="nav-item" role="presentation">
+								<button
+									className={`nav-link ${
+										activeTab === "generar-cuota"
+											? "active"
+											: ""
+									}`}
+									onClick={() =>
+										handleTabChange("generar-cuota")
+									}
+									id="generar-cuota-tab"
+									data-bs-toggle="tab"
+									data-bs-target="#generar-cuota"
+									type="button"
+									role="tab"
+									aria-controls="generar-cuota">
+									Cuotas
+								</button>
+							</li>
+							{/********************** ESTABLECIMIENTOS **********************/}
+							<li className="nav-item" role="presentation">
+								<button
+									className={`nav-link ${
+										activeTab === "establecimientos"
+											? "active"
+											: ""
+									}`}
+									onClick={() =>
+										handleTabChange("establecimientos")
+									}
+									id="establecimientos-tab"
+									data-bs-toggle="tab"
+									data-bs-target="#establecimientos"
+									type="button"
+									role="tab"
+									aria-controls="establecimientos">
+									Establecimientos
+								</button>
+							</li>
+							{/********************** DENUNCIAS **********************/}
+							<li className="nav-item" role="presentation">
+								<button
+									className={`nav-link ${
+										activeTab === "denuncias"
+											? "active"
+											: ""
+									}`}
+									onClick={() => handleTabChange("denuncias")}
+									id="denuncias-tab"
+									data-bs-toggle="tab"
+									data-bs-target="#denuncias"
+									type="button"
+									role="tab"
+									aria-controls="establecimientos">
+									Denuncias
 								</button>
 							</li>
 						</ul>
@@ -316,115 +183,57 @@ const GestionesModal = ({ showModal, closeModal, data }) => {
 									activeTab === "movimientos"
 										? "show active"
 										: ""
-								}`}
+								} bg-dark-subtle p-2`}
 								id="movimientos"
 								role="tabpanel"
 								aria-labelledby="movimientos-tab">
-								<div className="container-fluid mt-4">
-									<div className="col d-flex justify-content-start border rounded border-primary pt-2 ms-1">
-										<div className="col">
-											<div className="input-group">
-												<input
-													type="text"
-													className="form-control"
-													id="filterText"
-													name="filterText"
-													placeholder="Filtrar..."
-													value={globalFilter || ""}
-													onChange={
-														handleFilterChange
-													}
-												/>
-												{/* {filterText && (
-													<div className="input-group-append">
-														<button
-															className="btn btn-outline-primary bg-white"
-															title="Limpiar búsqueda"
-															type="button"
-															onClick={() =>
-																setFilterText(
-																	""
-																)
-															}>
-															<i className="fa-regular fa-circle-xmark"></i>
-														</button>
-													</div>
-												)} */}
-											</div>
-										</div>
-									</div>
-									<table
-										{...getTableProps()}
-										className="table table-hover table-striped table-responsive-sm table-sm table-borderless align-middle mt-3">
-										<thead className="table-dark">
-											{headerGroups.map((headerGroup) => (
-												<tr
-													{...headerGroup.getHeaderGroupProps()}>
-													{headerGroup.headers.map(
-														(column) => (
-															<th
-																{...column.getHeaderProps(
-																	column.getSortByToggleProps()
-																)}
-																className={
-																	column.isSorted
-																		? column.isSortedDesc
-																			? "sorted-desc"
-																			: "sorted-asc"
-																		: ""
-																}>
-																{column.render(
-																	"Header"
-																)}{" "}
-																{column.isSorted ? (
-																	column.isSortedDesc ? (
-																		<i
-																			className="fa-solid fa-sort-desc"
-																			style={{
-																				color: "#FFD43B",
-																			}}></i>
-																	) : (
-																		<i
-																			className="fa-solid fa-sort-asc"
-																			style={{
-																				color: "#FFD43B",
-																			}}></i>
-																	)
-																) : (
-																	<i className="fa-solid fa-sort"></i>
-																)}
-															</th>
-														)
-													)}
-												</tr>
-											))}
-										</thead>
-										<tbody {...getTableBodyProps()}>
-											{rows.map((row) => {
-												prepareRow(row);
-												return (
-													<tr {...row.getRowProps()}>
-														{row.cells.map(
-															(cell) => (
-																<td
-																	{...cell.getCellProps()}>
-																	{cell.render(
-																		"Cell"
-																	)}
-																</td>
-															)
-														)}
-													</tr>
-												);
-											})}
-										</tbody>
-									</table>
-									{loading && (
-										<div className="text-center">
-											Cargando...
-										</div>
-									)}
-								</div>
+								<MovimientosTab
+									profesionalId={profesionalId}
+									movimientos={movimientos}
+								/>
+							</div>
+							{/* ********************* GENERAR CUOTA ********************* */}
+							<div
+								className={`tab-pane fade ${
+									activeTab === "generar-cuota"
+										? "show active"
+										: ""
+								} bg-dark-subtle p-2`}
+								id="generar-cuota"
+								role="tabpanel"
+								aria-labelledby="generar-cuota-tab">
+								<GenerarCuotaTab
+									profesionalId={profesionalId}
+									userId={user.id}
+								/>
+							</div>
+							{/* ********************* ESTABLECIMIENTOS ********************* */}
+							<div
+								className={`tab-pane fade ${
+									activeTab === "establecimientos"
+										? "show active"
+										: ""
+								} bg-dark-subtle p-2`}
+								id="establecimientos"
+								role="tabpanel"
+								aria-labelledby="establecimientos-tab">
+								<EstablecimientosTab
+									profesionalId={profesionalId}
+								/>
+							</div>
+							{/* ********************* DENUNCIAS ********************* */}
+							<div
+								className={`tab-pane fade ${
+									activeTab === "denuncias"
+										? "show active"
+										: ""
+								} bg-dark-subtle p-2`}
+								id="denuncias"
+								role="tabpanel"
+								aria-labelledby="denuncias-tab">
+								<DenunciasTab
+									profesionalId={profesionalId}
+								/>
 							</div>
 						</div>
 					</div>

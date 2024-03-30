@@ -4,13 +4,12 @@ const apiConnection = async (endpoint, direction, method, body, headers) => {
 		const url = new URL(endpoint);
 		url.pathname += direction;
 
-		
 		// Verifica si existe la propiedad 'Authorization' en el objeto de headers
 		if (!headers || !headers.Authorization) {
 			throw new Error("Token no encontrado en los encabezados");
 		}
-		
-		// if (endpoint == "http://localhost:5000/api/movimientos/profesional/") {
+
+		// if (endpoint == "http://localhost:5000/api/profesionales/asignar-movimiento-a-cuota/") {
 		// 	console.log(
 		// 		"***************************************************************************"
 		// 	);
@@ -42,7 +41,7 @@ const apiConnection = async (endpoint, direction, method, body, headers) => {
 			// Si hay un error en la respuesta, lanzar un error con el mensaje de error
 			throw new Error(responseData.error);
 		}
-		
+
 		return responseData;
 	} catch (error) {
 		throw new Error(`Error en la conexión API: ${error.message}`);
