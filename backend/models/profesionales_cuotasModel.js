@@ -16,15 +16,15 @@ const Profesionales_Cuotas = sequelize.define(
 			allowNull: false,
 		},
 		profesional_id: {
-			type: DDataTypes.UUID,
+			type: DataTypes.UUID,
 			allowNull: false,
 		},
 		cuota_id: {
-			type: DDataTypes.UUID,
+			type: DataTypes.UUID,
 			allowNull: false,
 		},
 		movimiento_id: {
-			type: DDataTypes.UUID,
+			type: DataTypes.UUID,
 		},
 	},
 	{

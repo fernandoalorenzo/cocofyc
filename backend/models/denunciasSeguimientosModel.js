@@ -10,6 +10,7 @@ const DenunciasSeguimiento = sequelize.define(
 			defaultValue: DataTypes.UUIDV4,
 			primaryKey: true,
 		},
+		user_id: { type: DataTypes.STRING(36) },
 		denuncia_id: { type: DataTypes.UUID, allowNull: false },
 		fecha: { type: DataTypes.DATEONLY, allowNull: false },
 		respuesta: { type: DataTypes.STRING(500) },

@@ -11,6 +11,7 @@ import parametrosRoutes from "./routes/parametrosRoute.js";
 import cuotasRoutes from "./routes/cuotasRoute.js";
 import movimientosRoutes from "./routes/movimientosRoute.js";
 import medios_de_pagoRoutes from "./routes/medios_de_pagoRoute.js";
+import denunciasRouter from "./routes/denunciasRoute.js";
 
 import connect from "./config/db.js";
 
@@ -31,6 +32,7 @@ app.use("/api/parametros", parametrosRoutes);
 app.use("/api/cuotas", cuotasRoutes);
 app.use("/api/movimientos", movimientosRoutes);
 app.use("/api/mediosdepago", medios_de_pagoRoutes)
+app.use("/api/denuncias", denunciasRouter);
 
 // FUNCION PARA RENOMBRAR EL ARCHIVO
 // function saveFile(file) {

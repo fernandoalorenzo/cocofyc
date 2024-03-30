@@ -73,8 +73,6 @@ const CargarPagosTab = ({ profesionalId }) => {
 
 	useEffect(() => {
 		fetchCuotasGeneradas();
-		// Aquí llamamos a fetchCuotas al cargar el componente para obtener las cuotas disponibles
-		fetchCuotasGeneradas();
 	}, [profesionalId]);
 
 	const onSubmitCargarPago = async (data) => {
