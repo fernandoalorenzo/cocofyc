@@ -21,6 +21,7 @@ import Usuarios from "./components/users/Usuarios.jsx";
 import Establecimientos from "./components/establecimientos/establecimientos.jsx";
 import Parametros from "./components/parametros/parametros.jsx";
 import Cuotas from "./components/cuotas/cuotas.jsx";
+import Denuncias from "./components/denuncias/denuncias.jsx";
 
 const Layout = ({ children }) => (
 	<>
@@ -109,6 +110,16 @@ const App = () => {
 							<AuthHandler>
 								<Layout>
 									<Cuotas />
+								</Layout>
+							</AuthHandler>
+						}
+					/>
+					<Route
+						path="/denuncias"
+						element={
+							<AuthHandler>
+								<Layout>
+									<Denuncias />
 								</Layout>
 							</AuthHandler>
 						}

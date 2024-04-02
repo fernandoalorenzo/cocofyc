@@ -155,6 +155,15 @@ export default function SideBar() {
 									<p>Cuotas</p>
 								</NavLink>
 							</li>
+							<li className="nav-item">
+								<NavLink
+									to="/denuncias"
+									className="nav-link"
+									activeclassname="active">
+									<i className="nav-icon fa-solid fa-person-military-to-person" />
+									<p>Denuncias</p>
+								</NavLink>
+							</li>
 							{/* <li className="nav-item">
 								<NavLink
 									to="/roles"

@@ -122,7 +122,7 @@ const CargarPagosTab = ({ profesionalId }) => {
 				text: "Ha ocurrido un error al intentar guardar el registro",
 				icon: "error",
 			});
-		}
+		}fsor
 	};
 
 	const asignarMovimientoACuota = async (cuotaId, movimientoId) => {

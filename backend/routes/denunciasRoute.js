@@ -3,6 +3,7 @@ import {
 	createDenuncia,
 	deleteDenuncia,
 	getDenunciaById,
+	getDenunciaByIdProfesional,
 	getDenuncias,
 	updateDenuncia,
 	getSeguimientosByDenunciaId,
@@ -19,6 +20,7 @@ const denunciasRouter = express.Router();
 denunciasRouter.post("/", authenticateToken, createDenuncia);
 denunciasRouter.get("/", authenticateToken, getDenuncias);
 denunciasRouter.get("/:id", authenticateToken, getDenunciaById);
+denunciasRouter.get("/profesional/:profesional_id", authenticateToken, getDenunciaByIdProfesional);
 denunciasRouter.put("/:id", authenticateToken, updateDenuncia);
 denunciasRouter.delete("/:id", authenticateToken, deleteDenuncia);
 
@@ -29,11 +31,12 @@ denunciasRouter.post("/seguimiento/:id", authenticateToken, agregarSeguimiento);
 denunciasRouter.put("/seguimiento/:id", authenticateToken, modificarSeguimiento);
 denunciasRouter.delete("/seguimiento/:id", authenticateToken, eliminarSeguimiento);
 
-// denunciasRouter.delete("/:id", deleteDenuncia);
+// denunciasRouter.post("/", createDenuncia);
 // denunciasRouter.get("/", getDenuncias);
 // denunciasRouter.get("/:id", getDenunciaById);
-// denunciasRouter.post("/", createDenuncia);
+// denunciasRouter.get("/profesional/:profesional_id", getDenunciaByIdProfesional);
 // denunciasRouter.put("/:id", updateDenuncia);
+// denunciasRouter.delete("/:id", deleteDenuncia);
 
 // denunciasRouter.get("/seguimientos/:id", getSeguimientosByDenunciaId);
 // denunciasRouter.get("/seguimiento/:id", getSeguimientoById);

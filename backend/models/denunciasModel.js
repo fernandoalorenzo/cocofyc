@@ -12,6 +12,7 @@ const Denuncia = sequelize.define(
 		user_id: { type: DataTypes.STRING(36) },
 		nro_acta: { type: DataTypes.STRING(10), allowNull: false },
 		fecha: { type: DataTypes.DATEONLY, allowNull: false },
+		fecha_cierre: { type: DataTypes.DATEONLY },
 		profesional_id: { type: DataTypes.STRING(36) },
 		establecimiento_id: { type: DataTypes.STRING(36) },
 		infraccion: { type: DataTypes.STRING(50), allowNull: false },

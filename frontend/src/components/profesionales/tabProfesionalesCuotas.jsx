@@ -164,6 +164,7 @@ const GenerarCuotaTab = ({ profesionalId, userId }) => {
 					paging: true,
 					searching: true,
 					ordering: true,
+					order: [[0, "desc"]],
 					info: true,
 				}
 			);
@@ -247,11 +248,16 @@ const GenerarCuotaTab = ({ profesionalId, userId }) => {
 						return { ...cuotaGenerada, ...cuotaDetails };
 					})
 				);
-				setCuotasGeneradas(cuotasWithDetails);
+
+				// Ordenar los registros alfabéticamente por nombre de forma DESCENDENTE
+				const sortedRegistros = cuotasWithDetails.sort(
+					(a, b) => b.cuota.localeCompare(a.cuota) // Ordenar por el campo "cuota" descendente
+				);
+				setCuotasGeneradas(sortedRegistros);
 			} else {
 				console.error(
 					"Error fetching cuotas generadas: ",
-					response.statusText
+					response ? response.statusText : "No hay respuesta"
 				);
 			}
 		} catch (error) {

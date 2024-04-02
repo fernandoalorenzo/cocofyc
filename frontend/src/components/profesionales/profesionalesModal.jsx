@@ -440,16 +440,8 @@ const ProfesionalesModal = ({
 											className="form-control"
 											id="matricula"
 											readOnly={modalMode === "mostrar"}
-											{...register("matricula", {
-												required: true,
-											})}
+											{...register("matricula")}
 										/>
-										{errors.matricula?.type ===
-											"required" && (
-											<span className="row text-warning m-1">
-												La MATRICULA es requerida
-											</span>
-										)}
 									</div>
 									{/* Estado de Matrícula */}
 									<div className="col-3 ">
@@ -465,6 +457,7 @@ const ProfesionalesModal = ({
 										</label>
 										<select
 											className="form-select"
+											disabled={modalMode === "mostrar"}
 											id="estado_matricula_id"
 											{...register(
 												"estado_matricula_id",

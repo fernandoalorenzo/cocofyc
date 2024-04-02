@@ -6,7 +6,7 @@ import apiConnection from "../../../../backend/functions/apiConnection";
 import CargarPagosTab from "./tabProfesionalesPagos";
 import MovimientosTab from "./tabProfesionalesMovimientos";
 import EstablecimientosTab from "./tabProfesionalesEstablecimientos.jsx";
-import GenerarCuotaTab from "./tabProfesionalesGenerarCuota.jsx";
+import GenerarCuotaTab from "./tabProfesionalesCuotas.jsx";
 import DenunciasTab from "./tabProfesionalesDenuncias.jsx";
 
 const GestionesModal = ({ showModal, closeModal, data, movimientos }) => {

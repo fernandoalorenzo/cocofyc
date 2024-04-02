@@ -274,6 +274,10 @@ const ProfesionalesTabla = () => {
 				accessor: "nombre",
 			},
 			{
+				Header: "DNI",
+				accessor: "dni",
+			},
+			{
 				Header: "Matrícula",
 				accessor: "matricula",
 			},
@@ -399,6 +403,7 @@ const ProfesionalesTabla = () => {
 	);
 
 	const handleMostrar = (profesional, mode) => {
+		console.log(profesional);
 		setSelectedProfesional(profesional);
 		setModalMode(mode);
 		setShowProfesionalesModal(true);
@@ -558,6 +563,8 @@ const ProfesionalesTabla = () => {
 															column.Header ===
 																"Activo" ||
 															column.Header ===
+																"DNI" ||
+															column.Header ===
 																"Matrícula" ||
 															column.Header ===
 																"Teléfono" ||
@@ -592,6 +599,9 @@ const ProfesionalesTabla = () => {
 														<td
 															{...cell.getCellProps()}
 															className={`${
+																cell.column
+																	.Header ===
+																	"DNI" ||
 																cell.column
 																	.Header ===
 																	"Matrícula" ||
