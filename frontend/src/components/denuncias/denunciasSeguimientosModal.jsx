@@ -8,23 +8,26 @@ const DenunciasSeguimientosModal = ({
 	closeModalSeguimiento,
 	dataSeguimiento,
 }) => {
-	// const {
-	// 	register,
-	// 	formState: { errors },
-	// 	handleSubmit,
-	// 	reset,
-	// } = useForm();
+	const {
+		register,
+		formState: { errors },
+		handleSubmit,
+		reset,
+	} = useForm();
 
 	const user = JSON.parse(localStorage.getItem("user")) || {};
 	const [denunciaId, setDenunciaId] = useState("");
 	const [seguimientos, setSeguimientos] = useState([]);
 	const [seguimientoId, setSeguimientoId] = useState("");
+	const [nroActa, setNroActa] = useState("");
+	const [cardBodyFormToggle, setCardBodyFormToggle] = useState(false);
+	const [modalFormMode, setModalFormMode] = useState("");
+	const [editingSeguimiento, setEditingSeguimiento] = useState(null);
+	const [isBotonAgregarEnabled, setIsBotonAgregarEnabled] = useState(true);
 
 	const tablaSeguimientosRef = useRef(null);
 	const dataTableRefSeguimiento = useRef(null);
 
-
-	// Obtener la fecha actual
 	const getCurrentDate = () => {
 		const now = new Date();
 		const year = now.getFullYear();
@@ -35,23 +38,19 @@ const DenunciasSeguimientosModal = ({
 		return `${year}-${month}-${day}`;
 	};
 
-	// useEffect(() => {
-	// 	if (dataSeguimiento) {
-	// 		reset(dataSeguimiento);
-	// 	}
-	// }, [dataSeguimiento, reset]);
-
-	// const initialState = {
-	// 	fecha: "",
-	// 	respuesta: "",
-	// };
+	const initialState = {
+		fecha: "",
+		respuesta: "",
+	};
 
 	// DATATABLE
 	useEffect(() => {
 		if (dataTableRefSeguimiento.current) {
-			dataTableRefSeguimiento.current.clear().rows.add(seguimientos).draw();
-		} else
-			if (seguimientos.length && tablaSeguimientosRef.current) {
+			dataTableRefSeguimiento.current
+				.clear()
+				.rows.add(seguimientos)
+				.draw();
+		} else if (seguimientos.length && tablaSeguimientosRef.current) {
 			dataTableRefSeguimiento.current = $(
 				tablaSeguimientosRef.current
 			).DataTable({
@@ -238,36 +237,42 @@ const DenunciasSeguimientosModal = ({
 
 		$(document).on(
 			"click",
-			"#staticBackdrop .editar-seguimiento-btn",
+			".modal-seguimientos .editar-seguimiento-btn",
 			function () {
-				// Acciones a realizar cuando se hace clic en el botón de editar
-				const rowData = $(this).closest("tr").data(); // Obtener los datos de la fila
-				editarSeguimiento(rowData); // Llamar a la función de edición
+				const seguimientoId = $(this).data("id");
+				editarSeguimiento(seguimientoId);
 			}
 		);
 
 		$(document).on(
 			"click",
-			"#staticBackdrop .eliminar-seguimiento-btn",
+			".modal-seguimientos .eliminar-seguimiento-btn",
 			function () {
-				// Acciones a realizar cuando se hace clic en el botón de eliminar
-				const rowData = $(this).closest("tr").data(); // Obtener los datos de la fila
-				eliminarSeguimiento(rowData); // Llamar a la función de eliminación
+				const seguimientoId = $(this).data("id");
+				eliminarSeguimiento(seguimientoId);
 			}
 		);
 	}, [seguimientos]);
 
-	const onSubmit = async (formData, id) => {
+	const onSubmit = async (formData) => {
+		let direction = "";
+		let method = "";
+
 		const newData = {
 			...formData,
 			user_id: user.id,
 		};
-		try {
-			const endpoint = "http://127.0.0.1:5000/api/seguimientos/";
-			const direction = newData.id ? `${newData.id}` : "";
-			const method = newData.id ? "PUT" : "POST";
-			const body = newData;
 
+		try {
+			const endpoint = "http://localhost:5000/api/denuncias/seguimiento/";
+			if (modalFormMode === "editar") {
+				direction = editingSeguimiento.id;
+				method = "PATCH";
+			} else if (modalFormMode === "agregar") {
+				direction = denunciaId;
+				method = "POST";
+			}
+			const body = newData;
 			const headers = {
 				"Content-Type": "application/json",
 				Authorization: localStorage.getItem("token"),
@@ -281,7 +286,7 @@ const DenunciasSeguimientosModal = ({
 				headers
 			);
 
-			if (response.data) {
+			if (response) {
 				Swal.fire({
 					icon: "success",
 					title: "Operación exitosa!",
@@ -292,7 +297,8 @@ const DenunciasSeguimientosModal = ({
 
 				// CERRAR MODAL
 				setTimeout(() => {
-					closeModalSeguimiento();
+					fetchSeguimientos(dataSeguimiento);
+					setCardBodyFormToggle(false);
 				}, 2500);
 			} else {
 				console.error("Error en la operación:", response.error);
@@ -310,7 +316,26 @@ const DenunciasSeguimientosModal = ({
 		}
 	};
 
-	const eliminarSeguimiento = async (denuncia) => {
+	const editarSeguimiento = (seguimientoId) => {
+		// Buscar el seguimiento que se está editando
+		const seguimiento = seguimientos.find(
+			(seg) => seg.id === seguimientoId
+		);
+		if (seguimiento) {
+			// Establecer el seguimiento que se está editando en el estado
+			setEditingSeguimiento(seguimiento);
+			// Mostrar el formulario y establecer el modo de formulario en editar
+			setCardBodyFormToggle(true);
+			setModalFormMode("editar");
+			// Llenar los campos de fecha y respuesta con los valores del seguimiento
+			reset({
+				fecha: seguimiento.fecha,
+				respuesta: seguimiento.respuesta,
+			});
+		}
+	};
+
+	const eliminarSeguimiento = async (seguimientoId) => {
 		const result = await Swal.fire({
 			title: "¿Estás seguro?",
 			text: "Esta acción no se puede deshacer",
@@ -325,7 +350,8 @@ const DenunciasSeguimientosModal = ({
 		// Si el usuario confirma la eliminación
 		if (result.isConfirmed) {
 			try {
-				const endpoint = "http://127.0.0.1:5000/api/denuncias/seguimiento/";
+				const endpoint =
+					"http://localhost:5000/api/denuncias/seguimiento/";
 				const direction = seguimientoId;
 				const method = "DELETE";
 				const body = false;
@@ -351,16 +377,9 @@ const DenunciasSeguimientosModal = ({
 				});
 
 				// Actualizar la tabla llamando a fetchDenuncias
-				setTimeout(() => {}, 2500);
-				try {
-					// Llamada a la función fetchDenuncias directamente
-					await fetchSeguimientos(setSeguimientos);
-				} catch (error) {
-					console.error(
-						"Error al eliminar el registro:",
-						error.message
-					);
-				}
+				setTimeout(() => {
+					fetchSeguimientos(dataSeguimiento);
+				}, 2500);
 			} catch (error) {
 				console.error("Error al eliminar el registro:", error.message);
 
@@ -373,26 +392,11 @@ const DenunciasSeguimientosModal = ({
 		}
 	};
 
-	useEffect(() => {
-		if (dataSeguimiento) {
-			setDenunciaId(dataSeguimiento);
-			fetchSeguimientos(dataSeguimiento);
-		}
-	}, [dataSeguimiento]);
-
-	useEffect(() => {
-		if (dataTableRefSeguimiento.current) {
-			dataTableRefSeguimiento.current
-				.clear()
-				.rows.add(seguimientos)
-				.draw();
-		}
-	}, [seguimientos]);
-
 	const fetchSeguimientos = async (dataSeguimiento) => {
 		const denunciaId = dataSeguimiento.id;
 		try {
-			const endpoint = "http://localhost:5000/api/denuncias/seguimientos/";
+			const endpoint =
+				"http://localhost:5000/api/denuncias/seguimientos/";
 			const direction = denunciaId ? `${denunciaId}` : denunciaId;
 			const method = "GET";
 			const body = false;
@@ -427,9 +431,34 @@ const DenunciasSeguimientosModal = ({
 		}
 	};
 
+	useEffect(() => {
+		if (dataSeguimiento) {
+			setDenunciaId(dataSeguimiento.id);
+			fetchSeguimientos(dataSeguimiento);
+			setNroActa(dataSeguimiento.nro_acta);
+		}
+		// Bloquea el botón de agregar seguimiento si la denuncia ya tiene la denuncia cerrada
+		if (dataSeguimiento && dataSeguimiento.fecha_cierre !== "0000-00-00") {
+			setIsBotonAgregarEnabled(false);
+		} else {
+			setIsBotonAgregarEnabled(true);
+		}
+	}, [dataSeguimiento]);
+
+	useEffect(() => {
+		if (dataTableRefSeguimiento.current) {
+			dataTableRefSeguimiento.current
+				.clear()
+				.rows.add(seguimientos)
+				.draw();
+		}
+	}, [seguimientos]);
+
 	return (
 		<div
-			className={`modal fade ${showModalSeguimiento ? "show" : ""}`}
+			className={`modal fade ${
+				showModalSeguimiento ? "show" : ""
+			} modal-seguimientos`}
 			tabIndex="-1"
 			style={{ display: showModalSeguimiento ? "block" : "none" }}
 			id="staticBackdrop"
@@ -441,12 +470,22 @@ const DenunciasSeguimientosModal = ({
 			<div className="modal-dialog modal-xl">
 				<div className="modal-content bg-secondary">
 					<div className="modal-header bg-primary">
-						<h5 className="modal-title">Seguimientos</h5>
+						<h5 className="modal-title">
+							Seguimientos del Acta N°{" "}
+							<span className="fw-bold text-warning">
+								{nroActa}
+							</span>
+						</h5>
 						<button
 							type="button"
 							className="btn-close"
 							aria-label="Close"
-							onClick={closeModalSeguimiento}></button>
+							onClick={() => {
+								reset();
+								closeModalSeguimiento();
+								setCardBodyFormToggle(false);
+								setModalFormMode("");
+							}}></button>
 					</div>
 					<div className="container-fluid">
 						<div className="modal-body">
@@ -457,16 +496,99 @@ const DenunciasSeguimientosModal = ({
 											type="button"
 											className="btn btn-primary"
 											id="abrirModalAgregar"
+											hidden={cardBodyFormToggle}
+											disabled={!isBotonAgregarEnabled}
 											onClick={() => {
-												setModalMode("agregar");
-												openDenunciasModal();
+												reset();
+												setCardBodyFormToggle(true);
+												setModalFormMode("agregar");
 											}}>
 											<i className="fa-regular fa-square-plus"></i>{" "}
 											Agregar
 										</button>
 									</div>
 								</div>
-								<div className="card-body">
+								<div
+									className="card-body"
+									id="cardBodyForm"
+									hidden={!cardBodyFormToggle}>
+									<form onSubmit={handleSubmit(onSubmit)}>
+										<div className="mb-3">
+											<label
+												htmlFor="fecha"
+												className="form-label">
+												Fecha
+											</label>
+											<input
+												type="date"
+												className="form-control"
+												id="fecha"
+												defaultValue={
+													modalFormMode === "editar"
+														? editingSeguimiento.fecha
+														: getCurrentDate()
+												}
+												{...register("fecha", {
+													required: true,
+												})}
+											/>
+											{errors.fecha && (
+												<span className="text-danger">
+													El campo es requerido
+												</span>
+											)}
+										</div>
+										<div className="mb-3">
+											<label
+												htmlFor="respuesta"
+												className="form-label">
+												Respuesta
+											</label>
+											<input
+												type="text"
+												className="form-control"
+												id="respuesta"
+												defaultValue={
+													modalFormMode === "editar"
+														? editingSeguimiento.respuesta
+														: ""
+												}
+												{...register("respuesta", {
+													required: true,
+												})}
+											/>
+											{errors.respuesta && (
+												<span className="text-danger">
+													El campo es requerido
+												</span>
+											)}
+										</div>
+										<div className="text-end">
+											<button
+												type="submit"
+												className="btn btn-primary">
+												Guardar
+											</button>
+											<button
+												type="button"
+												className="btn btn-secondary ms-2"
+												onClick={() => {
+													reset();
+													closeModalSeguimiento();
+													setCardBodyFormToggle(
+														false
+													);
+													setModalFormMode("");
+												}}>
+												Cancelar
+											</button>
+										</div>
+									</form>
+								</div>
+								<div
+									className="card-body"
+									id="cardBodyTabla"
+									hidden={cardBodyFormToggle}>
 									<table
 										ref={tablaSeguimientosRef}
 										id="tabla_seguimientos"

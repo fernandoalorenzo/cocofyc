@@ -43,6 +43,8 @@ const DenunciasModal = ({
 		return `${year}-${month}-${day}`;
 	};
 
+	const fechaActual = getCurrentDate();
+
 	const fetchProfesionales = async () => {
 		try {
 			const endpoint = "http://localhost:5000/api/profesionales/";
@@ -126,11 +128,10 @@ const DenunciasModal = ({
 			fetchEstablecimientos(data.profesional_id);
 			reset(data);
 		}
-
 	}, [data, reset]);
 
 	const initialState = {
-		fecha: "",
+		fecha: fechaActual,
 		nro_acta: "",
 		profesional_id: "",
 		establecimiento_id: "",
@@ -286,7 +287,11 @@ const DenunciasModal = ({
 											id="fecha"
 											className="form-control"
 											readOnly={modalMode === "mostrar"}
-											defaultValue={getCurrentDate()}
+											defaultValue={
+												modalMode === "agregar"
+													? getCurrentDate()
+													: data && data.fecha
+											}
 											{...register("fecha", {
 												required: true,
 											})}
@@ -397,7 +402,7 @@ const DenunciasModal = ({
 											id="fecha_cierre"
 											className="form-control"
 											readOnly={modalMode === "mostrar"}
-											defaultValue={getCurrentDate()}
+											// defaultValue={getCurrentDate()}
 											{...register("fecha_cierre")}
 										/>
 									</div>
