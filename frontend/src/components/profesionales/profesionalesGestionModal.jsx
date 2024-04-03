@@ -7,7 +7,7 @@ import CargarPagosTab from "./tabProfesionalesPagos";
 import MovimientosTab from "./tabProfesionalesMovimientos";
 import EstablecimientosTab from "./tabProfesionalesEstablecimientos.jsx";
 import GenerarCuotaTab from "./tabProfesionalesCuotas.jsx";
-import DenunciasTab from "./tabProfesionalesDenuncias.jsx";
+// import DenunciasTab from "./tabProfesionalesDenuncias.jsx";
 
 const GestionesModal = ({ showModal, closeModal, data, movimientos }) => {
 	const profesionalId = data ? data.id : null;
@@ -145,7 +145,7 @@ const GestionesModal = ({ showModal, closeModal, data, movimientos }) => {
 								</button>
 							</li>
 							{/********************** DENUNCIAS **********************/}
-							<li className="nav-item" role="presentation">
+							{/* <li className="nav-item" role="presentation">
 								<button
 									className={`nav-link ${
 										activeTab === "denuncias"
@@ -161,7 +161,7 @@ const GestionesModal = ({ showModal, closeModal, data, movimientos }) => {
 									aria-controls="establecimientos">
 									Denuncias
 								</button>
-							</li>
+							</li> */}
 						</ul>
 						{/* ********************* CONTENIDO ********************* */}
 						<div className="tab-content" id="myTabContent">
@@ -222,7 +222,7 @@ const GestionesModal = ({ showModal, closeModal, data, movimientos }) => {
 								/>
 							</div>
 							{/* ********************* DENUNCIAS ********************* */}
-							<div
+							{/* <div
 								className={`tab-pane fade ${
 									activeTab === "denuncias"
 										? "show active"
@@ -234,7 +234,7 @@ const GestionesModal = ({ showModal, closeModal, data, movimientos }) => {
 								<DenunciasTab
 									profesionalId={profesionalId}
 								/>
-							</div>
+							</div> */}
 						</div>
 					</div>
 				</div>

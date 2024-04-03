@@ -2,15 +2,19 @@ import React, { useState, useEffect, useRef } from "react";
 import Swal from "sweetalert2";
 import apiConnection from "../../../../backend/functions/apiConnection";
 import DenunciasModal from "./denunciasModal";
+import DenunciasSeguimientosModal from "./denunciasSeguimientosModal";
+// import { modificarSeguimiento } from "../../../../backend/controllers/denunciasController";
 
 const DenunciasTabla = () => {
 	const [showDenunciasModal, setShowDenunciasModal] = useState(false);
 	const [selectedDenuncia, setSelectedDenuncia] = useState(null);
+	const [selectedDenunciaSeguimiento, setSelectedDenunciaSeguimiento] = useState(null);
 	const [modalMode, setModalMode] = useState("");
 	const [denuncias, setDenuncias] = useState([]);
 	const [profesionales, setProfesionales] = useState({});
 	const [establecimientos, setEstablecimientos] = useState([]);
 
+	const [showDenunciasSeguimientosModal, setShowDenunciasSeguimientosModal] =	useState(false);
 
 	const tablaDenunciasRef = useRef(null);
 	const dataTableRef = useRef(null);
@@ -221,6 +225,22 @@ const DenunciasTabla = () => {
 							return data;
 						},
 					},
+					{
+						targets: 5,
+						render: function (data, type, row) {
+							if (data === "0000-00-00") {
+								return "";
+							}
+							if (type === "display") {
+								// Formatear la fecha de 'aaaa-mm-dd' a 'dd/mm/aaaa'
+								const parts = data.split("-");
+								if (parts.length === 3) {
+									return `${parts[2]}/${parts[1]}/${parts[0]}`;
+								}
+							}
+							return data;
+						},
+					},
 				],
 				columns: [
 					{
@@ -232,14 +252,17 @@ const DenunciasTabla = () => {
 					{
 						data: "profesional_nombre",
 					},
-					{
-						data: "establecimiento_nombre",
-					},
+					// {
+					// 	data: "establecimiento_nombre",
+					// },
 					{
 						data: "infraccion",
 					},
 					{
-						data: "comentario",
+						data: "comentario" 
+					},
+					{
+						data: "fecha_cierre",
 					},
 					{
 						// Columna de acciones
@@ -250,6 +273,7 @@ const DenunciasTabla = () => {
                             <button class="btn btn-info btn-sm mostrar-btn" data-id="${row.id}"><i class="fa-regular fa-eye"></i> Mostrar</button>
                             <button class="btn btn-warning btn-sm editar-btn" data-id="${row.id}"><i class="fa-regular fa-pen-to-square"></i> Editar</button>
                             <button class="btn btn-danger btn-sm eliminar-btn" data-id="${row.id}"><i class="fa-regular fa-trash-can"></i>  Eliminar</button>
+							<button class="btn btn-success btn-sm seguimientos-btn" data-id="${row.id}"><i class="fa-solid fa-road"></i>  Seguimientos</button>
                         `;
 						},
 						orderable: false,
@@ -267,7 +291,7 @@ const DenunciasTabla = () => {
 					],
 				],
 				responsive: true,
-				autoWidth: false,
+				autoWidth: true,
 				paging: true,
 				searching: true,
 				ordering: true,
@@ -309,6 +333,13 @@ const DenunciasTabla = () => {
 				.data();
 			eliminarDenuncia(rowData);
 		});
+
+		$(tablaDenunciasRef.current).on("click", ".seguimientos-btn", function () {
+			const rowData = dataTableRef.current
+				.row($(this).closest("tr"))
+				.data();
+			mostrarSeguimiento(rowData);
+		});
 	}, [denuncias]);
 
 	useEffect(() => {
@@ -316,6 +347,11 @@ const DenunciasTabla = () => {
 		fetchProfesionales(setProfesionales);
 		fetchDenuncias(setDenuncias);
 	}, []);
+
+	const mostrarSeguimiento = (data) => {
+		setSelectedDenunciaSeguimiento(data)
+		setShowDenunciasSeguimientosModal(true);
+	};
 
 	const eliminarDenuncia = async (denuncia) => {
 		const result = await Swal.fire({
@@ -452,6 +488,8 @@ const DenunciasTabla = () => {
 
 	const closeDenunciasModal = () => setShowDenunciasModal(false);
 
+	const closeDenunciasSeguimientosModal = () => setShowDenunciasSeguimientosModal(false);
+
 	return (
 		<>
 			<div className="content-wrapper">
@@ -492,9 +530,10 @@ const DenunciasTabla = () => {
 											<th>Fecha</th>
 											<th>N° de Acta</th>
 											<th>Profesional</th>
-											<th>Establecimiento</th>
+											{/* <th>Establecimiento</th> */}
 											<th>Infracción</th>
 											<th>Comentario</th>
+											<th>Cierre</th>
 											<th className="text-center">
 												Acciones
 											</th>
@@ -511,6 +550,11 @@ const DenunciasTabla = () => {
 				closeModal={closeDenunciasModal}
 				data={selectedDenuncia}
 				modalMode={modalMode}
+			/>
+			<DenunciasSeguimientosModal
+				showModalSeguimiento={showDenunciasSeguimientosModal}
+				closeModalSeguimiento={closeDenunciasSeguimientosModal}
+				dataSeguimiento={selectedDenunciaSeguimiento}
 			/>
 		</>
 	);

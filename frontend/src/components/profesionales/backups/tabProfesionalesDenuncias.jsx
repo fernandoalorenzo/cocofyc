@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import Swal from "sweetalert2";
-import apiConnection from "../../../../backend/functions/apiConnection";
+import apiConnection from "../../../../../backend/functions/apiConnection";
 
 const DenunciasTab = ({ profesionalId }) => {
 	const user = JSON.parse(localStorage.getItem("user")) || {};

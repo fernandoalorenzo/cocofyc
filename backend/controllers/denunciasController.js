@@ -128,7 +128,7 @@ const deleteDenuncia = async (request, response) => {
 
 // Obtener seguimientos de una denuncia por su ID
 const getSeguimientosByDenunciaId = async (request, response) => {
-    authenticateToken(request, response, async () => {
+    // authenticateToken(request, response, async () => {
         const denunciaId = request.params.id;
         try {
             const seguimientos = await DenunciasSeguimiento.findAll({
@@ -137,13 +137,14 @@ const getSeguimientosByDenunciaId = async (request, response) => {
 
             response.status(200).json({
                 message: "Los seguimientos de la denuncia fueron obtenidos exitosamente!",
-                data: seguimientos
+				length: seguimientos.length,
+				data: seguimientos,
             });
         } catch (error) {
             console.error("Error: " + error.message);
             response.status(500).send({ message: error.message });
         }
-    });
+    // });
 };
 
 // Obtener un seguimiento por su ID
@@ -170,10 +171,9 @@ const getSeguimientoById = async (request, response) => {
 // Agregar un seguimiento a una denuncia
 const agregarSeguimiento = async (request, response) => {
 	authenticateToken(request, response, async () => {
-		const { denuncia_id, ...seguimientoData } = request.body;
 		try {
 			// Verificar si la denuncia existe
-			const denuncia = await Denuncia.findByPk(denuncia_id);
+			const denuncia = await Denuncia.findByPk(request.params.id);
 			if (!denuncia) {
 				return response
 					.status(404)
@@ -182,8 +182,9 @@ const agregarSeguimiento = async (request, response) => {
 
 			// Agregar el seguimiento asociado a la denuncia
 			const nuevoSeguimiento = await DenunciasSeguimiento.create({
-				denuncia_id,
-				...seguimientoData,
+				fecha: request.body.fecha,
+				respuesta: request.body.respuesta,
+				denuncia_id: request.params.id
 			});
 
 			response.status(201).json({
