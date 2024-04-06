@@ -1,27 +1,27 @@
 import React, { useState, useEffect, useRef } from "react";
 import Swal from "sweetalert2";
 import apiConnection from "../../../../backend/functions/apiConnection";
-import DenunciasModal from "./denunciasModal";
-import DenunciasSeguimientosModal from "./denunciasSeguimientosModal";
-// import { modificarSeguimiento } from "../../../../backend/controllers/denunciasController";
+import PagosModal from "./pagosModal";
+// import PagosSeguimientosModal from "./pagosSeguimientosModal";
+// import { modificarSeguimiento } from "../../../../backend/controllers/pagosController";
 
-const DenunciasTabla = () => {
-	const [showDenunciasModal, setShowDenunciasModal] = useState(false);
-	const [selectedDenuncia, setSelectedDenuncia] = useState(null);
-	const [selectedDenunciaSeguimiento, setSelectedDenunciaSeguimiento] = useState(null);
+const PagosTabla = () => {
+	const [showPagosModal, setShowPagosModal] = useState(false);
+	const [selectedPago, setSelectedPago] = useState(null);
+	const [selectedPagoSeguimiento, setSelectedPagoSeguimiento] = useState(null);
 	const [modalMode, setModalMode] = useState("");
-	const [denuncias, setDenuncias] = useState([]);
+	const [pagos, setPagos] = useState([]);
 	const [profesionales, setProfesionales] = useState({});
 	const [establecimientos, setEstablecimientos] = useState([]);
 
-	const [showDenunciasSeguimientosModal, setShowDenunciasSeguimientosModal] =	useState(false);
+	const [showPagosSeguimientosModal, setShowPagosSeguimientosModal] =	useState(false);
 
-	const tablaDenunciasRef = useRef(null);
+	const tablaPagosRef = useRef(null);
 	const dataTableRef = useRef(null);
 
-	const fetchDenuncias = async () => {
+	const fetchPagos = async () => {
 		try {
-			const endpoint = "http://localhost:5000/api/denuncias/";
+			const endpoint = "http://localhost:5000/api/pagos/";
 			const direction = "";
 			const method = "GET";
 			const body = false;
@@ -42,19 +42,19 @@ const DenunciasTabla = () => {
 				const profesionales = await fetchProfesionales();
 				const establecimientos = await fetchEstablecimientos();
 
-				// Asocia el nombre del profesional y del establecimiento con cada denuncia
-				const denunciasConDatos = response.data.map((denuncia) => {
+				// Asocia el nombre del profesional y del establecimiento con cada pago
+				const pagosConDatos = response.data.map((pago) => {
 					const profesional = profesionales.find(
 						(profesional) =>
-							profesional.id === denuncia.profesional_id
+							profesional.id === pago.profesional_id
 					);
 					const establecimiento = establecimientos.find(
 						(establecimiento) =>
-							establecimiento.id === denuncia.establecimiento_id
+							establecimiento.id === pago.establecimiento_id
 					);
 
 					return {
-						...denuncia,
+						...pago,
 						profesional_nombre: profesional
 							? profesional.nombre
 							: "",
@@ -64,35 +64,35 @@ const DenunciasTabla = () => {
 					};
 				});
 
-				// Ordena las denuncias por fecha
-				denunciasConDatos.sort(
+				// Ordena las pagos por fecha
+				pagosConDatos.sort(
 					(a, b) => new Date(a.fecha) - new Date(b.fecha)
 				);
 
-				// Actualiza el estado con las denuncias que contienen el nombre del profesional y del establecimiento
-				setDenuncias(denunciasConDatos);
+				// Actualiza el estado con las pagos que contienen el nombre del profesional y del establecimiento
+				setPagos(pagosConDatos);
 			} else {
 				console.error(
-					"Error fetching denuncias: ",
+					"Error fetching pagos: ",
 					response.statusText
 				);
 			}
 		} catch (error) {
-			console.error("Error fetching denuncias: ", error);
+			console.error("Error fetching pagos: ", error);
 		}
 	};
 
 	useEffect(() => {
-		fetchDenuncias(setDenuncias);
-	}, [showDenunciasModal]);
+		fetchPagos(setPagos);
+	}, [showPagosModal]);
 
 	// DATATABLE
 	useEffect(() => {
 		if (dataTableRef.current) {
-			dataTableRef.current.clear().rows.add(denuncias).draw();
-		} else if (denuncias.length && tablaDenunciasRef.current) {
-			dataTableRef.current = $(tablaDenunciasRef.current).DataTable({
-				data: denuncias,
+			dataTableRef.current.clear().rows.add(pagos).draw();
+		} else if (pagos.length && tablaPagosRef.current) {
+			dataTableRef.current = $(tablaPagosRef.current).DataTable({
+				data: pagos,
 				language: {
 					// url: "//cdn.datatables.net/plug-ins/2.0.3/i18n/es-AR.json",
 					buttons: {
@@ -277,7 +277,6 @@ const DenunciasTabla = () => {
                         `;
 						},
 						orderable: false,
-						searchable: false,
 					},
 				],
 				lengthChange: true,
@@ -302,59 +301,59 @@ const DenunciasTabla = () => {
 		}
 
 		// Asignar eventos click a los botones de acción
-		// $(tablaDenunciasRef.current).on("click", ".mostrar-btn", function () {
-		// 	mostrarDenuncia($(this).data("id"));
+		// $(tablaPagosRef.current).on("click", ".mostrar-btn", function () {
+		// 	mostrarPago($(this).data("id"));
 		// });
 
-		// $(tablaDenunciasRef.current).on("click", ".editar-btn", function () {
-		// 	editarDenuncia($(this).data("id"));
+		// $(tablaPagosRef.current).on("click", ".editar-btn", function () {
+		// 	editarPago($(this).data("id"));
 		// });
 
-		// $(tablaDenunciasRef.current).on("click", ".eliminar-btn", function () {
-		// 	eliminarDenuncia($(this).data("id"));
+		// $(tablaPagosRef.current).on("click", ".eliminar-btn", function () {
+		// 	eliminarPago($(this).data("id"));
 		// });
 
-		$(tablaDenunciasRef.current).on("click", ".mostrar-btn", function () {
+		$(tablaPagosRef.current).on("click", ".mostrar-btn", function () {
 			const rowData = dataTableRef.current
 				.row($(this).closest("tr"))
 				.data();
-			mostrarDenuncia(rowData);
+			mostrarPago(rowData);
 		});
 
-		$(tablaDenunciasRef.current).on("click", ".editar-btn", function () {
+		$(tablaPagosRef.current).on("click", ".editar-btn", function () {
 			const rowData = dataTableRef.current
 				.row($(this).closest("tr"))
 				.data();
-			editarDenuncia(rowData);
+			editarPago(rowData);
 		});
 
-		$(tablaDenunciasRef.current).on("click", ".eliminar-btn", function () {
+		$(tablaPagosRef.current).on("click", ".eliminar-btn", function () {
 			const rowData = dataTableRef.current
 				.row($(this).closest("tr"))
 				.data();
-			eliminarDenuncia(rowData);
+			eliminarPago(rowData);
 		});
 
-		$(tablaDenunciasRef.current).on("click", ".seguimientos-btn", function () {
+		$(tablaPagosRef.current).on("click", ".seguimientos-btn", function () {
 			const rowData = dataTableRef.current
 				.row($(this).closest("tr"))
 				.data();
 			mostrarSeguimiento(rowData);
 		});
-	}, [denuncias]);
+	}, [pagos]);
 
 	useEffect(() => {
 		fetchEstablecimientos(setEstablecimientos);
 		fetchProfesionales(setProfesionales);
-		fetchDenuncias(setDenuncias);
+		fetchPagos(setPagos);
 	}, []);
 
 	const mostrarSeguimiento = (data) => {
-		setSelectedDenunciaSeguimiento(data)
-		setShowDenunciasSeguimientosModal(true);
+		setSelectedPagoSeguimiento(data)
+		setShowPagosSeguimientosModal(true);
 	};
 
-	const eliminarDenuncia = async (denuncia) => {
+	const eliminarPago = async (pago) => {
 		const result = await Swal.fire({
 			title: "¿Estás seguro?",
 			text: "Esta acción no se puede deshacer",
@@ -369,8 +368,8 @@ const DenunciasTabla = () => {
 		// Si el usuario confirma la eliminación
 		if (result.isConfirmed) {
 			try {
-				const endpoint = "http://127.0.0.1:5000/api/denuncias/";
-				const direction = denuncia.id;
+				const endpoint = "http://127.0.0.1:5000/api/pagos/";
+				const direction = pago.id;
 				const method = "DELETE";
 				const body = false;
 				const headers = {
@@ -394,11 +393,11 @@ const DenunciasTabla = () => {
 					timer: 2500,
 				});
 
-				// Actualizar la tabla llamando a fetchDenuncias
+				// Actualizar la tabla llamando a fetchPagos
 				setTimeout(() => {}, 2500);
 				try {
-					// Llamada a la función fetchDenuncias directamente
-					await fetchDenuncias(setDenuncias);
+					// Llamada a la función fetchPagos directamente
+					await fetchPagos(setPagos);
 				} catch (error) {
 					console.error(
 						"Error al eliminar el registro:",
@@ -417,16 +416,16 @@ const DenunciasTabla = () => {
 		}
 	};
 
-	const mostrarDenuncia = (data) => {
-		setSelectedDenuncia(data);
+	const mostrarPago = (data) => {
+		setSelectedPago(data);
 		setModalMode("mostrar");
-		setShowDenunciasModal(true);
+		setShowPagosModal(true);
 	};
 
-	const editarDenuncia = (data) => {
-		setSelectedDenuncia(data);
+	const editarPago = (data) => {
+		setSelectedPago(data);
 		setModalMode("editar");
-		setShowDenunciasModal(true);
+		setShowPagosModal(true);
 	};
 
 	const fetchProfesionales = async () => {
@@ -480,16 +479,16 @@ const DenunciasTabla = () => {
 	};
 
 	useEffect(() => {
-		if (!showDenunciasModal) {
-			setSelectedDenuncia(null);
+		if (!showPagosModal) {
+			setSelectedPago(null);
 		}
-	}, [showDenunciasModal]);
+	}, [showPagosModal]);
 
-	const openDenunciasModal = () => setShowDenunciasModal(true);
+	const openPagosModal = () => setShowPagosModal(true);
 
-	const closeDenunciasModal = () => setShowDenunciasModal(false);
+	const closePagosModal = () => setShowPagosModal(false);
 
-	const closeDenunciasSeguimientosModal = () => setShowDenunciasSeguimientosModal(false);
+	const closePagosSeguimientosModal = () => setShowPagosSeguimientosModal(false);
 
 	return (
 		<>
@@ -498,7 +497,7 @@ const DenunciasTabla = () => {
 					<div className="container-fluid">
 						<div className="row mb-2">
 							<div className="col-sm-6">
-								<h1 className="m-0">Denuncias</h1>
+								<h1 className="m-0">Pagos</h1>
 							</div>
 						</div>
 					</div>
@@ -513,7 +512,7 @@ const DenunciasTabla = () => {
 									id="abrirModalAgregar"
 									onClick={() => {
 										setModalMode("agregar");
-										openDenunciasModal();
+										openPagosModal();
 									}}>
 									<i className="fa-regular fa-square-plus"></i>{" "}
 									Agregar
@@ -523,8 +522,8 @@ const DenunciasTabla = () => {
 						<div className="card-body">
 							<div className="container-fluid mt-0">
 								<table
-									ref={tablaDenunciasRef}
-									id="tabla_denuncias"
+									ref={tablaPagosRef}
+									id="tabla_pagos"
 									className="table table-hover table-sm">
 									<thead className="table-dark">
 										<tr>
@@ -546,19 +545,14 @@ const DenunciasTabla = () => {
 					</div>
 				</div>
 			</div>
-			<DenunciasModal
-				showModal={showDenunciasModal}
-				closeModal={closeDenunciasModal}
-				data={selectedDenuncia}
+			<PagosModal
+				showModal={showPagosModal}
+				closeModal={closePagosModal}
+				data={selectedPago}
 				modalMode={modalMode}
-			/>
-			<DenunciasSeguimientosModal
-				showModalSeguimiento={showDenunciasSeguimientosModal}
-				closeModalSeguimiento={closeDenunciasSeguimientosModal}
-				dataSeguimiento={selectedDenunciaSeguimiento}
 			/>
 		</>
 	);
 };
 
-export default DenunciasTabla;
+export default PagosTabla;

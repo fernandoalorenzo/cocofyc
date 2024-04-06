@@ -19,7 +19,7 @@ const ProfesionalesTabla = () => {
 
 	const fetchProfesionales = async () => {
 		try {
-			const endpoint = "http://127.0.0.1:5000/api/profesionales";
+			const endpoint = "http://localhost:5000/api/profesionales";
 			const direction = "";
 			const method = "GET";
 			const body = false;
@@ -403,7 +403,6 @@ const ProfesionalesTabla = () => {
 	);
 
 	const handleMostrar = (profesional, mode) => {
-		console.log(profesional);
 		setSelectedProfesional(profesional);
 		setModalMode(mode);
 		setShowProfesionalesModal(true);

@@ -298,7 +298,7 @@ const CargarPagosTab = ({ profesionalId }) => {
 					</div>
 					{/* medio_id */}
 					<div className="col">
-						<label htmlFor="medio_id">Medio:</label>
+						<label htmlFor="medio_id">Medio de pago:</label>
 						<select
 							className="form-select"
 							id="medio_id"

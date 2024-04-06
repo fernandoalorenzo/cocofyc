@@ -11,6 +11,7 @@
     "start": "serve dist -s -n -L -p $PORT"
   },
   "dependencies": {
+    "@react-pdf/renderer": "^3.4.2",
     "bootstrap": "^5.3.3",
     "jquery": "^3.7.1",
     "jwt-decode": "^4.0.0",

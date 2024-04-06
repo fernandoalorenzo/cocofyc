@@ -115,13 +115,13 @@ const Parametros = () => {
 		}
 	};
 
-	const handleGuardarMedioPago = async () => {
-		if (editandoMedioPago) {
-			await guardarCambiosMedioPago();
-		} else {
-			await agregarMedioPago();
-		}
-	};
+	// const handleGuardarMedioPago = async () => {
+	// 	if (editandoMedioPago) {
+	// 		await guardarCambiosMedioPago();
+	// 	} else {
+	// 		await agregarMedioPago();
+	// 	}
+	// };
 
 	const fetchParametros = async () => {
 		try {
@@ -383,165 +383,165 @@ const Parametros = () => {
 			<div className="content-wrapper">
 				<div className="content-header">
 					<div className="container-fluid container-md">
-						<div className="row mb-2">
+						<div className="row mb-1">
 							<div className="col-sm-6">
-								<h1 className="m-0">Parámetros</h1>
+								<h1 className="m-0 ">Parámetros</h1>
 							</div>
 						</div>
 					</div>
 				</div>
 				<div>
 					<section className="content">
-						<form onSubmit={handleSubmit(onSubmit)}>
-							<div className="container-fluid container-md px-5 mb-4">
-								<div className="row justify-content-center text-center bg-secondary mb-3">
-									<h6 className="fst-italic my-1">
-										Información General
-									</h6>
-								</div>
-								<div className="row">
-									{/* Titular */}
-									<div className="col mb-3">
-										<label
-											htmlFor="titular"
-											className="form-label mb-0">
-											Titular{" "}
-											<span className="text-danger">
-												*
-											</span>
-										</label>
-										<input
-											type="text"
-											className="form-control"
-											id="titular"
-											{...register("titular", {
-												required: true,
-											})}
-										/>
-										{errors.titular && (
-											<span className="text-danger">
-												Este campo es requerido
-											</span>
-										)}
+						<div className="container-fluid container-md pb-3">
+							<div class="card">
+								<form onSubmit={handleSubmit(onSubmit)}>
+									<div class="card-header text-center bg-secondary fst-italic">
+										<strong>Información General</strong>
 									</div>
-									{/* Domicilio */}
-									<div className="col mb-3">
-										<label
-											htmlFor="domicilio"
-											className="form-label mb-0">
-											Domicilio{" "}
-											<span className="text-danger">
-												*
-											</span>
-										</label>
-										<input
-											type="text"
-											className="form-control"
-											id="domicilio"
-											{...register("domicilio", {
-												required: true,
-											})}
-										/>
-										{errors.domicilio && (
-											<span className="text-danger">
-												Este campo es requerido
-											</span>
-										)}
+									<div class="card-body">
+										<div className="row">
+											{/* Titular */}
+											<div className="col mb-3">
+												<label
+													htmlFor="titular"
+													className="form-label mb-0">
+													Titular{" "}
+													<span className="text-danger">
+														*
+													</span>
+												</label>
+												<input
+													type="text"
+													className="form-control"
+													id="titular"
+													{...register("titular", {
+														required: true,
+													})}
+												/>
+												{errors.titular && (
+													<span className="text-danger">
+														Este campo es requerido
+													</span>
+												)}
+											</div>
+											{/* Domicilio */}
+											<div className="col mb-3">
+												<label
+													htmlFor="domicilio"
+													className="form-label mb-0">
+													Domicilio{" "}
+													<span className="text-danger">
+														*
+													</span>
+												</label>
+												<input
+													type="text"
+													className="form-control"
+													id="domicilio"
+													{...register("domicilio", {
+														required: true,
+													})}
+												/>
+												{errors.domicilio && (
+													<span className="text-danger">
+														Este campo es requerido
+													</span>
+												)}
+											</div>
+											{/* Localidad */}
+											<div className="col mb-3">
+												<label
+													htmlFor="localidad"
+													className="form-label mb-0">
+													Localidad{" "}
+													<span className="text-danger">
+														*
+													</span>
+												</label>
+												<input
+													type="text"
+													className="form-control"
+													id="localidad"
+													{...register("localidad", {
+														required: true,
+													})}
+												/>
+												{errors.localidad && (
+													<span className="text-danger">
+														Este campo es requerido
+													</span>
+												)}
+											</div>
+										</div>
+										<div className="row mb-3">
+											{/* CUIT */}
+											<div className="col-2 mb-3">
+												<label
+													htmlFor="cuit"
+													className="form-label mb-0">
+													CUIT{" "}
+													<span className="text-danger">
+														*
+													</span>
+												</label>
+												<input
+													type="text"
+													className="form-control"
+													id="cuit"
+													maxLength="13"
+													{...register("cuit", {
+														required: true,
+													})}
+													onChange={handleCUITChange}
+												/>
+												{errors.cuit && (
+													<span className="text-danger">
+														Este campo es requerido
+													</span>
+												)}
+											</div>
+											{/* Teléfono */}
+											<div className="col-4 mb-3">
+												<label
+													htmlFor="telefono"
+													className="form-label mb-0">
+													Teléfono
+												</label>
+												<input
+													type="text"
+													className="form-control"
+													id="telefono"
+													{...register("telefono")}
+												/>
+											</div>
+											{/* E-Mail */}
+											<div className="col mb-3">
+												<label
+													htmlFor="email"
+													className="form-label mb-0">
+													E-Mail{" "}
+													<span className="text-danger">
+														*
+													</span>
+												</label>
+												<input
+													type="email"
+													className="form-control"
+													id="email"
+													autoComplete="off"
+													{...register("email", {
+														required: true,
+													})}
+												/>
+												{errors.email && (
+													<span className="text-danger">
+														Este campo es requerido
+													</span>
+												)}
+											</div>
+										</div>
 									</div>
-									{/* Localidad */}
-									<div className="col mb-3">
-										<label
-											htmlFor="localidad"
-											className="form-label mb-0">
-											Localidad{" "}
-											<span className="text-danger">
-												*
-											</span>
-										</label>
-										<input
-											type="text"
-											className="form-control"
-											id="localidad"
-											{...register("localidad", {
-												required: true,
-											})}
-										/>
-										{errors.localidad && (
-											<span className="text-danger">
-												Este campo es requerido
-											</span>
-										)}
-									</div>
-								</div>
-								<div className="row mb-3">
-									{/* CUIT */}
-									<div className="col-2 mb-3">
-										<label
-											htmlFor="cuit"
-											className="form-label mb-0">
-											CUIT{" "}
-											<span className="text-danger">
-												*
-											</span>
-										</label>
-										<input
-											type="text"
-											className="form-control"
-											id="cuit"
-											maxLength="13"
-											{...register("cuit", {
-												required: true,
-											})}
-											onChange={handleCUITChange}
-										/>
-										{errors.cuit && (
-											<span className="text-danger">
-												Este campo es requerido
-											</span>
-										)}
-									</div>
-									{/* Teléfono */}
-									<div className="col-4 mb-3">
-										<label
-											htmlFor="telefono"
-											className="form-label mb-0">
-											Teléfono
-										</label>
-										<input
-											type="text"
-											className="form-control"
-											id="telefono"
-											{...register("telefono")}
-										/>
-									</div>
-									{/* E-Mail */}
-									<div className="col mb-3">
-										<label
-											htmlFor="email"
-											className="form-label mb-0">
-											E-Mail{" "}
-											<span className="text-danger">
-												*
-											</span>
-										</label>
-										<input
-											type="email"
-											className="form-control"
-											id="email"
-											autoComplete="off"
-											{...register("email", {
-												required: true,
-											})}
-										/>
-										{errors.email && (
-											<span className="text-danger">
-												Este campo es requerido
-											</span>
-										)}
-									</div>
-								</div>
-								<div className="row justify-content-end">
-									<div className="col-auto">
+									<div class="card-footer text-muted text-end">
 										<button
 											type="button"
 											className="btn btn-secondary mx-2"
@@ -556,162 +556,187 @@ const Parametros = () => {
 											Guardar
 										</button>
 									</div>
+								</form>
+							</div>
+						</div>
+
+						{/* ********************************************************* */}
+
+						<div className="container-fluid container-md pt-3">
+							<div class="card">
+								<div class="card-header text-center bg-secondary fst-italic">
+									<strong>Parámetros Generales</strong>
 								</div>
-							</div>
-						</form>
-						<div className="container-fluid container-md px-5">
-							<div className="row justify-content-center text-center bg-secondary mb-3">
-								<h6 className="fst-italic my-1">
-									Parámetros Generales
-								</h6>
-							</div>
-							<div className="row gx-5">
-								{/* IMPORTE DE CUOTA */}
-								<div className="col-3 border-right mx-0 pe-0">
-									<div className="row">
-										<div className="col-md-8">
-											<label
-												htmlFor="importe_cuota"
-												className="form-label mb-0">
-												Importe de cuota
-											</label>
-											<div className="input-group">
-												<span className="input-group-text bg-secondary">
-													$
-												</span>
-												<input
-													type="text"
-													className="form-control"
-													id="importe_cuota"
-													{...register(
-														"importe_cuota"
-													)}
-												/>
+								<div class="card-body">
+									<div className="row gx-5">
+										{/* IMPORTE DE CUOTA */}
+										<div className="col-3 border-right mx-0 pe-0">
+											<div className="row">
+												<div className="col-md-8">
+													<label
+														htmlFor="importe_cuota"
+														className="form-label mb-0">
+														Importe de cuota
+													</label>
+													<div className="input-group">
+														<span className="input-group-text bg-secondary">
+															$
+														</span>
+														<input
+															type="text"
+															className="form-control"
+															id="importe_cuota"
+															{...register(
+																"importe_cuota"
+															)}
+														/>
+													</div>
+												</div>
+												<div className="col-md-3 d-flex align-items-end mx-0 px-0">
+													<button
+														type="button"
+														title="Guardar cambios de importe de cuota"
+														id="guardar_importe_cuota"
+														className="btn btn-primary me-2"
+														onClick={
+															handleGuardarImporteCuota
+														}>
+														<i className="fa-solid fa-save"></i>
+													</button>
+												</div>
 											</div>
 										</div>
-										<div className="col-md-3 d-flex align-items-end mx-0 px-0">
-											<button
-												type="button"
-												title="Guardar cambios de importe de cuota"
-												id="guardar_importe_cuota"
-												className="btn btn-primary me-2"
-												onClick={
-													handleGuardarImporteCuota
-												}>
-												<i className="fa-solid fa-save"></i>
-											</button>
-										</div>
-									</div>
-								</div>
-								{/* MEDIOS DE PAGO */}
-								<div className="col-4 ms-3">
-									<div className="row">
-										<div className="col-md-8">
-											<label
-												htmlFor="medio_pago"
-												className="form-label mb-0">
-												Medios de pago
-											</label>
-											<select
-												className="form-select"
-												id="medio_pago"
-												onChange={(e) => {
-													handleMedioPagoChange(e);
-													// Restablecer los estados de los botones al seleccionar "Seleccionar"
-													if (e.target.value === "") {
-														setMostrarNuevoMedio(
-															false
-														);
-														setSelectedMedioPago(
-															null
-														);
-														setNuevoMedioPago("");
-													}
-												}}
-												hidden={mostrarNuevoMedio}>
-												<option
-													value=""
-													className="fst-italic">
-													Añadir nuevo...
-												</option>
-												{mediosDePago.map((medio) => (
-													<option
-														key={medio.id}
-														value={medio.id}>
-														{medio.medio}
-													</option>
-												))}
-											</select>
-											<input
-												type="text"
-												className="form-control"
-												id="nuevo_medio_pago"
-												value={nuevoMedioPago}
-												onChange={(e) =>
-													setNuevoMedioPago(
-														e.target.value
-													)
-												}
-												hidden={!mostrarNuevoMedio}
-											/>
-										</div>
-										<div className="col-3 d-flex align-items-end justify-content-start ps-0">
-											{mostrarNuevoMedio && (
-												<>
-													<button
-														type="button"
-														title="Guardar"
-														className="btn btn-primary me-2"
-														onClick={
-															agregarMedioPago
-														}>
-														<i className="fa-regular fa-save"></i>
-													</button>
-													<button
-														type="button"
-														title="Cancelar"
-														className="btn btn-secondary"
-														onClick={() =>
-															setMostrarNuevoMedio(
-																false
-															)
-														}>
-														<i className="fa-solid fa-ban"></i>
-													</button>
-												</>
-											)}
-											{!mostrarNuevoMedio &&
-												selectedMedioPago && (
-													<button
-														type="button"
-														title="Editar"
-														className="btn btn-warning"
-														onClick={
-															handleEditarMedioPago
-														}>
-														<i className="fa-solid fa-edit"></i>
-													</button>
-												)}
-											{!mostrarNuevoMedio &&
-												!selectedMedioPago && (
-													<button
-														type="button"
-														title="Agregar"
-														className="btn btn-primary me-2"
-														onClick={() => {
-															setMostrarNuevoMedio(
-																true
+										{/* MEDIOS DE PAGO */}
+										<div className="col-4 ms-3">
+											<div className="row">
+												<div className="col-md-8">
+													<label
+														htmlFor="medio_pago"
+														className="form-label mb-0">
+														Medios de pago
+													</label>
+													<select
+														className="form-select"
+														id="medio_pago"
+														onChange={(e) => {
+															handleMedioPagoChange(
+																e
 															);
-															setSelectedMedioPago(
-																null
-															);
-															setNuevoMedioPago(
+															// Restablecer los estados de los botones al seleccionar "Seleccionar"
+															if (
+																e.target
+																	.value ===
 																""
-															);
-														}}>
-														<i className="fa-regular fa-plus"></i>
-													</button>
-												)}
+															) {
+																setMostrarNuevoMedio(
+																	false
+																);
+																setSelectedMedioPago(
+																	null
+																);
+																setNuevoMedioPago(
+																	""
+																);
+															}
+														}}
+														hidden={
+															mostrarNuevoMedio
+														}>
+														<option
+															value=""
+															className="fst-italic">
+															Añadir nuevo...
+														</option>
+														{mediosDePago.map(
+															(medio) => (
+																<option
+																	key={
+																		medio.id
+																	}
+																	value={
+																		medio.id
+																	}>
+																	{
+																		medio.medio
+																	}
+																</option>
+															)
+														)}
+													</select>
+													<input
+														type="text"
+														className="form-control"
+														id="nuevo_medio_pago"
+														value={nuevoMedioPago}
+														onChange={(e) =>
+															setNuevoMedioPago(
+																e.target.value
+															)
+														}
+														hidden={
+															!mostrarNuevoMedio
+														}
+													/>
+												</div>
+												<div className="col-3 d-flex align-items-end justify-content-start ps-0">
+													{mostrarNuevoMedio && (
+														<>
+															<button
+																type="button"
+																title="Guardar"
+																className="btn btn-primary me-2"
+																onClick={
+																	agregarMedioPago
+																}>
+																<i className="fa-regular fa-save"></i>
+															</button>
+															<button
+																type="button"
+																title="Cancelar"
+																className="btn btn-secondary"
+																onClick={() =>
+																	setMostrarNuevoMedio(
+																		false
+																	)
+																}>
+																<i className="fa-solid fa-ban"></i>
+															</button>
+														</>
+													)}
+													{!mostrarNuevoMedio &&
+														selectedMedioPago && (
+															<button
+																type="button"
+																title="Editar"
+																className="btn btn-warning"
+																onClick={
+																	handleEditarMedioPago
+																}>
+																<i className="fa-solid fa-edit"></i>
+															</button>
+														)}
+													{!mostrarNuevoMedio &&
+														!selectedMedioPago && (
+															<button
+																type="button"
+																title="Agregar"
+																className="btn btn-primary me-2"
+																onClick={() => {
+																	setMostrarNuevoMedio(
+																		true
+																	);
+																	setSelectedMedioPago(
+																		null
+																	);
+																	setNuevoMedioPago(
+																		""
+																	);
+																}}>
+																<i className="fa-regular fa-plus"></i>
+															</button>
+														)}
+												</div>
+											</div>
 										</div>
 									</div>
 								</div>

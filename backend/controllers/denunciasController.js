@@ -170,7 +170,6 @@ const getSeguimientoById = async (request, response) => {
 
 // Agregar un seguimiento a una denuncia
 const agregarSeguimiento = async (request, response) => {
-	console.log("request.body CONTROLLER: ", request.body);
 	authenticateToken(request, response, async () => {
 		try {
 			// Verificar si la denuncia existe

@@ -206,6 +206,7 @@ const DenunciasSeguimientosModal = ({
                         `;
 						},
 						orderable: false,
+						searchable: false,
 					},
 				],
 				lengthChange: true,

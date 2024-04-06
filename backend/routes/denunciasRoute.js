@@ -28,7 +28,7 @@ denunciasRouter.delete("/:id", authenticateToken, deleteDenuncia);
 denunciasRouter.get("/seguimientos/:id", authenticateToken, getSeguimientosByDenunciaId);
 denunciasRouter.get("/seguimiento/:id", authenticateToken, getSeguimientoById);
 denunciasRouter.post("/seguimiento/:id", authenticateToken, agregarSeguimiento);
-denunciasRouter.patch("/seguimiento/:id", authenticateToken, modificarSeguimiento);
+denunciasRouter.put("/seguimiento/:id", authenticateToken, modificarSeguimiento);
 denunciasRouter.delete("/seguimiento/:id", authenticateToken, eliminarSeguimiento);
 
 // denunciasRouter.post("/", createDenuncia);
@@ -41,7 +41,7 @@ denunciasRouter.delete("/seguimiento/:id", authenticateToken, eliminarSeguimient
 // denunciasRouter.get("/seguimientos/:id", getSeguimientosByDenunciaId);
 // denunciasRouter.get("/seguimiento/:id", getSeguimientoById);
 // denunciasRouter.post("/seguimiento/:id", agregarSeguimiento);
-// denunciasRouter.patch("/seguimiento/:id", modificarSeguimiento);
+// denunciasRouter.put("/seguimiento/:id", modificarSeguimiento);
 // denunciasRouter.delete("/seguimiento/:id", eliminarSeguimiento);
 
 export default denunciasRouter;

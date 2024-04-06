@@ -35,7 +35,7 @@ export default function SideBar() {
 				{/* Brand Logo */}
 				<Link to="/" className="brand-link text-decoration-none ">
 					<Logo />
-					<span className="brand-text font-weight-light ms-3">
+					<span className="brand-text font-weight-light">
 						CoCoFyC
 					</span>
 				</Link>
@@ -162,6 +162,24 @@ export default function SideBar() {
 									activeclassname="active">
 									<i className="nav-icon fa-solid fa-person-military-to-person" />
 									<p>Denuncias</p>
+								</NavLink>
+							</li>
+							<li className="nav-item">
+								<NavLink
+									to="/pagos"
+									className="nav-link"
+									activeclassname="active">
+									<i className="nav-icon fa-solid fa-money-check-dollar" />
+									<p>Gestión de Pagos</p>
+								</NavLink>
+							</li>
+							<li className="nav-item">
+								<NavLink
+									to="/informes"
+									className="nav-link"
+									activeclassname="active">
+									<i className="nav-icon fa-solid fa-money-check-dollar" />
+									<p>Informes</p>
 								</NavLink>
 							</li>
 							{/* <li className="nav-item">
