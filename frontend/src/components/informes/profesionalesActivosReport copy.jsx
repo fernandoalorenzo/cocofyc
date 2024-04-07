@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import {
+	pdf,
+	PDFViewer,
 	Document,
 	Page,
 	View,
@@ -8,6 +10,7 @@ import {
 	Image,
 	Font,
 } from "@react-pdf/renderer";
+import { saveAs } from "file-saver";
 import logo from "./../../assets/img/LogoCOCOFYC_horizontal.png";
 import apiConnection from "../../../../backend/functions/apiConnection";
 
@@ -116,9 +119,8 @@ const ProfesionalesActivosReport = ({ nombreInforme }) => {
 		fetchProfesionalesActivos();
 	}, []);
 
-	return (
-		<>
-			<Document author="CoCoFyC" title={nombreInforme}>
+	const Informe = () => (
+		<Document author="CoCoFyC" title={nombreInforme}>
 			<Page size="A4" orientation="landscape" style={styles.page}>
 				{/* Encabezado */}
 				<View style={styles.header}>
@@ -215,6 +217,17 @@ const ProfesionalesActivosReport = ({ nombreInforme }) => {
 				</View>
 			</Page>
 		</Document>
+	);
+
+	return (
+		<>
+			<PDFViewer
+				width="100%"
+				height="350px"
+				showToolbar={false}
+				className="p-3">
+				<Informe />
+			</PDFViewer>
 		</>
 	);
 };

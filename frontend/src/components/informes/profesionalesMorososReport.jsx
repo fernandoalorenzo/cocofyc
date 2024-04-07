@@ -79,13 +79,13 @@ const styles = StyleSheet.create({
 	},
 });
 
-const ProfesionalesActivosReport = ({ nombreInforme }) => {
+const ProfesionalesMorososReport = ({ nombreInforme }) => {
 	const [data, setData] = useState([]);
 
 	useEffect(() => {
-		const fetchProfesionalesActivos = async () => {
+		const fetchProfesionalesMorosos = async () => {
 			try {
-				const endpoint = "http://localhost:5000/api/profesionales";
+				const endpoint = "http://localhost:5000/api/profesionales/profesionales-morosos";
 				const direction = "";
 				const method = "GET";
 				const body = false;
@@ -103,17 +103,17 @@ const ProfesionalesActivosReport = ({ nombreInforme }) => {
 				);
 
 				// Filtrar solo los profesionales activos
-				const profesionalesActivos = response.data.filter(
+				const profesionalesMorosos = response.data.filter(
 					(profesional) => profesional.activo
 				);
 
-				setData(profesionalesActivos);
+				setData(profesionalesMorosos);
 			} catch (error) {
 				console.error("Error:", error.message);
 			}
 		};
 
-		fetchProfesionalesActivos();
+		fetchProfesionalesMorosos();
 	}, []);
 
 	return (
@@ -219,4 +219,4 @@ const ProfesionalesActivosReport = ({ nombreInforme }) => {
 	);
 };
 
-export default ProfesionalesActivosReport;
+export default ProfesionalesMorososReport;

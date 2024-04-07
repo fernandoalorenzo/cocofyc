@@ -79,13 +79,13 @@ const styles = StyleSheet.create({
 	},
 });
 
-const ProfesionalesActivosReport = ({ nombreInforme }) => {
+const ProfesionalesMatriculadosReport = ({ nombreInforme }) => {
 	const [data, setData] = useState([]);
 
 	useEffect(() => {
-		const fetchProfesionalesActivos = async () => {
+		const fetchProfesionalesMatriculados = async () => {
 			try {
-				const endpoint = "http://localhost:5000/api/profesionales";
+				const endpoint = "http://localhost:5000/api/profesionales/profesionales-morosos";
 				const direction = "";
 				const method = "GET";
 				const body = false;
@@ -102,18 +102,18 @@ const ProfesionalesActivosReport = ({ nombreInforme }) => {
 					headers
 				);
 
-				// Filtrar solo los profesionales activos
-				const profesionalesActivos = response.data.filter(
-					(profesional) => profesional.activo
+				// Filtrar solo los profesionales Matriculados
+				const profesionalesMatriculados = response.data.filter(
+					(profesional) => profesional.matricula !== ""
 				);
 
-				setData(profesionalesActivos);
+				setData(profesionalesMatriculados);
 			} catch (error) {
 				console.error("Error:", error.message);
 			}
 		};
 
-		fetchProfesionalesActivos();
+		fetchProfesionalesMatriculados();
 	}, []);
 
 	return (
@@ -219,4 +219,4 @@ const ProfesionalesActivosReport = ({ nombreInforme }) => {
 	);
 };
 
-export default ProfesionalesActivosReport;
+export default ProfesionalesMatriculadosReport;

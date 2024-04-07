@@ -24,7 +24,6 @@ import Cuotas from "./components/cuotas/cuotas.jsx";
 import Denuncias from "./components/denuncias/denuncias.jsx";
 import Pagos from "./components/pagos/pagos.jsx";
 import Informes from "./components/informes/informes.jsx";
-import ProfesionalesActivosReport from "./components/informes/profesionalesActivosReport.jsx";
 
 const Layout = ({ children }) => (
 	<>
@@ -143,16 +142,6 @@ const App = () => {
 							<AuthHandler>
 								<Layout>
 									<Informes />
-								</Layout>
-							</AuthHandler>
-						}
-					/>
-					<Route
-						path="/informes/profesionales/activos"
-						element={
-							<AuthHandler>
-								<Layout>
-									<ProfesionalesActivosReport />
 								</Layout>
 							</AuthHandler>
 						}

@@ -9,10 +9,10 @@ const apiConnection = async (endpoint, direction, method, body, headers) => {
 			throw new Error("Token no encontrado en los encabezados");
 		}
 
-		// if (endpoint == "http://localhost:5000/api/profesionales/asignar-movimiento-a-cuota/") {
-		// 	console.log(
-		// 		"***************************************************************************"
-		// 	);
+		// if (endpoint == "http://localhost:5000/api/profesionales/profesionales-morosos/") {
+			// console.log(
+				// "***************************************************************************"
+			// );
 		// 	console.log("endpoint: ", endpoint);
 		// 	console.log("direction: ", direction);
 		// 	console.log("method: ", method);
@@ -22,7 +22,7 @@ const apiConnection = async (endpoint, direction, method, body, headers) => {
 		// 	console.log(
 		// 		"***************************************************************************"
 		// 	);
-		// 	return;
+			// return;
 		// }
 
 		const response = await fetch(url.href, {
