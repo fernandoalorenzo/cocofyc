@@ -20,6 +20,7 @@ import {
 	generarProfesionalesCuota,
 	asignarMovimientoACuota,
 	getProfesionalesMorosos,
+	getProfesionalesAlDia,
 } from "../controllers/profesionalesCuotasController.js";
 
 import authenticateToken from "../functions/tokenVerify.js";
@@ -28,12 +29,21 @@ const profesionalesRouter = express.Router();
 
 // DEFINIMOS LAS RUTAS
 profesionalesRouter.get("/activos", authenticateToken, getProfesionalesActivos);
+
 // Ruta para obtener profesionales que adeudan cuotas
 profesionalesRouter.get(
 	"/profesionales-morosos/",
-	// authenticateToken,
+	authenticateToken,
 	getProfesionalesMorosos
 );
+
+// Ruta para obtener profesionales que estan al dia con cuotas
+profesionalesRouter.get(
+	"/profesionales-aldia/",
+	authenticateToken,
+	getProfesionalesAlDia
+);
+
 profesionalesRouter.get("/:id", authenticateToken, getProfesionalById);
 profesionalesRouter.get("/dni/:dni", authenticateToken, getProfesionalByDNI);
 profesionalesRouter.get("/", authenticateToken, getProfesionales);
@@ -106,7 +116,5 @@ profesionalesRouter.get(
 	authenticateToken,
 	getCuotasGeneradasByProfesional
 );
-
-
 
 export default profesionalesRouter;

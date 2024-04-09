@@ -125,9 +125,7 @@ export default function SideBar() {
 								</NavLink>
 							</li>
 							{/*---------- CARGA DE DATOS ----------*/}
-							<li className="nav-header text-warning">
-								CARGA DE DATOS
-							</li>
+							<li className="nav-header text-warning">GESTIÓN</li>
 							<li className="nav-item">
 								<NavLink
 									to="/profesionales"
@@ -173,6 +171,7 @@ export default function SideBar() {
 									<p>Gestión de Pagos</p>
 								</NavLink>
 							</li>
+							<hr className="text-light"></hr>
 							<li className="nav-item">
 								<NavLink
 									to="/informes"
@@ -182,6 +181,8 @@ export default function SideBar() {
 									<p>Informes</p>
 								</NavLink>
 							</li>
+							<hr className="text-light"></hr>
+
 							{/* <li className="nav-item">
 								<NavLink
 									to="/roles"

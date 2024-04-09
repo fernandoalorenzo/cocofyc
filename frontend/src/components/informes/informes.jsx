@@ -1,16 +1,61 @@
 import React, { useState } from "react";
 import { PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
-import ProfesionalesActivosReport from "./profesionalesActivosReport";
-import ProfesionalesMatriculadosReport from "./profesionalesMatriculadosReport";
-import ProfesionalesMorososReport from "./profesionalesMorososReport";
+import ProfesionalesActivosReport from "./profesionales/profesionalesActivosReport";
+import ProfesionalesMatriculadosReport from "./profesionales/profesionalesMatriculadosReport";
+import ProfesionalesMorososReport from "./profesionales/profesionalesMorososReport";
+import ProfesionalesInactivosReport from "./profesionales/profesionalesInactivosReport";
+import ProfesionalesAlDiaReport from "./profesionales/profesionalesAlDiaReport";
+import ProfesionalesSinMatricularReport from "./profesionales/profesionalesSinMatricularReport";
 
 const Informes = () => {
 	const [showInforme, setShowInforme] = useState(false);
 	const [nombreInforme, setNombreInforme] = useState("");
+	const [informeComponent, setInformeComponent] = useState(null);
 
-	const handleGenerateReport = (nombreInforme) => {
+	const handleGenerateReport = (nombreInforme, componenteInforme) => {
 		setNombreInforme(nombreInforme);
+		setInformeComponent(
+			React.cloneElement(componenteInforme, { nombreInforme })
+		); // Pasar nombreInforme como una prop al componente
+
 		setShowInforme(true);
+	};
+
+	const renderInforme = () => {
+		if (showInforme && informeComponent) {
+			return (
+				<div className="card" id="card-profesionales-report">
+					<div className="card-body">
+						<PDFViewer
+							style={{
+								width: "100%",
+								height: "350px",
+							}}
+							showToolbar={false}>
+							{informeComponent}
+						</PDFViewer>
+					</div>
+					<div className="card-footer">
+						<PDFDownloadLink
+							document={informeComponent}
+							fileName={`${nombreInforme}.pdf`}
+							className="btn btn-danger">
+							{({ loading }) =>
+								loading ? (
+									"Generando PDF..."
+								) : (
+									<>
+										<i className="far fa-file-pdf" />{" "}
+										Descargar
+									</>
+								)
+							}
+						</PDFDownloadLink>
+					</div>
+				</div>
+			);
+		}
+		return null;
 	};
 
 	return (
@@ -116,195 +161,88 @@ const Informes = () => {
 									id="profesionales"
 									role="tabpanel"
 									aria-labelledby="profesionales-tab">
-									<div className="row my-2 mx-1 border border-1 border-secondary-light rounded p-2">
-										<div className="col">
+									<div className="row my-2 mx-1 border border-1 border-secondary-light rounded p-2 d-flex">
+										<div className="col flex-grow-1">
 											<button
 												type="button"
-												className="btn btn-primary"
+												className="btn btn-primary w-100"
 												onClick={() =>
 													handleGenerateReport(
-														"Profesionales Activos"
+														"Profesionales Activos",
+														<ProfesionalesActivosReport />
 													)
 												}>
 												Activos
 											</button>
 										</div>
-										<div className="col">
+										<div className="col flex-grow-1">
 											<button
 												type="button"
-												className="btn btn-primary"
+												className="btn btn-primary w-100"
 												onClick={() =>
 													handleGenerateReport(
-														"Profesionales Matriculados"
+														"Profesionales Inactivos",
+														<ProfesionalesInactivosReport />
+													)
+												}>
+												Inactivos
+											</button>
+										</div>
+										<div className="col flex-grow-1">
+											<button
+												type="button"
+												className="btn btn-primary w-100"
+												onClick={() =>
+													handleGenerateReport(
+														"Profesionales Matriculados",
+														<ProfesionalesMatriculadosReport />
 													)
 												}>
 												Matriculados
 											</button>
 										</div>
-										<div className="col">
+										<div className="col flex-grow-1">
 											<button
 												type="button"
-												className="btn btn-primary"
+												className="btn btn-primary w-100"
 												onClick={() =>
 													handleGenerateReport(
-														"Profesionales Morosos"
+														"Profesionales Sin Matricular",
+														<ProfesionalesSinMatricularReport />
+													)
+												}>
+												Sin Matricular
+											</button>
+										</div>
+										<div className="col flex-grow-1">
+											<button
+												type="button"
+												className="btn btn-primary w-100"
+												onClick={() =>
+													handleGenerateReport(
+														"Profesionales Morosos",
+														<ProfesionalesMorososReport />
 													)
 												}>
 												Morosos
 											</button>
 										</div>
+										<div className="col flex-grow-1">
+											<button
+												type="button"
+												className="btn btn-primary w-100"
+												onClick={() =>
+													handleGenerateReport(
+														"Profesionales al Día",
+														<ProfesionalesAlDiaReport />
+													)
+												}>
+												Al Día
+											</button>
+										</div>
 									</div>
-									{showInforme &&
-										nombreInforme ==
-											"Profesionales Activos" && (
-											<div
-												className="card"
-												id="card-profesionales-report">
-												<div className="card-body">
-													<PDFViewer
-														style={{
-															width: "100%",
-															height: "200px",
-														}}
-														showToolbar={false}>
-														<ProfesionalesActivosReport
-															nombreInforme={
-																nombreInforme
-															}
-														/>
-													</PDFViewer>
-												</div>
-												<div className="card-footer">
-													<PDFDownloadLink
-														document={
-															<ProfesionalesActivosReport
-																nombreInforme={
-																	nombreInforme
-																}
-															/>
-														}
-														fileName={`${nombreInforme}.pdf`}
-														className="btn btn-danger">
-														{({
-															blob,
-															url,
-															loading,
-															error,
-														}) =>
-															loading ? (
-																"Generando PDF..."
-															) : (
-																<>
-																	<i className="far fa-file-pdf" />{" "}
-																	Descargar
-																</>
-															)
-														}
-													</PDFDownloadLink>
-												</div>
-											</div>
-										)}
-									{showInforme &&
-										nombreInforme ==
-											"Profesionales Matriculados" && (
-											<div
-												className="card"
-												id="card-profesionales-report">
-												<div className="card-body">
-													<PDFViewer
-														style={{
-															width: "100%",
-															height: "200px",
-														}}
-														showToolbar={false}>
-														<ProfesionalesMatriculadosReport
-															nombreInforme={
-																nombreInforme
-															}
-														/>
-													</PDFViewer>
-												</div>
-												<div className="card-footer">
-													<PDFDownloadLink
-														document={
-															<ProfesionalesMatriculadosReport
-																nombreInforme={
-																	nombreInforme
-																}
-															/>
-														}
-														fileName={`${nombreInforme}.pdf`}
-														className="btn btn-danger">
-														{({
-															blob,
-															url,
-															loading,
-															error,
-														}) =>
-															loading ? (
-																"Generando PDF..."
-															) : (
-																<>
-																	<i className="far fa-file-pdf" />{" "}
-																	Descargar
-																</>
-															)
-														}
-													</PDFDownloadLink>
-												</div>
-											</div>
-										)}
-									{showInforme &&
-										nombreInforme ==
-											"Profesionales Morosos" && (
-											<div
-												className="card"
-												id="card-profesionales-report">
-												<div className="card-body">
-													<PDFViewer
-														style={{
-															width: "100%",
-															height: "200px",
-														}}
-														showToolbar={false}>
-														<ProfesionalesMorososReport
-															nombreInforme={
-																nombreInforme
-															}
-														/>
-													</PDFViewer>
-												</div>
-												<div className="card-footer">
-													<PDFDownloadLink
-														document={
-															<ProfesionalesMorososReport
-																nombreInforme={
-																	nombreInforme
-																}
-															/>
-														}
-														fileName={`${nombreInforme}.pdf`}
-														className="btn btn-danger">
-														{({
-															blob,
-															url,
-															loading,
-															error,
-														}) =>
-															loading ? (
-																"Generando PDF..."
-															) : (
-																<>
-																	<i className="far fa-file-pdf" />{" "}
-																	Descargar
-																</>
-															)
-														}
-													</PDFDownloadLink>
-												</div>
-											</div>
-										)}
 								</div>
+								{renderInforme()}
 								{/* ******************* DENUNCIAS ******************* */}
 								<div
 									className="tab-pane"
@@ -312,13 +250,6 @@ const Informes = () => {
 									role="tabpanel"
 									aria-labelledby="profile-tab">
 									profile
-								</div>
-								<div
-									className="tab-pane"
-									id="messages"
-									role="tabpanel"
-									aria-labelledby="messages-tab">
-									messages
 								</div>
 							</div>
 						</div>
