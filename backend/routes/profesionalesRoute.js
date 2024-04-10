@@ -47,7 +47,7 @@ profesionalesRouter.get(
 profesionalesRouter.get("/:id", authenticateToken, getProfesionalById);
 profesionalesRouter.get("/dni/:dni", authenticateToken, getProfesionalByDNI);
 profesionalesRouter.get("/", authenticateToken, getProfesionales);
-profesionalesRouter.post("/", authenticateToken, createProfesional);
+// profesionalesRouter.post("/", authenticateToken, createProfesional);
 profesionalesRouter.put("/:id", authenticateToken, updateProfesional);
 profesionalesRouter.delete("/:id", authenticateToken, deleteProfesional);
 profesionalesRouter.patch("/:id", authenticateToken, patchProfesional);
@@ -56,7 +56,7 @@ profesionalesRouter.patch("/:id", authenticateToken, patchProfesional);
 // profesionalesRouter.get("/:id", getProfesionalById);
 // profesionalesRouter.get("/dni/:dni", getProfesionalByDNI);
 // profesionalesRouter.get("/", getProfesionales);
-// profesionalesRouter.post("/", createProfesional);
+profesionalesRouter.post("/", createProfesional);
 // profesionalesRouter.put("/:id", updateProfesional);
 // profesionalesRouter.delete("/:id", deleteProfesional);
 // profesionalesRouter.patch("/:id", patchProfesional);

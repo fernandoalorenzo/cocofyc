@@ -4,6 +4,7 @@ import Profesionales_Cuotas from "../models/profesionales_cuotasModel.js";
 import authenticateToken from "../functions/tokenVerify.js";
 import { config } from "dotenv";
 config();
+import moment from "moment-timezone";
 
 import sequelize from "./../config/sequelizeConfig.js";
 import { Op } from "sequelize";
@@ -197,13 +198,6 @@ const getProfesionalesMorosos = async (request, response) => {
 				})
 			);
 
-			// Ordenar morososConDetalles alfabéticamente por nombre
-			// morososConDetalles.sort((a, b) => {
-			// 	if (a.nombre < b.nombre) return -1;
-			// 	if (a.nombre > b.nombre) return 1;
-			// 	return 0;
-			// });
-
 			response.status(201).json({
 				message: "El listado de profesionales fue creado exitosamente!",
 				total: morososConDetalles.length,
@@ -219,58 +213,132 @@ const getProfesionalesMorosos = async (request, response) => {
 // Obtener profesionales al día
 const getProfesionalesAlDia = async (request, response) => {
 	authenticateToken(request, response, async () => {
-	try {
-		// Paso 1: Obtener profesionales sin deudas pendientes
-		const profesionalesConMovimiento = await Profesionales_Cuotas.findAll({
-			where: {
-				movimiento_id: {
-					[Op.not]: null,
-				},
-			},
-		});
-
-		// Array para almacenar los resultados finales con la información adicional
-		const resultadoFinal = [];
-
-		// Iterar sobre los profesionales con movimiento
-		for (const profesional of profesionalesConMovimiento) {
-			// Buscar el profesional en el modelo Profesional
-			const infoProfesional = await Profesional.findOne({
-				where: {
-					id: profesional.profesional_id,
-				},
-				attributes: ["nombre", "matricula", "telefono", "email", "activo"],
+		try {
+			// Realiza la consulta utilizando el método findAll de Sequelize
+			const profesionales = await Profesionales_Cuotas.findAll({
+				attributes: [
+					[
+						sequelize.fn(
+							"DISTINCT",
+							sequelize.col("profesional_id")
+						),
+						"profesional_id",
+					],
+				], // Selecciona valores únicos de profesional_id
+				raw: true, // Obtiene resultados como objetos planos
 			});
 
-			// Agregar la información adicional al resultado final
-			resultadoFinal.push({
-				...profesional.toJSON(),
-				...infoProfesional.toJSON(),
+			// Extrae los valores de profesional_id de los resultados
+			const listaProfesionalesId = profesionales.map(
+				(item) => item.profesional_id
+			);
+
+			// Obtener todos los registros de Profesionales_Cuotas
+			let profesionalesCuotas = await Profesionales_Cuotas.findAll({
+				raw: true,
 			});
-		}
 
-		// Convertir el array de resultadoFinal en un Set para mantener solo los IDs únicos
-		const idUnicos = new Set();
-		const resultadosFiltrados = [];
+			// Iterar sobre cada registro de profesionalesCuotas
+			for (let i = 0; i < profesionalesCuotas.length; i++) {
+				const cuota_id = profesionalesCuotas[i].cuota_id;
 
-		for (const resultado of resultadoFinal) {
-			// Verificar si el profesional_id ya está en el Set
-			if (!idUnicos.has(resultado.profesional_id)) {
-				// Si no está, agregar el ID al Set y el resultado al array de resultados filtrados
-				idUnicos.add(resultado.profesional_id);
-				resultadosFiltrados.push(resultado);
+				// Buscar la cuota correspondiente en el modelo Cuota
+				const cuota = await Cuota.findOne({
+					where: { id: cuota_id },
+					raw: true,
+				});
+
+				// Agregar el campo "vencimiento" al objeto profesionalesCuotas
+				if (cuota) {
+					profesionalesCuotas[i].vencimiento = cuota.vencimiento;
+				}
 			}
-		}
 
-		response.status(200).json({
-			message: "Profesionales sin deudas pendientes",
-			total: resultadosFiltrados.length,
-			data: resultadosFiltrados,
-		});
-	} catch (error) {
-		console.error("Error al obtener profesionales:", error);
-		throw error;
-	}
+			// Obtén la fecha actual
+			const fechaActual = moment()
+				.tz("America/Buenos_Aires")
+				.startOf("day")
+				.toDate();
+
+			fechaActual.setHours(0, 0, 0, 0);
+
+			const profesionalesConDatos = [];
+
+			// Iterar sobre cada profesional_id en listaProfesionalesId
+			for (let i = 0; i < listaProfesionalesId.length; i++) {
+				const profesional_id = listaProfesionalesId[i];
+
+				// Filtrar profesionalesCuotas para obtener solo los registros correspondientes a este profesional_id
+				const registrosProfesional = profesionalesCuotas.filter(
+					(item) => item.profesional_id === profesional_id
+				);
+
+				// Iterar sobre cada registro de este profesional
+				for (let j = 0; j < registrosProfesional.length; j++) {
+					const registro = registrosProfesional[j];
+
+					// Convertir la fecha de vencimiento a un objeto Date en formato UTC
+					const vencimiento = moment(registro.vencimiento)
+						.tz("America/Buenos_Aires")
+						.startOf("day")
+						.toDate();
+
+					// Verificar las condiciones: movimiento_id === null y vencimiento <= fecha actual
+					if (
+						registro.movimiento_id === null &&
+						vencimiento <= fechaActual - 1
+					) {
+						// Eliminar el profesional_id del array listaProfesionalesId
+						listaProfesionalesId.splice(i, 1);
+						// Reiniciar el índice i ya que el array ha cambiado de longitud
+						i--;
+						// Romper el bucle for, ya que hemos encontrado un registro que cumple las condiciones
+						break;
+					}
+				}
+			}
+
+			// Obtener los campos del modelo Profesional para los IDs restantes en listaProfesionalesId
+			const profesionalesInfo = await Profesional.findAll({
+				where: { id: listaProfesionalesId },
+				attributes: [
+					"id",
+					"nombre",
+					"dni",
+					"cuit",
+					"telefono",
+					"email",
+					"matricula",
+					"activo",
+				],
+				raw: true,
+			});
+
+			// Agregar los campos del modelo Profesional al array listaProfesionalesId
+			listaProfesionalesId.forEach((profesional_id, index) => {
+				const info = profesionalesInfo.find(
+					(profesional) => profesional.id === profesional_id
+				);
+
+				// Si se encuentra la información, combinarla con el ID del profesional y agregarla al nuevo array
+				if (info) {
+					profesionalesConDatos.push({
+						id: profesional_id,
+						...info,
+					});
+				}
+			});
+
+			// Devuelve la lista de profesional_id con la información adicional de Profesional
+			response.status(201).json({
+				message: "El listado de profesionales fue creado exitosamente!",
+				total: profesionalesConDatos.length,
+				data: profesionalesConDatos,
+			});
+		} catch (error) {
+			console.error("Error al obtener profesionales:", error);
+			throw error;
+		}
 	});
 };
 

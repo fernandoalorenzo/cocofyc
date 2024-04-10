@@ -6,7 +6,7 @@ config();
 
 // Crear un nuevo profesional
 const createProfesional = async (request, response) => {
-	authenticateToken(request, response, async () => {
+	// authenticateToken(request, response, async () => {
 		try {
 			const nuevoProfesional = await Profesional.create(request.body);
 
@@ -18,7 +18,7 @@ const createProfesional = async (request, response) => {
 			console.error("Error: " + error.message);
 			response.status(500).send({ message: error.message });
 		}
-	});
+	// });
 };
 
 // Obtener todos los profesionales

@@ -62,7 +62,7 @@ const ProfesionalesAlDiaReport = ({ nombreInforme }) => {
 	// // Función para agrupar los datos por profesional y mostrar detalles de cuotas
 	const renderProfesionalesAlDia = () => {
 		const profesionales = {};
-
+		
 		// Agrupar datos por profesional
 		data.forEach((profesional) => {
 			const { nombre, dni, cuit, telefono, email, matricula, activo } =
@@ -121,45 +121,6 @@ const ProfesionalesAlDiaReport = ({ nombreInforme }) => {
 							""
 						)}
 					</Text>
-					{/* <View
-						style={[
-							globalStyles.tableCellCuotaTitulo,
-							{ backgroundColor: "#EFEFEF" },
-						]}>
-						{cuotas.map((cuota, index) => (
-							<View
-								key={index}
-								style={[globalStyles.tableRow, { border: 0 }]}>
-								<Text
-									style={[
-										globalStyles.tableCell,
-										{ textAlign: "center" },
-									]}>
-									{cuota.cuota}
-								</Text>
-								<Text
-									style={[
-										globalStyles.tableCell,
-										{ textAlign: "center" },
-									]}>
-									{cuota.vencimiento}
-								</Text>
-								<Text
-									style={[
-										globalStyles.tableCell,
-										{ textAlign: "center" },
-									]}>
-									{Number(cuota.importe).toLocaleString(
-										"es-AR",
-										{
-											style: "currency",
-											currency: "ARS",
-										}
-									)}
-								</Text>
-							</View>
-						))}
-					</View> */}
 				</View>
 			);
 		});

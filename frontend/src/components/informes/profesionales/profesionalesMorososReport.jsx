@@ -63,7 +63,8 @@ const ProfesionalesMorososReport = ({ nombreInforme }) => {
 	// Función para agrupar los datos por profesional y mostrar detalles de cuotas adeudadas
 	const renderProfesionalesMorosos = () => {
 		const profesionales = {};
-
+		
+		
 		// Agrupar datos por profesional
 		data.forEach((profesional) => {
 			const { nombre, dni, cuit, telefono, email, matricula, activo } =
@@ -79,17 +80,30 @@ const ProfesionalesMorososReport = ({ nombreInforme }) => {
 					activo,
 					cuotas: [],
 					cantidadCuotasAdeudadas: 0, // Inicializar contador de cuotas adeudadas
+					totalDeuda: 0, // Inicializar total de deuda del profesional
 				};
 				totalProfesionales++; // Incrementar contador de profesionales
 			}
 
-			profesionales[nombre].cuotas.push({
-				cuota: profesional.cuota,
-				vencimiento: profesional.vencimiento,
-				importe: profesional.importe,
-			});
-			// Incrementar el contador de cuotas adeudadas para este profesional
-			profesionales[nombre].cantidadCuotasAdeudadas++;
+			// Obtener la fecha actual
+			var fechaActual = new Date();
+
+			// Comparar la fecha de vencimiento con la fecha actual
+			if (new Date(profesional.vencimiento) < fechaActual) {
+				// Ejecutar el bloque de código si la fecha de vencimiento es anterior a la fecha actual
+				profesionales[nombre].cuotas.push({
+					cuota: profesional.cuota,
+					vencimiento: profesional.vencimiento,
+					importe: parseFloat(profesional.importe), // Convertir importe a número
+				});
+
+				// Incrementar el contador de cuotas adeudadas para este profesional
+				profesionales[nombre].cantidadCuotasAdeudadas++;
+				// Incrementar el total de deuda del profesional
+				profesionales[nombre].totalDeuda += parseFloat(
+					profesional.importe
+				); // Sumar importe convertido a número
+			}
 		});
 
 		// Ordenar las cuotas adeudadas por vencimiento
@@ -111,6 +125,7 @@ const ProfesionalesMorososReport = ({ nombreInforme }) => {
 				activo,
 				cuotas,
 				cantidadCuotasAdeudadas,
+				totalDeuda,
 			} = profesionales[nombreProfesional];
 
 			return (
@@ -193,6 +208,16 @@ const ProfesionalesMorososReport = ({ nombreInforme }) => {
 								</Text>
 							</View>
 						))}
+						<View style={globalStyles.tableRowTotalCuota}>
+							<Text
+								style={globalStyles.tableCell}>
+								{"Total deuda: " +
+									totalDeuda.toLocaleString("es-AR", {
+										style: "currency",
+										currency: "ARS",
+									})}
+							</Text>
+						</View>
 					</View>
 				</View>
 			);

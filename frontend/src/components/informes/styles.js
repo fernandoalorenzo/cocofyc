@@ -12,7 +12,7 @@ export const globalStyles = StyleSheet.create({
 		fontFamily: "Oswald",
 	},
 	section: {
-		marginBottom: 10,
+		marginBottom: 8,
 	},
 	header: {
 		textAlign: "center",
@@ -51,6 +51,14 @@ export const globalStyles = StyleSheet.create({
 		alignItems: "center",
 		fontFamily: "Oswald",
 	},
+	tableRowTotalCuota: {
+		backgroundColor: "#DFDFDF",
+		flexDirection: "row",
+		alignItems: "right",
+		paddingRight: "28px",
+		textAlign: "right",
+		fontWeight: "bold",
+	},
 	tableCell: {
 		flex: 1,
 	},
@@ -80,5 +88,5 @@ export const globalStyles = StyleSheet.create({
 		flexDirection: "row",
 		justifyContent: "space-between",
 		fontSize: 9,
-    	},
+	},
 });
