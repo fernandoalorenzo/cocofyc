@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text, StyleSheet } from "@react-pdf/renderer";
-import { globalStyles } from "./styles";
+import { globalStyles } from "./stylesReports";
 
 const Footer = ({ data }) => (
 	<View style={globalStyles.footer}>

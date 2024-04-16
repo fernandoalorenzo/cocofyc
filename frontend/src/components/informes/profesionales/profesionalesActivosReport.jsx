@@ -11,7 +11,7 @@ import {
 import apiConnection from "../../../../../backend/functions/apiConnection";
 import Header from "./../header";
 import Footer from "./../footer";
-import { globalStyles } from "./../styles";
+import { globalStyles } from "./../stylesReports";
 
 Font.register({
 	family: "Oswald",
@@ -19,7 +19,7 @@ Font.register({
 });
 
 
-const ProfesionalesActivosReport = ({ nombreInforme }) => {
+const ProfesionalesActivosReport = ({ title, nombreInforme }) => {
 	const [data, setData] = useState([]);
 
 	useEffect(() => {
@@ -67,7 +67,7 @@ const ProfesionalesActivosReport = ({ nombreInforme }) => {
 			<Document author="CoCoFyC" title={nombreInforme}>
 				<Page size="A4" orientation="landscape" style={globalStyles.page}>
 					{/* Encabezado */}
-					<Header title={nombreInforme} />
+					<Header title={title} />
 					<View
 						style={[
 							globalStyles.tableRow,

@@ -12,16 +12,25 @@ import check from "./../../../assets/img/check.png";
 import apiConnection from "../../../../../backend/functions/apiConnection";
 import Header from "./../header";
 import Footer from "./../footer";
-import { globalStyles } from "./../styles";
+import { globalStyles } from "./../stylesReports";
 
 Font.register({
 	family: "Oswald",
 	src: "https://fonts.gstatic.com/s/oswald/v13/Y_TKV6o8WovbUd3m_X9aAA.ttf",
 });
 
-const ProfesionalesMorososReport = ({ nombreInforme }) => {
+const ProfesionalesMorososReport = ({ title, nombreInforme }) => {
 	const [data, setData] = useState([]);
 	let totalProfesionales = 0; // Inicializar contador de profesionales
+
+	// Función para formatear la fecha de vencimiento al formato "DD-MM-AAAA"
+	const formatDate = (dateString) => {
+		const dateParts = dateString.split("-");
+		const year = dateParts[0];
+		const month = dateParts[1];
+		const day = dateParts[2];
+		return `${day}-${month}-${year}`;
+	};
 	
 	useEffect(() => {
 		const fetchProfesionalesMorosos = async () => {
@@ -63,8 +72,7 @@ const ProfesionalesMorososReport = ({ nombreInforme }) => {
 	// Función para agrupar los datos por profesional y mostrar detalles de cuotas adeudadas
 	const renderProfesionalesMorosos = () => {
 		const profesionales = {};
-		
-		
+
 		// Agrupar datos por profesional
 		data.forEach((profesional) => {
 			const { nombre, dni, cuit, telefono, email, matricula, activo } =
@@ -191,7 +199,8 @@ const ProfesionalesMorososReport = ({ nombreInforme }) => {
 										globalStyles.tableCell,
 										{ textAlign: "center" },
 									]}>
-									{cuota.vencimiento}
+									
+									{formatDate(cuota.vencimiento)}
 								</Text>
 								<Text
 									style={[
@@ -209,8 +218,7 @@ const ProfesionalesMorososReport = ({ nombreInforme }) => {
 							</View>
 						))}
 						<View style={globalStyles.tableRowTotalCuota}>
-							<Text
-								style={globalStyles.tableCell}>
+							<Text style={globalStyles.tableCell}>
 								{"Total deuda: " +
 									totalDeuda.toLocaleString("es-AR", {
 										style: "currency",
@@ -231,7 +239,7 @@ const ProfesionalesMorososReport = ({ nombreInforme }) => {
 					size="A4"
 					orientation="landscape"
 					style={globalStyles.page}>
-					<Header title={nombreInforme} />
+					<Header title={title} />
 					<View
 						style={[
 							globalStyles.tableRow,
@@ -296,16 +304,7 @@ const ProfesionalesMorososReport = ({ nombreInforme }) => {
 						</Text>
 					</View>
 					{renderProfesionalesMorosos()}
-					<View style={globalStyles.footer}>
-						<Text>Total de registros: {totalProfesionales}</Text>
-						<Text
-							style={globalStyles.pageNumber}
-							render={({ pageNumber, totalPages }) =>
-								`Pág. ${pageNumber} de ${totalPages}`
-							}
-							fixed
-						/>
-					</View>
+					<Footer data={data} />
 				</Page>
 			</Document>
 		</>

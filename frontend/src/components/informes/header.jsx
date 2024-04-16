@@ -1,27 +1,7 @@
 import React from "react";
 import { View, Text, Image, StyleSheet } from "@react-pdf/renderer";
 import logo from "./../../assets/img/LogoCOCOFYC_horizontal.png";
-import { globalStyles } from "./styles";
-
-// const styles = StyleSheet.create({
-// 	header: {
-// 		textAlign: "center",
-// 		flexDirection: "row",
-// 		justifyContent: "space-between",
-// 		alignItems: "center",
-// 		marginBottom: 10,
-// 		padding: 10,
-// 	},
-// 	headerLeft: {
-// 		flexDirection: "row",
-// 		alignItems: "center",
-// 		fontSize: "12px",
-// 	},
-// 	logo: {
-// 		height: 50,
-// 		marginRight: 20,
-// 	},
-// });
+import { globalStyles } from "./stylesReports";
 
 const Header = ({ title }) => (
 	<View style={globalStyles.header}>

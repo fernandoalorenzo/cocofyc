@@ -39,7 +39,8 @@ const DenunciasSeguimientosModal = ({
 	};
 
 	const initialState = {
-		fecha: "",
+		fecha: getCurrentDate(),
+		proximo_seguimiento: null,
 		respuesta: "",
 	};
 
@@ -175,9 +176,9 @@ const DenunciasSeguimientosModal = ({
 					"<'row'<'col-md-6'i><'col-md-6'p>>",
 				columnDefs: [
 					{
-						targets: 0, // El índice de la columna de fecha (0 es la primera columna)
+						targets: [0, 2], // El índice de la columna de fecha (0 es la primera columna)
 						render: function (data, type, row) {
-							if (type === "display") {
+							if (data && type === "display") {
 								// Formatear la fecha de 'aaaa-mm-dd' a 'dd/mm/aaaa'
 								const parts = data.split("-");
 								if (parts.length === 3) {
@@ -194,6 +195,9 @@ const DenunciasSeguimientosModal = ({
 					},
 					{
 						data: "respuesta",
+					},
+					{
+						data: "proximo_seguimiento",
 					},
 					{
 						// Columna de acciones
@@ -268,7 +272,7 @@ const DenunciasSeguimientosModal = ({
 			const endpoint = "http://localhost:5000/api/denuncias/seguimiento/";
 			if (modalFormMode === "editar") {
 				direction = editingSeguimiento.id;
-				method = "PATCH";
+				method = "PUT";
 			} else if (modalFormMode === "agregar") {
 				direction = denunciaId;
 				method = "POST";
@@ -318,20 +322,17 @@ const DenunciasSeguimientosModal = ({
 	};
 
 	const editarSeguimiento = (seguimientoId) => {
-		// Buscar el seguimiento que se está editando
 		const seguimiento = seguimientos.find(
 			(seg) => seg.id === seguimientoId
 		);
 		if (seguimiento) {
-			// Establecer el seguimiento que se está editando en el estado
 			setEditingSeguimiento(seguimiento);
-			// Mostrar el formulario y establecer el modo de formulario en editar
 			setCardBodyFormToggle(true);
 			setModalFormMode("editar");
-			// Llenar los campos de fecha y respuesta con los valores del seguimiento
 			reset({
 				fecha: seguimiento.fecha,
 				respuesta: seguimiento.respuesta,
+				proximo_seguimiento: seguimiento.proximo_seguimiento,
 			});
 		}
 	};
@@ -482,7 +483,7 @@ const DenunciasSeguimientosModal = ({
 							className="btn-close"
 							aria-label="Close"
 							onClick={() => {
-								reset();
+								reset(initialState);
 								closeModalSeguimiento();
 								setCardBodyFormToggle(false);
 								setModalFormMode("");
@@ -500,7 +501,7 @@ const DenunciasSeguimientosModal = ({
 											hidden={cardBodyFormToggle}
 											disabled={!isBotonAgregarEnabled}
 											onClick={() => {
-												reset();
+												reset(initialState);
 												setCardBodyFormToggle(true);
 												setModalFormMode("agregar");
 											}}>
@@ -541,6 +542,24 @@ const DenunciasSeguimientosModal = ({
 										</div>
 										<div className="mb-3">
 											<label
+												htmlFor="proximoSeguimiento"
+												className="form-label">
+												Próximo seguimiento
+											</label>
+											<input
+												type="date"
+												className="form-control"
+												id="proximoSeguimiento"
+												defaultValue={
+													modalFormMode === "editar"
+														? editingSeguimiento.proximo_seguimiento
+														: ""
+												}
+												{...register("proximo_seguimiento")}
+											/>
+										</div>
+										<div className="mb-3">
+											<label
 												htmlFor="respuesta"
 												className="form-label">
 												Respuesta
@@ -575,7 +594,6 @@ const DenunciasSeguimientosModal = ({
 												className="btn btn-secondary ms-2"
 												onClick={() => {
 													reset();
-													closeModalSeguimiento();
 													setCardBodyFormToggle(
 														false
 													);
@@ -598,6 +616,7 @@ const DenunciasSeguimientosModal = ({
 											<tr>
 												<th>Fecha</th>
 												<th>Respuesta</th>
+												<th>Próx. Seg.</th>
 												<th className="text-center">
 													Acciones
 												</th>

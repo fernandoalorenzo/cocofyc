@@ -25,98 +25,60 @@ const Informes = () => {
 		setFechaHasta(lastDayOfMonth);
 	}, []);
 
+	// Definir los tabs
 	const tabs = [
 		{
 			id: "profesionales-tab",
-			target: "#profesionales",
 			label: "Profesionales",
+			target: "#profesionales",
 			selected: true,
-			reports: [
-				{
-					label: "Activos",
-					reportComponent: <ProfesionalesActivosReport />,
-					title: "Profesionales Activos",
-				},
-				{
-					label: "Inactivos",
-					reportComponent: <ProfesionalesInactivosReport />,
-					title: "Profesionales Inactivos",
-				},
-				{
-					label: "Matriculados",
-					reportComponent: <ProfesionalesMatriculadosReport />,
-					title: "Profesionales Matriculados",
-				},
-				{
-					label: "Sin Matricular",
-					reportComponent: <ProfesionalesSinMatricularReport />,
-					title: "Profesionales Sin Matricular",
-				},
-				{
-					label: "Morosos",
-					reportComponent: <ProfesionalesMorososReport />,
-					title: "Profesionales Morosos",
-				},
-				{
-					label: "Al Día",
-					reportComponent: <ProfesionalesAlDiaReport />,
-					title: "Profesionales Al Día",
-				},
-			],
 		},
 		{
 			id: "denuncias-tab",
-			target: "#denuncias",
 			label: "Denuncias",
+			target: "#denuncias",
 			selected: false,
-			reports: [
-				{
-					label: "Activas",
-					reportComponent: <DenunciasActivasReport />,
-					title: "Denuncias Activas",
-				},
-				{
-					label: "Activas Por Fecha",
-					reportComponent: (
-						<DenunciasActivasPorFechaReport
-							fechaDesde={fechaDesde}
-							fechaHasta={fechaHasta}
-						/>
-					),
-					// title: "Denuncias Activas Por Fecha",
-					title: `Denuncias Activas Por Fecha (entre ${moment(
-						fechaDesde
-					).format("DD-MM-YYYY")} y ${moment(fechaHasta).format(
-						"DD-MM-YYYY"
-					)})`,
-				},
-			],
 		},
 	];
 
-	const handleGenerateReport = (nombreInforme, componenteInforme, props = {}) => {
-		setNombreInforme(props.title);
-		setInformeComponent(
-			React.cloneElement(componenteInforme, {... props, nombreInforme })
+	// Función para generar los botones
+	function generateButton(label, nombreInforme, reportComponent) {
+		return (
+			<div className="col flex-grow-1">
+				<button
+					type="button"
+					className="btn btn-primary w-100"
+					onClick={() =>
+						handleGenerateReport(nombreInforme, reportComponent)
+					}>
+					{label}
+				</button>
+			</div>
 		);
+	}
+
+	const handleGenerateReport = (nombreInforme, reportComponent) => {
+		setNombreInforme(nombreInforme);
+		setInformeComponent(reportComponent);
 		setShowInforme(true);
 	};
 
 	const renderInforme = () => {
+		// Verificar si el informe ha sido generado y el componente del informe no es null
 		if (showInforme && informeComponent) {
 			return (
 				<div className="card" id="card-profesionales-report">
-					<div className="card-body">
+					<div className="card-body p-0">
 						<PDFViewer
 							style={{
 								width: "100%",
-								height: "350px",
+								height: "320px",
 							}}
 							showToolbar={false}>
 							{informeComponent}
 						</PDFViewer>
 					</div>
-					<div className="card-footer">
+					<div className="card-footer p-1">
 						<PDFDownloadLink
 							document={informeComponent}
 							fileName={`${nombreInforme}.pdf`}
@@ -136,13 +98,14 @@ const Informes = () => {
 				</div>
 			);
 		}
+		// Si el informe no está generado o el componente es null, no mostrar nada
 		return null;
 	};
 
 	return (
 		<>
 			<div className="content-wrapper">
-				<div className="content-header">
+				<div className="content-header pb-0">
 					<div className="container-fluid container-md w-75">
 						<div className="row mb-1">
 							<div className="col-sm-6">
@@ -231,41 +194,67 @@ const Informes = () => {
 
 							{/* <!-- Tab panes --> */}
 							<div className="tab-content">
-								{tabs.map((tab, index) => (
-									<div
-										key={index}
-										className={`tab-pane ${
-											tab.selected ? "active" : ""
-										}`}
-										id={tab.target.substring(1)}
-										role="tabpanel"
-										aria-labelledby={tab.id}>
-										<div className="row my-2 mx-1 border border-1 border-secondary-light rounded p-2 d-flex">
-											{tab.reports.map(
-												(report, reportIndex) => (
-													<div
-														key={reportIndex}
-														className="col flex-grow-1">
-														<button
-															type="button"
-															className="btn btn-primary w-100"
-															onClick={() =>
-																handleGenerateReport(
-																	report.label,
-																	report.reportComponent,
-																	{
-																		title: report.title,
-																	}
-																)
-															}>
-															{report.label}
-														</button>
-													</div>
-												)
-											)}
-										</div>
+								{/* ******************* PROFESIONALES ******************* */}
+								<div
+									className="tab-pane active"
+									id="profesionales"
+									role="tabpanel"
+									aria-labelledby="profesionales-tab">
+									<div className="row my-2 mx-1 border border-1 border-secondary-light rounded p-2 d-flex">
+										{generateButton(
+											"Activos",
+											"Profesionales Activos",
+											<ProfesionalesActivosReport />
+										)}
+										{generateButton(
+											"Inactivos",
+											"Profesionales Inactivos",
+											<ProfesionalesInactivosReport />
+										)}
+										{generateButton(
+											"Matriculados",
+											"Profesionales Matriculados",
+											<ProfesionalesMatriculadosReport />
+										)}
+										{generateButton(
+											"Sin Matricular",
+											"Profesionales Sin Matricular",
+											<ProfesionalesSinMatricularReport />
+										)}
+										{generateButton(
+											"Morosos",
+											"Profesionales Morosos",
+											<ProfesionalesMorososReport />
+										)}
+										{generateButton(
+											"Al Día",
+											"Profesionales al Día",
+											<ProfesionalesAlDiaReport />
+										)}
 									</div>
-								))}
+								</div>
+								{/* ******************* DENUNCIAS ******************* */}
+								<div
+									className="tab-pane"
+									id="denuncias"
+									role="tabpanel"
+									aria-labelledby="denuncias-tab">
+									<div className="row my-2 mx-1 border border-1 border-secondary-light rounded p-2 d-flex">
+										{generateButton(
+											"Activas",
+											"Denuncias Activas",
+											<DenunciasActivasReport />
+										)}
+										{generateButton(
+											"Activas por Fecha",
+											"Denuncias Activas por Fecha",
+											<DenunciasActivasPorFechaReport
+												fechaDesde={fechaDesde}
+												fechaHasta={fechaHasta}
+											/>
+										)}
+									</div>
+								</div>
 								{renderInforme()}
 							</div>
 						</div>

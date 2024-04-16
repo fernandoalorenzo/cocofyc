@@ -12,14 +12,14 @@ import check from "./../../../assets/img/check.png";
 import apiConnection from "../../../../../backend/functions/apiConnection";
 import Header from "../header";
 import Footer from "../footer";
-import { globalStyles } from "../styles";
+import { globalStyles } from "./../stylesReports";
 
 Font.register({
 	family: "Oswald",
 	src: "https://fonts.gstatic.com/s/oswald/v13/Y_TKV6o8WovbUd3m_X9aAA.ttf",
 });
 
-const ProfesionalesAlDiaReport = ({ nombreInforme }) => {
+const ProfesionalesAlDiaReport = ({ title, nombreInforme }) => {
 	const [data, setData] = useState([]);
 
 	useEffect(() => {
@@ -133,7 +133,7 @@ const ProfesionalesAlDiaReport = ({ nombreInforme }) => {
 					size="A4"
 					orientation="landscape"
 					style={globalStyles.page}>
-					<Header title={nombreInforme} />
+					<Header title={title} />
 					<View
 						style={[
 							globalStyles.tableRow,

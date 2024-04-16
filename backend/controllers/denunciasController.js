@@ -184,6 +184,7 @@ const agregarSeguimiento = async (request, response) => {
 			const nuevoSeguimiento = await DenunciasSeguimiento.create({
 				fecha: request.body.fecha,
 				respuesta: request.body.respuesta,
+				proximo_seguimiento: request.body.proximo_seguimiento,
 				denuncia_id: request.params.id
 			});
 

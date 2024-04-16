@@ -137,7 +137,7 @@ const DenunciasModal = ({
 		establecimiento_id: "",
 		infraccion: "",
 		comentario: "",
-		fecha_cierre: "",
+		fecha_cierre: null,
 	};
 
 	useEffect(() => {
@@ -402,7 +402,6 @@ const DenunciasModal = ({
 											id="fecha_cierre"
 											className="form-control"
 											readOnly={modalMode === "mostrar"}
-											// defaultValue={getCurrentDate()}
 											{...register("fecha_cierre")}
 										/>
 									</div>
