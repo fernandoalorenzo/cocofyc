@@ -6,7 +6,7 @@ export default function Header() {
 			{/* <!-- Navbar --> */}
 			<nav className="main-header navbar navbar-expand navbar-white navbar-light">
 				{/* Left navbar links */}
-				<ul className="navbar-nav">
+				<ul className="navbar-nav ms-3">
 					<li className="nav-item">
 						<a
 							className="nav-link"

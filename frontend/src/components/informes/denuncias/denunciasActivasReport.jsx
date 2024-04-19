@@ -271,10 +271,31 @@ const DenunciasActivasReport = ({ title, nombreInforme }) => {
 								style={[
 									globalStyles.tableRow,
 									{
-										backgroundColor: "#bbbbbb",
+										backgroundColor: "#000000",
 										color: "#ffffff",
 										marginLeft: "25%",
 										marginTop: "5px",
+										marginBottom: "0px",
+										paddingTop: "0px",
+										paddingBottom: "0px",
+										textAlign: "center",
+									},
+								]}>
+								<Text
+									style={[
+										globalStyles.tableCell,
+										{ textAlign: "center" },
+									]}>
+									HISTORIAL
+								</Text>
+							</View>
+							<View
+								style={[
+									globalStyles.tableRow,
+									{
+										backgroundColor: "#bbbbbb",
+										color: "#ffffff",
+										marginLeft: "25%",
 										marginBottom: "0px",
 										paddingTop: "0px",
 										paddingBottom: "0px",

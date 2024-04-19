@@ -177,7 +177,7 @@ export default function SideBar() {
 									to="/informes"
 									className="nav-link"
 									activeclassname="active">
-									<i className="nav-icon fa-solid fa-money-check-dollar" />
+									<i className="nav-icon fa-regular fa-file-lines" />
 									<p>Informes</p>
 								</NavLink>
 							</li>

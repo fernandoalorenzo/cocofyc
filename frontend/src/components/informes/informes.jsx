@@ -9,6 +9,8 @@ import ProfesionalesAlDiaReport from "./profesionales/profesionalesAlDiaReport";
 import ProfesionalesSinMatricularReport from "./profesionales/profesionalesSinMatricularReport";
 import DenunciasActivasReport from "./denuncias/denunciasActivasReport";
 import DenunciasActivasPorFechaReport from "./denuncias/denunciasActivasPorFechaReport";
+import DenunciasProximosSeguimientosReport from "./denuncias/denunciasProximosSeguimientosReport";
+import MovimientosPorFechaReport from "./movimientos/MovimientosPorFechaReport";
 
 const Informes = () => {
 	const [showInforme, setShowInforme] = useState(false);
@@ -16,6 +18,7 @@ const Informes = () => {
 	const [informeComponent, setInformeComponent] = useState(null);
 	const [fechaDesde, setFechaDesde] = useState("");
 	const [fechaHasta, setFechaHasta] = useState("");
+	const [refreshKey, setRefreshKey] = useState(0); // Para detectar click en boton y refrescar componente
 
 	useEffect(() => {
 		// Establecer las fechas por defecto como el primer y último día del mes actual
@@ -83,8 +86,22 @@ const Informes = () => {
 							fechaHasta={fechaHasta}
 						/>
 					),
-					// title: "Denuncias Activas Por Fecha",
 					title: `Denuncias Activas Por Fecha (entre ${moment(
+						fechaDesde
+					).format("DD-MM-YYYY")} y ${moment(fechaHasta).format(
+						"DD-MM-YYYY"
+					)})`,
+				},
+				{
+					label: "Próx. Seguimientos",
+					reportComponent: (
+						<DenunciasProximosSeguimientosReport
+							fechaDesde={fechaDesde}
+							fechaHasta={fechaHasta}
+							refreshKey={refreshKey}
+						/>
+					),
+					title: `Próximos Seguimientos (entre ${moment(
 						fechaDesde
 					).format("DD-MM-YYYY")} y ${moment(fechaHasta).format(
 						"DD-MM-YYYY"
@@ -92,12 +109,46 @@ const Informes = () => {
 				},
 			],
 		},
+		{
+			id: "movimientos-tab",
+			target: "#movimientos",
+			label: "Movimientos",
+			selected: false,
+			reports: [
+				{
+					label: "Movimientos por Fecha",
+					reportComponent: (
+						<MovimientosPorFechaReport
+							fechaDesde={fechaDesde}
+							fechaHasta={fechaHasta}
+							refreshKey={refreshKey}
+						/>
+					),
+					title: "Movimientos por Fecha",
+				},
+				{
+					label: "Pagos Realizados",
+					reportComponent: <DenunciasActivasReport />,
+					title: "Pagos Realizados por fecha",
+				},
+				{
+					label: "Cobranzas",
+					reportComponent: <DenunciasActivasReport />,
+					title: "Cobranzas por fecha",
+				},
+			],
+		},
 	];
 
-	const handleGenerateReport = (nombreInforme, componenteInforme, props = {}) => {
+	const handleGenerateReport = (
+		nombreInforme,
+		componenteInforme,
+		props = {}
+	) => {
+		setRefreshKey((prevKey) => prevKey + 1);
 		setNombreInforme(props.title);
 		setInformeComponent(
-			React.cloneElement(componenteInforme, {... props, nombreInforme })
+			React.cloneElement(componenteInforme, { ...props, nombreInforme })
 		);
 		setShowInforme(true);
 	};
@@ -110,7 +161,7 @@ const Informes = () => {
 						<PDFViewer
 							style={{
 								width: "100%",
-								height: "350px",
+								height: "300px",
 							}}
 							showToolbar={false}>
 							{informeComponent}
