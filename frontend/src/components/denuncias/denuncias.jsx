@@ -3,7 +3,6 @@ import Swal from "sweetalert2";
 import apiConnection from "../../../../backend/functions/apiConnection";
 import DenunciasModal from "./denunciasModal";
 import DenunciasSeguimientosModal from "./denunciasSeguimientosModal";
-// import { modificarSeguimiento } from "../../../../backend/controllers/denunciasController";
 
 const DenunciasTabla = () => {
 	const [showDenunciasModal, setShowDenunciasModal] = useState(false);
@@ -94,7 +93,6 @@ const DenunciasTabla = () => {
 			dataTableRef.current = $(tablaDenunciasRef.current).DataTable({
 				data: denuncias,
 				language: {
-					// url: "//cdn.datatables.net/plug-ins/2.0.3/i18n/es-AR.json",
 					buttons: {
 						copy: "Copiar",
 						colvis: "Visibilidad",
@@ -213,7 +211,7 @@ const DenunciasTabla = () => {
 					"<'row'<'col-md-6'i><'col-md-6'p>>",
 				columnDefs: [
 					{
-						targets: 0, // El índice de la columna de fecha (0 es la primera columna)
+						targets: 0,
 						render: function (data, type, row) {
 							if (type === "display") {
 								// Formatear la fecha de 'aaaa-mm-dd' a 'dd/mm/aaaa'
@@ -233,9 +231,11 @@ const DenunciasTabla = () => {
 							}
 							if (type === "display") {
 								// Formatear la fecha de 'aaaa-mm-dd' a 'dd/mm/aaaa'
-								const parts = data.split("-");
-								if (parts.length === 3) {
-									return `${parts[2]}/${parts[1]}/${parts[0]}`;
+								if (data && typeof data === "string") {
+									const parts = data.split("-");
+									if (parts.length === 3) {
+										return `${parts[2]}/${parts[1]}/${parts[0]}`;
+									}
 								}
 							}
 							return data;
@@ -252,9 +252,6 @@ const DenunciasTabla = () => {
 					{
 						data: "profesional_nombre",
 					},
-					// {
-					// 	data: "establecimiento_nombre",
-					// },
 					{
 						data: "infraccion",
 					},
@@ -300,19 +297,6 @@ const DenunciasTabla = () => {
 				order: [[0, "desc"]],
 			});
 		}
-
-		// Asignar eventos click a los botones de acción
-		// $(tablaDenunciasRef.current).on("click", ".mostrar-btn", function () {
-		// 	mostrarDenuncia($(this).data("id"));
-		// });
-
-		// $(tablaDenunciasRef.current).on("click", ".editar-btn", function () {
-		// 	editarDenuncia($(this).data("id"));
-		// });
-
-		// $(tablaDenunciasRef.current).on("click", ".eliminar-btn", function () {
-		// 	eliminarDenuncia($(this).data("id"));
-		// });
 
 		$(tablaDenunciasRef.current).on("click", ".mostrar-btn", function () {
 			const rowData = dataTableRef.current
@@ -531,7 +515,6 @@ const DenunciasTabla = () => {
 											<th>Fecha</th>
 											<th>N° de Acta</th>
 											<th>Profesional</th>
-											{/* <th>Establecimiento</th> */}
 											<th>Infracción</th>
 											<th>Comentario</th>
 											<th>Cierre</th>

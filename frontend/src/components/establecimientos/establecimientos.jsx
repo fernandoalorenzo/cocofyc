@@ -1,5 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
-import { useTable, useSortBy, usePagination } from "react-table";
+import React, { useState, useEffect, useRef } from "react";
 import Swal from "sweetalert2";
 import apiConnection from "../../../../backend/functions/apiConnection";
 import EstablecimientosModal from "./establecimientosModal";
@@ -7,15 +6,15 @@ import ProfesionalesModal from "./establecimientosProfesionalesModal";
 
 const EstablecimientosTabla = () => {
 	const [data, setData] = useState([]);
-	const [filterText, setFilterText] = useState("");
-	const [selectedPageSize, setSelectedPageSize] = useState(10);
 	const [showEstablecimientosModal, setShowEstablecimientosModal] =
 		useState(false);
 	const [selectedEstablecimiento, setSelectedEstablecimiento] =
 		useState(null);
-	const [modalMode, setModalMode] = useState(""); // Definir modalMode como estado
-	const [showProfesionalesModal, setShowProfesionalesModal] =
-		useState(false);
+	const [modalMode, setModalMode] = useState("");
+	const [showProfesionalesModal, setShowProfesionalesModal] = useState(false);
+
+		const tablaEstablecimientosRef = useRef(null);
+		const dataTableRef = useRef(null);
 
 	const fetchEstablecimientos = async () => {
 		try {
@@ -45,21 +44,6 @@ const EstablecimientosTabla = () => {
 	useEffect(() => {
 		fetchEstablecimientos();
 	}, []);
-
-	const filteredData = useMemo(() => {
-		if (!filterText) return data;
-		return data.filter((row) =>
-			Object.entries(row).some(
-				([key, cellValue]) =>
-					key !== "id" &&
-					cellValue &&
-					cellValue
-						.toString()
-						.toLowerCase()
-						.includes(filterText.toLowerCase())
-			)
-		);
-	}, [data, filterText]);
 
 	const handleEliminar = async (id) => {
 		const result = await Swal.fire({
@@ -117,128 +101,19 @@ const EstablecimientosTabla = () => {
 		}
 	};
 
-	const columns = React.useMemo(
-		() => [
-			{
-				Header: "Establecimiento",
-				accessor: "establecimiento",
-			},
-			{
-				Header: "Titular",
-				accessor: "titular",
-			},
-			{
-				Header: "CUIT",
-				accessor: "cuit",
-			},
-			{
-				Header: "Teléfono",
-				accessor: "telefono",
-			},
-			{
-				Header: "e-Mail",
-				accessor: "email",
-			},
-			{
-				Header: "Localidad",
-				accessor: "localidad",
-			},
-			{
-				Header: "Acciones",
-				accessor: "id",
-				Cell: ({ row }) => (
-					<div>
-						<button
-							className="btn btn-info mx-2 btn-sm"
-							onClick={() =>
-								handleMostrar(row.original, "mostrar")
-							}>
-							<i className="fa-regular fa-eye"></i> Mostrar
-						</button>
-						<button
-							className="btn btn-warning mx-2 btn-sm"
-							onClick={() => {
-								handleMostrar(row.original, "editar");
-							}}>
-							<i className="fa-regular fa-pen-to-square"></i>{" "}
-							Editar
-						</button>
-						<button
-							className="btn btn-danger mx-2 btn-sm"
-							onClick={() => handleEliminar(row.original.id)}>
-							<i className="fa-regular fa-trash-can"></i> Eliminar
-						</button>
-						<button
-							className="btn btn-outline-dark bg-secondary mx-2 btn-sm"
-							onClick={() =>
-								mostrarProfesionales(row.original)
-							}>
-							<i className="fa-solid fa-user-tie"></i>{" "}
-							Asignar
-						</button>
-					</div>
-				),
-			},
-		],
-		[]
-	);
-
-	const {
-		getTableProps,
-		getTableBodyProps,
-		headerGroups,
-		page,
-		prepareRow,
-		canPreviousPage,
-		canNextPage,
-		pageOptions,
-		gotoPage,
-		nextPage,
-		previousPage,
-		pageCount,
-		state: { pageIndex, pageSize },
-		setPageSize: updatePageSize,
-	} = useTable(
-		{
-			columns,
-			data: filteredData,
-			initialState: {
-				pageIndex: 0,
-				pageSize: selectedPageSize,
-				sortBy: [{ id: "establecimiento", desc: false }],
-			},
-			autoResetPage: false,
-			autoResetPageSize: false,
-		},
-		useSortBy,
-		usePagination
-	);
-
 	const handleMostrar = (establecimiento, mode) => {
 		setSelectedEstablecimiento(establecimiento);
 		setModalMode(mode);
 		setShowEstablecimientosModal(true);
 	};
 
-		const mostrarProfesionales = (establecimiento) => {
-			setSelectedEstablecimiento(establecimiento);
-			setShowProfesionalesModal(true);
-		};
-
-		const closeProfesionalesModal = () => {
-			setShowProfesionalesModal(false);
-		};
-
-	const handleFilterChange = (e) => {
-		const value = e.target.value || "";
-		setFilterText(value);
+	const mostrarProfesionales = (establecimiento) => {
+		setSelectedEstablecimiento(establecimiento);
+		setShowProfesionalesModal(true);
 	};
 
-	const handlePageSizeChange = (e) => {
-		const size = parseInt(e.target.value, 10);
-		setSelectedPageSize(size);
-		gotoPage(0);
-		updatePageSize(size); // Usar updatePageSize
+	const closeProfesionalesModal = () => {
+		setShowProfesionalesModal(false);
 	};
 
 	const openEstablecimientosModal = () => setShowEstablecimientosModal(true);
@@ -252,6 +127,222 @@ const EstablecimientosTabla = () => {
 		}
 	}, [showEstablecimientosModal]);
 
+	// DATATABLE
+	useEffect(() => {
+		if (dataTableRef.current) {
+			dataTableRef.current.clear().rows.add(data).draw();
+		} else if (data.length && tablaEstablecimientosRef.current) {
+			dataTableRef.current = $(
+				tablaEstablecimientosRef.current
+			).DataTable({
+				data: data,
+				language: {
+					buttons: {
+						copy: "Copiar",
+						colvis: "Visibilidad",
+						colvisRestore: "Restaurar visibilidad",
+						copyTitle: "Copiar al portapapeles",
+						copySuccess: {
+							1: "Copiado 1 registro al portapapeles",
+							_: "Copiados %d registros al portapapeles",
+						},
+						csv: "CSV",
+						excel: "Excel",
+						pageLength: {
+							"-1": "Mostrar todos los registros",
+							_: "Mostrar %d registros",
+						},
+						pdf: "PDF",
+						print: "Imprimir",
+					},
+					lengthMenu: "Mostrar _MENU_ registros",
+					zeroRecords: "No se encontraron resultados",
+					infoEmpty:
+						"Mostrando registros del 0 al 0 de un total de 0 registros",
+					loadingRecords: "Cargando...",
+					paginate: {
+						first: '<i class="fas fa-angle-double-left"></i>',
+						last: '<i class="fas fa-angle-double-right"></i>',
+						next: '<i class="fas fa-angle-right"></i>',
+						previous: '<i class="fas fa-angle-left"></i>',
+					},
+					autoFill: {
+						cancel: "Cancelar",
+						fill: "Llenar las celdas con <i>%d<i></i></i>",
+						fillHorizontal: "Llenar las celdas horizontalmente",
+						fillVertical: "Llenar las celdas verticalmente",
+					},
+					decimal: ",",
+					emptyTable: "No hay datos disponibles en la Tabla",
+					infoFiltered: ". Filtrado de _MAX_ registros totales",
+					infoThousands: ".",
+					processing: "Procesando...",
+					search: "Busqueda:",
+					datetime: {
+						previous: "Anterior",
+						next: "Siguiente",
+						hours: "Hora",
+						minutes: "Minuto",
+						seconds: "Segundo",
+						amPm: ["AM", "PM"],
+						months: {
+							0: "Enero",
+							1: "Febrero",
+							2: "Marzo",
+							3: "Abril",
+							4: "Mayo",
+							5: "Junio",
+							6: "Julio",
+							7: "Agosto",
+							8: "Septiembre",
+							9: "Octubre",
+							10: "Noviembre",
+							11: "Diciembre",
+						},
+						unknown: "-",
+						weekdays: [
+							"Dom",
+							"Lun",
+							"Mar",
+							"Mie",
+							"Jue",
+							"Vie",
+							"Sab",
+						],
+					},
+					info: "Mostrando _START_ a _END_ de _TOTAL_ registros",
+				},
+				buttons: [
+					{
+						extend: "pageLength",
+						className: "btn bg-secondary-subtle text-dark",
+					},
+					{
+						extend: "colvis",
+						className: "btn bg-secondary-subtle text-dark",
+						text: '<i class="fas fa-filter fa-xl"></i>',
+						titleAttr: "Mostrar/Ocultar columnas",
+					},
+					{
+						extend: "excelHtml5",
+						className: "btn btn-success",
+						text: '<i class="fas fa-file-excel fa-xl"></i>',
+						titleAttr: "Exportar datos a Excel",
+					},
+					{
+						extend: "pdfHtml5",
+						className: "btn btn-danger",
+						text: '<i class="fas fa-file-pdf fa-xl"></i>',
+						titleAttr: "Exportar datos a PDF",
+					},
+					{
+						extend: "print",
+						className: "btn btn-warning",
+						text: '<i class="fas fa-print"></i>',
+						title: "Movimientos",
+						titleAttr: "Imprimir datos",
+					},
+					{
+						extend: "copy",
+						className: "btn btn-dark",
+						text: '<i class="fas fa-copy"></i>',
+						titleAttr: "Copia de datos a portapapeles",
+					},
+				],
+				dom:
+					"<'row'<'col-md-6'B><'col-md-6'f>>" + // Agregamos contenedor para botones y cont para búsqueda
+					"<'row'<'col-md-12'tr>>" + // Agregamos contenedor para tabla
+					"<'row'<'col-md-6'i><'col-md-6'p>>",
+				columns: [
+					{
+						data: "establecimiento",
+					},
+					{
+						data: "titular",
+					},
+					{
+						data: "cuit",
+					},
+					{
+						data: "telefono",
+					},
+					{
+						data: "email",
+					},
+					{
+						data: "localidad",
+					},
+					{
+						// Columna de acciones
+						data: null,
+						className: "text-center",
+						render: function (data, type, row) {
+							return `
+                            <button class="btn btn-info btn-sm mostrar-btn" data-id="${row.id}"><i class="fa-regular fa-eye"></i> Mostrar</button>
+                            <button class="btn btn-warning btn-sm editar-btn" data-id="${row.id}"><i class="fa-regular fa-pen-to-square"></i> Editar</button>
+                            <button class="btn btn-danger btn-sm eliminar-btn" data-id="${row.id}"><i class="fa-regular fa-trash-can"></i>  Eliminar</button>
+							<button class="btn btn-success btn-sm asignar-btn" data-id="${row.id}"><i class="fa-solid fa-user-tie"></i>  Asignar</button>
+                        `;
+						},
+						orderable: false,
+						searchable: false,
+					},
+				],
+				lengthChange: true,
+				lengthMenu: [
+					[10, 25, 50, 100, -1],
+					[
+						"10 Registros",
+						"25 Registros",
+						"50 Registros",
+						"100 Registros",
+						"Mostrar Todos",
+					],
+				],
+				responsive: true,
+				autoWidth: true,
+				paging: true,
+				searching: true,
+				ordering: true,
+				info: true,
+				order: [[0, "asc"]],
+			});
+		}
+
+		// Eventos
+		$(tablaEstablecimientosRef.current).on("click", ".mostrar-btn", function () {
+			const rowData = dataTableRef.current
+				.row($(this).closest("tr"))
+				.data();
+			handleMostrar(rowData, "mostrar");
+		});
+
+		$(tablaEstablecimientosRef.current).on("click", ".editar-btn", function () {
+			const rowData = dataTableRef.current
+				.row($(this).closest("tr"))
+				.data();
+			handleMostrar(rowData, "editar");
+		});
+
+		$(tablaEstablecimientosRef.current).on("click", ".eliminar-btn", function () {
+			const rowData = dataTableRef.current
+				.row($(this).closest("tr"))
+				.data();
+			handleEliminar(rowData);
+		});
+
+		$(tablaEstablecimientosRef.current).on(
+			"click",
+			".asignar-btn",
+			function () {
+				const rowData = dataTableRef.current
+					.row($(this).closest("tr"))
+					.data();
+				mostrarProfesionales(rowData);
+			}
+		);
+	}, [data]);
+
 	return (
 		<>
 			<div className="content-wrapper">
@@ -264,211 +355,46 @@ const EstablecimientosTabla = () => {
 						</div>
 					</div>
 				</div>
-				<div>
-					<section className="content">
-						<div className="container-fluid">
-							<div className="row d-flex mb-2 m-0">
-								<label htmlFor="filterText" className="form-label m-0">
-									Opciones de Filtro:
-								</label>
-								<div className="col d-flex justify-content-start border rounded border-primary py-2">
-									<div className="col">
-										<div className="input-group">
-											<input
-												type="text"
-												className="form-control"
-												name="filterText"
-												placeholder="Filtrar..."
-												value={filterText}
-												onChange={handleFilterChange}
-											/>
-											{filterText && (
-												<div className="input-group-append">
-													<button
-														className="btn btn-outline-primary bg-white"
-														title="Limpiar búsqueda"
-														type="button"
-														onClick={() =>
-															setFilterText("")
-														}>
-														<i className="fa-regular fa-circle-xmark"></i>
-													</button>
-												</div>
-											)}
-										</div>
-									</div>
-								</div>
-								<div className="col-6 justify-content-end text-end align-items-center d-flex">
-									<button
-										type="button"
-										className="btn btn-primary"
-										id="abrirModalAgregar"
-										onClick={() => {
+				<div className="content m-3">
+					<div className="card">
+						<div className="card-header bg-white">
+							<div className="justify-content-end text-end d-flex">
+								<button
+									type="button"
+									className="btn btn-primary"
+									id="abrirModalAgregar"
+									onClick={() => {
 											setModalMode("agregar");
 											openEstablecimientosModal();
 										}}>
-										<i className="fa-regular fa-square-plus"></i>{" "}
-										Agregar
-									</button>
-								</div>
-							</div>
-							<table
-								{...getTableProps()}
-								className="table table-hover table-striped table-responsive-sm table-sm table-borderless align-middle">
-								<thead className="table-dark">
-									{headerGroups.map((headerGroup) => (
-										<tr
-											{...headerGroup.getHeaderGroupProps()}>
-											{headerGroup.headers.map(
-												(column) => (
-													<th
-														{...column.getHeaderProps(
-															column.getSortByToggleProps()
-														)}
-														className={`${
-															column.Header ===
-																"CUIT" ||
-															column.Header ===
-																"Teléfono" ||
-															column.Header ===
-																"Acciones"
-																? "text-center"
-																: ""
-														}`}>
-														{column.render(
-															"Header"
-														)}
-														<span className="ms-2 p-1 text-warning">
-															{column.isSorted
-																? column.isSortedDesc
-																	? "↓"
-																	: "↑"
-																: ""}
-														</span>
-													</th>
-												)
-											)}
-										</tr>
-									))}
-								</thead>
-								<tbody {...getTableBodyProps()}>
-									{page.map((row) => {
-										prepareRow(row);
-										return (
-											<tr {...row.getRowProps()}>
-												{row.cells.map((cell) => {
-													return (
-														<td
-															{...cell.getCellProps()}
-															className={`${
-																cell.column
-																	.Header ===
-																	"CUIT" ||
-																cell.column
-																	.Header ===
-																	"Teléfono"
-																	? "text-center"
-																	: "" ||
-																	  cell
-																			.column
-																			.Header ===
-																			"Acciones"
-																	? "text-center"
-																	: ""
-															}`}
-															{...cell.getCellProps()}>
-															{cell.render(
-																"Cell"
-															)}
-														</td>
-													);
-												})}
-											</tr>
-										);
-									})}
-								</tbody>
-							</table>
-							<div className="container-fluid align-items-center">
-								<div className="row justify-content-between align-items-center">
-									<div className="col col-4 d-flex justify-content-start align-items-center">
-										<div className="col">
-											Mostrando {pageIndex * pageSize + 1}{" "}
-											-{" "}
-											{pageIndex * pageSize + page.length}{" "}
-											de {data.length} registros
-										</div>
-										<button
-											className="btn btn-sm btn-outline-primary ms-1"
-											name="first"
-											onClick={() => gotoPage(0)}
-											disabled={!canPreviousPage}>
-											<i className="fa-solid fa-backward-step"></i>
-										</button>{" "}
-										<button
-											className="btn btn-sm btn-outline-primary ms-1"
-											name="previous"
-											onClick={() => previousPage()}
-											disabled={!canPreviousPage}>
-											<i className="fa-solid fa-caret-left"></i>
-										</button>{" "}
-										<button
-											className="btn btn-sm btn-outline-primary ms-1"
-											name="next"
-											onClick={() => nextPage()}
-											disabled={!canNextPage}>
-											<i className="fa-solid fa-caret-right"></i>
-										</button>{" "}
-										<button
-											className="btn btn-sm btn-outline-primary ms-1"
-											name="last"
-											onClick={() =>
-												gotoPage(pageCount - 1)
-											}
-											disabled={!canNextPage}>
-											<i className="fa-solid fa-forward-step"></i>
-										</button>{" "}
-									</div>
-									<div className="col col-4 d-flex justify-content-evenly content-align-center align-items-center">
-										<span>
-											Página{" "}
-											<strong>{pageIndex + 1}</strong> de{" "}
-											<strong>
-												{pageOptions.length}
-											</strong>
-										</span>
-										<span>Ir a la página: </span>
-										<input
-											className="form-control form-control-sm"
-											type="number"
-											name="page"
-											defaultValue={pageIndex + 1}
-											onChange={(e) => {
-												const page = e.target.value
-													? Number(e.target.value) - 1
-													: 0;
-												gotoPage(page);
-											}}
-											style={{ width: "4rem" }}
-										/>
-									</div>
-									<div className="col col-4 d-flex justify-content-end align-items-center">
-										<span>Reg. por Pág. </span>
-										<select
-											className="form-select form-select-sm w-25"
-											value={selectedPageSize}
-											name="pageSize"
-											onChange={handlePageSizeChange}>
-											{[10, 25, 50, 100].map((size) => (
-												<option key={size} value={size}>
-													{size}
-												</option>
-											))}
-										</select>
-									</div>
-								</div>
+									<i className="fa-regular fa-square-plus"></i>{" "}
+									Agregar
+								</button>
 							</div>
 						</div>
-					</section>
+						<div className="card-body">
+							<div className="container-fluid mt-0">
+								<table
+									ref={tablaEstablecimientosRef}
+									id="tabla_establecimientos"
+									className="table table-hover table-sm">
+									<thead className="table-dark">
+										<tr>
+											<th>Establecimiento</th>
+											<th>Titular</th>
+											<th>CUIT</th>
+											<th>Teléfono</th>
+											<th>e-Mail</th>
+											<th>Localidad</th>
+											<th className="text-center">
+												Acciones
+											</th>
+										</tr>
+									</thead>
+								</table>
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 			<EstablecimientosModal

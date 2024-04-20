@@ -440,7 +440,7 @@ const DenunciasSeguimientosModal = ({
 			setNroActa(dataSeguimiento.nro_acta);
 		}
 		// Bloquea el botón de agregar seguimiento si la denuncia ya tiene la denuncia cerrada
-		if (dataSeguimiento && dataSeguimiento.fecha_cierre !== "0000-00-00") {
+		if (dataSeguimiento && dataSeguimiento.fecha_cierre !== null && dataSeguimiento.fecha_cierre !== "0000-00-00") {
 			setIsBotonAgregarEnabled(false);
 		} else {
 			setIsBotonAgregarEnabled(true);
