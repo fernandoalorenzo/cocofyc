@@ -11,7 +11,7 @@ Font.register({
 	src: "https://fonts.gstatic.com/s/oswald/v13/Y_TKV6o8WovbUd3m_X9aAA.ttf",
 });
 
-const MovimientosPorFechaReport = ({
+const CobranzasPorFechaReport = ({
 	title,
 	subtitle,
 	nombreInforme,
@@ -20,9 +20,6 @@ const MovimientosPorFechaReport = ({
 	refreshKey,
 }) => {
 	const [data, setData] = useState([]);
-	const [profesional, setProfesional] = useState([]);
-	const [saldoAnterior, setSaldoAnterior] = useState(0);
-	const [totalPosterior, setTotalPosterior] = useState(0);
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -44,15 +41,14 @@ const MovimientosPorFechaReport = ({
 					headers
 				);
 
-				const allMovimientos = response.data;
-
-				const movimientosEnRango = allMovimientos.filter((movimiento) =>
-					moment(movimiento.fecha).isBetween(
-						moment(fechaDesde, "YYYY-MM-DD"),
-						moment(fechaHasta, "YYYY-MM-DD"),
-						null,
-						"[]"
-					)
+				const movimientosEnRango = response.data.filter(
+					(movimiento) =>
+						moment(movimiento.fecha).isBetween(
+							moment(fechaDesde, "YYYY-MM-DD"),
+							moment(fechaHasta, "YYYY-MM-DD"),
+							null,
+							"[]"
+						) && movimiento.tipo_operacion === "INGRESO"
 				);
 
 				const sortedData = movimientosEnRango.sort((a, b) => {
@@ -61,13 +57,6 @@ const MovimientosPorFechaReport = ({
 					return 0;
 				});
 
-				// Obtener nombres de profesionales y establecimientos
-				const profesionalIds = new Set(
-					sortedData.map((movimiento) => movimiento.profesional_id)
-				);
-
-				await fetchProfesionales([...profesionalIds]);
-
 				// Obtener los medios de pago para cada movimiento
 				for (const movimiento of sortedData) {
 					movimiento.medio = await fetchMedioDePago(
@@ -75,51 +64,10 @@ const MovimientosPorFechaReport = ({
 					);
 				}
 
-				// Calcular saldo anterior
-				const saldoAnterior = calcularSaldoAnterior(allMovimientos);
-
-				// Calcular saldo posterior
-				const saldoPosterior = calcularSaldoPosterior(allMovimientos);
-
 				// Actualizar el estado
 				setData(sortedData);
-				setSaldoAnterior(saldoAnterior);
-				setTotalPosterior(saldoPosterior);
 			} catch (error) {
 				console.error("Error:", error.message);
-			}
-		};
-
-		const fetchProfesionales = async (ids) => {
-			try {
-				const profesionales = {};
-				for (const id of ids) {
-					const endpoint = `http://localhost:5000/api/profesionales/${id}`;
-					const direction = "";
-					const method = "GET";
-					const body = false;
-					const headers = {
-						"Content-Type": "application/json",
-						Authorization: localStorage.getItem("token"),
-					};
-					const response = await apiConnection(
-						endpoint,
-						direction,
-						method,
-						body,
-						headers
-					);
-					// Verificar si la respuesta no es null antes de acceder a 'nombre'
-					if (response.data !== null) {
-						profesionales[id] = response.data.nombre;
-					}
-				}
-				setProfesional(profesionales);
-			} catch (error) {
-				console.error(
-					"Error obteniendo nombres de profesionales:",
-					error.message
-				);
 			}
 		};
 
@@ -151,53 +99,6 @@ const MovimientosPorFechaReport = ({
 
 		fetchData();
 	}, [refreshKey]);
-
-	// Función para calcular el saldo anterior al día anterior a fechaDesde
-	const calcularSaldoAnterior = (movimientos) => {
-		const movimientosAnteriores = movimientos.filter((movimiento) =>
-			moment(movimiento.fecha).isBefore(moment(fechaDesde, "YYYY-MM-DD"))
-		);
-
-		const saldoAnterior = movimientosAnteriores.reduce(
-			(saldo, movimiento) => {
-				if (movimiento.tipo_operacion === "EGRESO") {
-					return saldo - Number(movimiento.importe);
-				} else {
-					return saldo + Number(movimiento.importe);
-				}
-			},
-			0
-		);
-
-		return saldoAnterior;
-	};
-
-	// Función para calcular el saldo posterior al día posterior a fechaHasta
-	const calcularSaldoPosterior = (movimientos) => {
-		// const movimientosPosteriores = movimientos.filter((movimiento) =>
-		// 	moment(movimiento.fecha).isAfter(moment(fechaHasta, "YYYY-MM-DD"))
-		// );
-
-		const movimientosPosteriores = movimientos.filter(
-			(movimiento) =>
-				moment(movimiento.fecha).isAfter(
-					moment(fechaHasta, "YYYY-MM-DD")
-				) && moment(movimiento.fecha).isSameOrBefore(moment(), "day")
-		);
-
-		const saldoPosterior = movimientosPosteriores.reduce(
-			(saldo, movimiento) => {
-				if (movimiento.tipo_operacion === "EGRESO") {
-					return saldo - Number(movimiento.importe);
-				} else {
-					return saldo + Number(movimiento.importe);
-				}
-			},
-			0
-		);
-
-		return saldoPosterior;
-	};
 
 	// Función para formatear la fecha de "aaaa-mm-dd" a "dd-mm-aaaa"
 	const formatDate = (dateString) => {
@@ -231,44 +132,6 @@ const MovimientosPorFechaReport = ({
 								height: "18px",
 								paddingTop: "1px",
 								paddingBottom: "1px",
-								marginBottom: "20px",
-								fontWeight: "bold",
-								border: "1",
-								borderColor: "#000000",
-							},
-						]}>
-						<Text
-							style={[
-								globalStyles.tableCell,
-								{ textAlign: "left", maxWidth: "85%" },
-							]}>
-							Saldo al{" "}
-							{moment(fechaDesde, "YYYY-MM-DD")
-								.subtract(1, "days")
-								.format("DD-MM-YYYY")}
-						</Text>
-						<Text
-							style={[
-								globalStyles.tableCell,
-								{
-									textAlign: "right",
-									maxWidth: "15%",
-									color: saldoAnterior < 0 ? "red" : "black",
-								},
-							]}>
-							{new Intl.NumberFormat("es-AR", {
-								style: "currency",
-								currency: "ARS",
-							}).format(saldoAnterior)}
-						</Text>
-					</View>
-					<View
-						style={[
-							globalStyles.tableRow,
-							{
-								height: "18px",
-								paddingTop: "1px",
-								paddingBottom: "1px",
 								fontWeight: "bold",
 								backgroundColor: "#000000",
 								color: "#ffffff",
@@ -294,13 +157,6 @@ const MovimientosPorFechaReport = ({
 								{ textAlign: "left", maxWidth: "40%" },
 							]}>
 							Concepto
-						</Text>
-						<Text
-							style={[
-								globalStyles.tableCell,
-								{ textAlign: "left", maxWidth: "30%" },
-							]}>
-							Profesional
 						</Text>
 						<Text
 							style={[
@@ -347,14 +203,6 @@ const MovimientosPorFechaReport = ({
 										{ textAlign: "left", maxWidth: "40%" },
 									]}>
 									{movimiento.concepto}
-								</Text>
-								<Text
-									style={[
-										globalStyles.tableCell,
-										{ textAlign: "left", maxWidth: "30%" },
-									]}>
-									{profesional[movimiento.profesional_id] ||
-										movimiento.profesional_id}
 								</Text>
 								<Text
 									style={[
@@ -421,53 +269,6 @@ const MovimientosPorFechaReport = ({
 							}).format(totalImporte)}
 						</Text>
 					</View>
-
-					{moment(fechaHasta).isSameOrAfter(
-						moment(),
-						"day"
-					) ? null : (
-						<View
-							style={[
-								globalStyles.tableRow,
-								{
-									height: "18px",
-									paddingTop: "1px",
-									paddingBottom: "1px",
-									marginTop: "20px",
-									fontWeight: "bold",
-									border: "1",
-									borderColor: "#000000",
-								},
-							]}>
-							<Text
-								style={[
-									globalStyles.tableCell,
-									{ textAlign: "left", maxWidth: "85%" },
-								]}>
-								Movimientos desde{" "}
-								{moment(fechaHasta, "YYYY-MM-DD")
-									.add(1, "days")
-									.format("DD-MM-YYYY")}
-							</Text>
-							<Text
-								style={[
-									globalStyles.tableCell,
-									{
-										textAlign: "right",
-										maxWidth: "15%",
-										color:
-											totalPosterior < 0
-												? "red"
-												: "black",
-									},
-								]}>
-								{new Intl.NumberFormat("es-AR", {
-									style: "currency",
-									currency: "ARS",
-								}).format(totalPosterior)}
-							</Text>
-						</View>
-					)}
 					<Footer data={data} />
 				</Page>
 			</Document>
@@ -475,4 +276,4 @@ const MovimientosPorFechaReport = ({
 	);
 };
 
-export default MovimientosPorFechaReport;
+export default CobranzasPorFechaReport;

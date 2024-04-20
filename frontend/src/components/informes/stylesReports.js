@@ -21,21 +21,24 @@ export const globalStyles = StyleSheet.create({
 		alignItems: "center",
 		marginBottom: 10,
 		padding: 10,
+		paddingLeft: 0,
 	},
 	headerLeft: {
 		flexDirection: "row",
 		alignItems: "center",
-		fontSize: "12px",
+		fontSize: 11,
 	},
 	headerRight: {
 		flexDirection: "row",
 		alignItems: "center",
 		fontSize: 11,
-		fontSize: "12px",
+	},
+	subtitle: {
+		fontSize: 9,
 	},
 	logo: {
 		height: 50,
-		marginRight: 20,
+		// marginRight: 20,
 	},
 	tableRow: {
 		flexDirection: "row",

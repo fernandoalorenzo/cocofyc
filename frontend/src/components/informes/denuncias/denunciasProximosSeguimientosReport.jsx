@@ -12,6 +12,7 @@ Font.register({
 
 const DenunciasProximosSeguimientosReport = ({
 	title,
+	subtitle,
 	nombreInforme,
 	fechaDesde,
 	fechaHasta,
@@ -248,7 +249,7 @@ const DenunciasProximosSeguimientosReport = ({
 					orientation="landscape"
 					style={globalStyles.page}>
 					{/* Encabezado */}
-					<Header title={title} />
+					<Header title={title} subtitle={subtitle} />
 					<View
 						style={[
 							globalStyles.tableRow,

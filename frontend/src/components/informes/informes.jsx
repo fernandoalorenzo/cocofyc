@@ -11,6 +11,8 @@ import DenunciasActivasReport from "./denuncias/denunciasActivasReport";
 import DenunciasActivasPorFechaReport from "./denuncias/denunciasActivasPorFechaReport";
 import DenunciasProximosSeguimientosReport from "./denuncias/denunciasProximosSeguimientosReport";
 import MovimientosPorFechaReport from "./movimientos/MovimientosPorFechaReport";
+import PagosRealizadosPorFechaReport from "./movimientos/PagosRealizadosPorFechaReport";
+import CobranzasPorFechaReport from "./movimientos/CobranzaPorFechaReport";
 
 const Informes = () => {
 	const [showInforme, setShowInforme] = useState(false);
@@ -79,18 +81,17 @@ const Informes = () => {
 					title: "Denuncias Activas",
 				},
 				{
-					label: "Activas Por Fecha",
+					label: "Activas por Fecha",
 					reportComponent: (
 						<DenunciasActivasPorFechaReport
 							fechaDesde={fechaDesde}
 							fechaHasta={fechaHasta}
+							subtitle={`desde ${moment(fechaDesde).format(
+								"DD-MM-YYYY"
+							)} al ${moment(fechaHasta).format("DD-MM-YYYY")}`}
 						/>
 					),
-					title: `Denuncias Activas Por Fecha (entre ${moment(
-						fechaDesde
-					).format("DD-MM-YYYY")} y ${moment(fechaHasta).format(
-						"DD-MM-YYYY"
-					)})`,
+					title: "Denuncias Activas",
 				},
 				{
 					label: "Próx. Seguimientos",
@@ -99,13 +100,12 @@ const Informes = () => {
 							fechaDesde={fechaDesde}
 							fechaHasta={fechaHasta}
 							refreshKey={refreshKey}
+							subtitle={`desde ${moment(fechaDesde).format(
+								"DD-MM-YYYY"
+							)} al ${moment(fechaHasta).format("DD-MM-YYYY")}`}
 						/>
 					),
-					title: `Próximos Seguimientos (entre ${moment(
-						fechaDesde
-					).format("DD-MM-YYYY")} y ${moment(fechaHasta).format(
-						"DD-MM-YYYY"
-					)})`,
+					title: "Próximos Seguimientos",
 				},
 			],
 		},
@@ -122,19 +122,40 @@ const Informes = () => {
 							fechaDesde={fechaDesde}
 							fechaHasta={fechaHasta}
 							refreshKey={refreshKey}
+							subtitle={`desde ${moment(fechaDesde).format(
+								"DD-MM-YYYY"
+							)} al ${moment(fechaHasta).format("DD-MM-YYYY")}`}
 						/>
 					),
-					title: "Movimientos por Fecha",
+					title: "Movimientos",
 				},
 				{
-					label: "Pagos Realizados",
-					reportComponent: <DenunciasActivasReport />,
-					title: "Pagos Realizados por fecha",
+					label: "Pagos Realizados por fecha",
+					reportComponent: (
+						<PagosRealizadosPorFechaReport
+							fechaDesde={fechaDesde}
+							fechaHasta={fechaHasta}
+							refreshKey={refreshKey}
+							subtitle={`desde ${moment(fechaDesde).format(
+								"DD-MM-YYYY"
+							)} al ${moment(fechaHasta).format("DD-MM-YYYY")}`}
+						/>
+					),
+					title: "Pagos Realizados",
 				},
 				{
-					label: "Cobranzas",
-					reportComponent: <DenunciasActivasReport />,
-					title: "Cobranzas por fecha",
+					label: "Cobranzas por fecha",
+					reportComponent: (
+						<CobranzasPorFechaReport
+							fechaDesde={fechaDesde}
+							fechaHasta={fechaHasta}
+							refreshKey={refreshKey}
+							subtitle={`desde ${moment(fechaDesde).format(
+								"DD-MM-YYYY"
+							)} al ${moment(fechaHasta).format("DD-MM-YYYY")}`}
+						/>
+					),
+					title: "Cobranzas",
 				},
 			],
 		},

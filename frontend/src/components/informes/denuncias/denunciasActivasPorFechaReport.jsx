@@ -13,6 +13,7 @@ Font.register({
 
 const DenunciasActivasPorFechaReport = ({
 	title,
+	subtitle,
 	nombreInforme,
 	fechaDesde,
 	fechaHasta,
@@ -171,7 +172,7 @@ const DenunciasActivasPorFechaReport = ({
 					orientation="landscape"
 					style={globalStyles.page}>
 					{/* Encabezado */}
-					<Header title={title} />
+					<Header title={title} subtitle={subtitle} />
 					<View
 						style={[
 							globalStyles.tableRow,
