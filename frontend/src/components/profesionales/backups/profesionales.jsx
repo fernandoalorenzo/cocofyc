@@ -50,7 +50,7 @@ const ProfesionalesTabla = () => {
 	// OBTENER LISTA DE ESTADOS DE MATRICULA
 	const fetchEstadosMatriculas = async () => {
 		try {
-			const endpoint = "http://127.0.0.1:5000/api/estados";
+			const endpoint = "http://localhost:5000/api/estados";
 			const direction = "";
 			const method = "GET";
 			const body = false;
@@ -91,7 +91,7 @@ const ProfesionalesTabla = () => {
 		// Si el usuario confirma la eliminación
 		if (result.isConfirmed) {
 			try {
-				const endpoint = "http://127.0.0.1:5000/api/profesionales/";
+				const endpoint = "http://localhost:5000/api/profesionales/";
 				const direction = id;
 				const method = "DELETE";
 				const body = false;

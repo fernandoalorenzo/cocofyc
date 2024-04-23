@@ -9,20 +9,28 @@ const apiConnection = async (endpoint, direction, method, body, headers) => {
 			throw new Error("Token no encontrado en los encabezados");
 		}
 
+		// Verifica si existe la propiedad 'Authorization' en el objeto de headers
+		// if (
+		// 	!/usuarios|roles/.test(endpoint) &&
+		// 	(!headers || !headers.Authorization)
+		// ) {
+		// 	throw new Error("Token no encontrado en los encabezados");
+		// }
+
 		// if (endpoint == "http://localhost:5000/api/profesionales/profesionales-morosos/") {
-			// console.log(
-				// "***************************************************************************"
-			// );
-		// 	console.log("endpoint: ", endpoint);
+		// console.log(
+		// "***************************************************************************"
+		// );
+		//  console.log("endpoint: ", endpoint);
 		// 	console.log("direction: ", direction);
 		// 	console.log("method: ", method);
 		// 	console.log("body: ", body);
-		// 	console.log("headers: ", headers);
+		//  console.log("headers: ", headers);
 		// 	console.log("url: ", url.href);
 		// 	console.log(
 		// 		"***************************************************************************"
 		// 	);
-			// return;
+		// return;
 		// }
 
 		const response = await fetch(url.href, {

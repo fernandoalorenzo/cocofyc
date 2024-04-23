@@ -185,7 +185,7 @@ const DenunciasModal = ({
 			user_id: user.id,
 		};
 		try {
-			const endpoint = "http://127.0.0.1:5000/api/denuncias/";
+			const endpoint = "http://localhost:5000/api/denuncias/";
 			const direction = newData.id ? `${newData.id}` : "";
 			const method = newData.id ? "PUT" : "POST";
 			const body = newData;

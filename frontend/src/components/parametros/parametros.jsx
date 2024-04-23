@@ -393,12 +393,12 @@ const Parametros = () => {
 				<div>
 					<section className="content">
 						<div className="container-fluid container-md pb-3">
-							<div class="card">
+							<div className="card">
 								<form onSubmit={handleSubmit(onSubmit)}>
-									<div class="card-header text-center bg-secondary fst-italic">
+									<div className="card-header text-center bg-secondary fst-italic">
 										<strong>Información General</strong>
 									</div>
-									<div class="card-body">
+									<div className="card-body">
 										<div className="row">
 											{/* Titular */}
 											<div className="col mb-3">
@@ -541,7 +541,7 @@ const Parametros = () => {
 											</div>
 										</div>
 									</div>
-									<div class="card-footer text-muted text-end">
+									<div className="card-footer text-muted text-end">
 										<button
 											type="button"
 											className="btn btn-secondary mx-2"
@@ -563,11 +563,11 @@ const Parametros = () => {
 						{/* ********************************************************* */}
 
 						<div className="container-fluid container-md pt-3">
-							<div class="card">
-								<div class="card-header text-center bg-secondary fst-italic">
+							<div className="card">
+								<div className="card-header text-center bg-secondary fst-italic">
 									<strong>Parámetros Generales</strong>
 								</div>
-								<div class="card-body">
+								<div className="card-body">
 									<div className="row gx-5">
 										{/* IMPORTE DE CUOTA */}
 										<div className="col-3 border-right mx-0 pe-0">

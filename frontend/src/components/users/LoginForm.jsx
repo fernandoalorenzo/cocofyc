@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import apiConnection from "../../../../backend/functions/apiConnection";
-import backgroundImage from "./../../assets/img/login.jpg";
-import viewImage from "./../../assets/img/view.png";
-import hideImage from "./../../assets/img/hide.png";
+// import backgroundImage from "./../../assets/img/login.jpg";
+import backgroundImage from "./../../../assets/img/login.jpg";
+import viewImage from "./../../../assets/img/view.png";
+import hideImage from "./../../../assets/img/hide.png";
 
 const LoginForm = () => {
 	const [loginData, setLoginData] = useState({

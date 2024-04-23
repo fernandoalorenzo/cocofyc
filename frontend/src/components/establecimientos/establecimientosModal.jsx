@@ -65,7 +65,7 @@ const EstablecimientosModal = ({
 
 	const onSubmit = async (formData, id) => {
 		try {
-			const endpoint = "http://127.0.0.1:5000/api/establecimientos/";
+			const endpoint = "http://localhost:5000/api/establecimientos/";
 			const direction = id ? `${id}` : "";
 			const method = id ? "PUT" : "POST";
 			const body = formData;

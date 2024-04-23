@@ -66,7 +66,7 @@ const UsuariosModal = ({
 		console.log("formData:", formData);
 
 		try {
-			const endpoint = "http://127.0.0.1:5000/api/usuarios/";
+			const endpoint = "http://localhost:5000/api/usuarios/";
 			const direction = formData.id ? `${formData.id}` : "";
 			const method = formData.id ? "PATCH" : "POST";
 			const body = formData;

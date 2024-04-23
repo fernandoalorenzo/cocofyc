@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import apiConnection from "../../../../backend/functions/apiConnection";
-import viewImage from "./../../assets/img/view.png";
-import hideImage from "./../../assets/img/hide.png";
+import viewImage from "./../../../assets/img/view.png";
+import hideImage from "./../../../assets/img/hide.png";
 
 const PasswordModal = ({ showModalPassword, closeModalPassword, usuario }) => {
 	const initialState = {
@@ -39,7 +39,7 @@ const PasswordModal = ({ showModalPassword, closeModalPassword, usuario }) => {
 		};
 
 		try {
-			const endpoint = "http://127.0.0.1:5000/api/usuarios/";
+			const endpoint = "http://localhost:5000/api/usuarios/";
 			const direction = `${usuario.id}`;
 			const method = "PATCH";
 			const body = data;

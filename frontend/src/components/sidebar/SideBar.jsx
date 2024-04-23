@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { useState, useEffect } from "react";
 import { Link, useNavigate, NavLink } from "react-router-dom";
-import { Logo } from "../logo/logo";
+import { Logo } from "./../logo/logo";
 
 export default function SideBar() {
 	const navigate = useNavigate();
@@ -45,7 +45,7 @@ export default function SideBar() {
 					<div className="user-panel mt-3 pb-3 mb-3 d-flex align-items-center justify-content-between">
 						<div className="image left">
 							<img
-								src="./src/assets/img/default_user.png"
+								src="./../assets/img/default_user.png"
 								className="img-circle elevation-2"
 								alt="Avatar"
 							/>

@@ -92,7 +92,7 @@ const Cuotas = () => {
 		// Si el usuario confirma la eliminación
 		if (result.isConfirmed) {
 			try {
-				const endpoint = "http://127.0.0.1:5000/api/cuotas/";
+				const endpoint = "http://localhost:5000/api/cuotas/";
 				const direction = id;
 				const method = "DELETE";
 				const body = false;

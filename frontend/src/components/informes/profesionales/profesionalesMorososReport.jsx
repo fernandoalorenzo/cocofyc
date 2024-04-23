@@ -8,7 +8,7 @@ import {
 	Image,
 	Font,
 } from "@react-pdf/renderer";
-import check from "./../../../assets/img/check.png";
+import check from "./../../../../assets/img/check.png";
 import apiConnection from "../../../../../backend/functions/apiConnection";
 import Header from "./../header";
 import Footer from "./../footer";

@@ -5,10 +5,18 @@
 		<link
 			rel="icon"
 			type="image/svg+xml"
-			href="./src/assets/img/favicon.ico" />
+			href="./assets/img/favicon.ico" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
 		<title>Gestión Administrativa - CoCoFyC</title>
+
+		<!-- TABLE ADMINLTE -->
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/datatables.net-responsive-bs5/3.0.2/responsive.bootstrap5.min.css"
+			integrity="sha512-UiwSPdrKV2ykr6pY5+uCXeV1PL1S1Utiv4MMUy63ofFjBVpln0PzVVbAwaof3qMijT815QEtlC/GJg1mqoP7KA=="
+			crossorigin="anonymous"
+			referrerpolicy="no-referrer" />
 
 		<!-- FONT AWESOME -->
 		<link
@@ -20,33 +28,23 @@
 			rel="stylesheet"
 			href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback" />
 
-		<!-- Font Awesome -->
-		<link
-			rel="stylesheet"
-			href="plugins/fontawesome-free/css/all.min.css" />
-
 		<!-- Ionicons -->
 		<link
 			rel="stylesheet"
 			href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" />
 
-		<!-- Tempusdominus Bootstrap 4 -->
-		<!-- <link
+		<!-- Theme Style -->
+		<link
 			rel="stylesheet"
-			href="plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css" /> -->
-
-		<!-- iCheck -->
-		<!-- <link
-			rel="stylesheet"
-			href="plugins/icheck-bootstrap/icheck-bootstrap.min.css" /> -->
-
-		<!-- Theme style -->
-		<link rel="stylesheet" href="./src/assets/dist/css/adminlte.min.css" />
+			href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.2.0/css/adminlte.min.css" />
 
 		<!-- overlayScrollbars -->
 		<link
 			rel="stylesheet"
-			href="plugins/overlayScrollbars/css/OverlayScrollbars.min.css" />
+			href="https://cdnjs.cloudflare.com/ajax/libs/overlayscrollbars/2.7.3/styles/overlayscrollbars.min.css"
+			integrity="sha512-Bs5euU6gggblSxpjGQtZeL2VUbDzlygloRfncgWNOiT/86SnWnBmbHQW20k9ZeCa0Bf4kl6Y/gvH4YKFE26PrQ=="
+			crossorigin="anonymous"
+			referrerpolicy="no-referrer" />
 
 		<!-- BOOTSTRAP -->
 		<link
@@ -57,34 +55,26 @@
 
 		<!-- DATATABLES -->
 		<link
-			rel="stylesheet"
-			href="https://cdn.datatables.net/2.0.3/css/dataTables.bootstrap5.min.css" />
+			href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css"
+			rel="stylesheet" />
+
+		<link
+			href="https://cdn.datatables.net/v/bs5/jq-3.7.0/jszip-3.10.1/dt-2.0.5/af-2.7.0/b-3.0.2/b-colvis-3.0.2/b-html5-3.0.2/b-print-3.0.2/cr-2.0.1/date-1.5.2/fc-5.0.0/fh-4.0.1/r-3.0.2/rg-1.5.0/rr-1.5.0/sc-2.4.1/sb-1.7.1/sl-2.0.1/datatables.min.css"
+			rel="stylesheet" />
+
 		<link
 			rel="stylesheet"
 			href="https://cdn.datatables.net/buttons/3.0.1/css/buttons.bootstrap5.min.css" />
 		<link
 			rel="stylesheet"
 			href="https://cdn.datatables.net/datetime/1.5.2/css/dataTables.dateTime.min.css" />
-		<link
-			rel="stylesheet"
-			href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css" />
-		<link
-			rel="stylesheet"
-			href="https://cdn.datatables.net/2.0.3/css/dataTables.bootstrap5.css" />
-		<link
-			rel="stylesheet"
-			href="https://cdn.datatables.net/buttons/3.0.1/css/buttons.bootstrap5.css" />
 
-		<!-- TABLE ADMINLTE -->
 		<link
 			rel="stylesheet"
-			href="../../plugins/datatables-bs4/css/dataTables.bootstrap4.min.css" />
-		<link
-			rel="stylesheet"
-			href="../../plugins/datatables-responsive/css/responsive.bootstrap4.min.css" />
-		<link
-			rel="stylesheet"
-			href="../../plugins/datatables-buttons/css/buttons.bootstrap4.min.css" />
+			href="https://cdnjs.cloudflare.com/ajax/libs/datatables.net-buttons-bs5/3.0.2/buttons.bootstrap5.min.css"
+			integrity="sha512-cmbVH4PiahJ+eZM4aa4dECYuzfaphYmk7DIyO0LDBdw6Jkre3RKocACqaj7KXS1ntqdhE074eBJEBqO3Rd5MEg=="
+			crossorigin="anonymous"
+			referrerpolicy="no-referrer" />
 	</head>
 
 	<body class="hold-transition sidebar-mini layout-fixed">
@@ -149,36 +139,41 @@
 		<noscript></noscript>
 		<div id="root"></div>
 
-		<!-- jQuery -->
-		<!-- <script src="plugins/jquery/jquery.min.js" type="module"></script> -->
-
 		<!-- jQuery UI 1.11.4 -->
-		<script src="plugins/jquery-ui/jquery-ui.min.js" type="module"></script>
-		<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js"></script> -->
-		<!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+		<script
+			src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js"
+			type="module"></script>
 
 		<!-- overlayScrollbars -->
 		<script
-			src="plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"
-			type="module"></script>
+			src="https://cdnjs.cloudflare.com/ajax/libs/overlayscrollbars/2.7.3/browser/overlayscrollbars.browser.es6.min.js"
+			integrity="sha512-yF8/A6HJc4a4CzVz3qKhsUzg6Rz1piDFbIsSI3gDaE+8RcRLysYPgWItBmAkvJU2KCskkEaOwe7tCXzQaedi3g=="
+			crossorigin="anonymous"
+			referrerpolicy="no-referrer"></script>
 
 		<!-- AdminLTE App -->
-		<script src="./src/assets/dist/js/adminlte.js" type="module"></script>
+		<script
+			src="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.2.0/js/adminlte.min.js"
+			type="module"></script>
 
 		<!-- Scripts de React -->
 		<script
 			src="https://unpkg.com/react@17/umd/react.production.min.js"
 			type="module"></script>
+
 		<script
 			src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"
 			type="module"></script>
 
 		<!-- Scripts Principal -->
-		<script type="module" src="/src/main.jsx" type="module"></script>
+		<script type="module" src="./src/main.jsx" type="module"></script>
 
 		<!-- Incluye jQuery -->
-		<!-- <script src="https://code.jquery.com/jquery-3.7.1.js"></script> -->
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.js"></script>
+		<script
+			src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+			integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+			crossorigin="anonymous"
+			referrerpolicy="no-referrer"></script>
 
 		<!-- BOOTSTRAP -->
 		<script
@@ -187,16 +182,16 @@
 			crossorigin="anonymous"></script>
 
 		<!-- DATATABLES -->
-		<script src="https://cdn.datatables.net/2.0.3/js/dataTables.js"></script>
-		<script src="https://cdn.datatables.net/2.0.3/js/dataTables.min.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-		<script src="https://cdn.datatables.net/2.0.3/js/dataTables.bootstrap5.js"></script>
-		<script src="https://cdn.datatables.net/2.0.3/js/dataTables.bootstrap5.min.js"></script>
+		<script src="https://cdn.datatables.net/2.0.5/js/dataTables.min.js"></script>
+		<script
+			src="https://cdnjs.cloudflare.com/ajax/libs/datatables.net-bs5/2.0.5/dataTables.bootstrap5.min.js"
+			integrity="sha512-pKVYZbw36tLO/6tt3RdzJzU8OIoXAqbHhUj2B6k07K02ME2JIooa+nvFGZONzCvNwNzl/tlEj/2rk30V+IxOzA=="
+			crossorigin="anonymous"
+			referrerpolicy="no-referrer"></script>
 		<script src="https://cdn.datatables.net/autofill/2.7.0/js/dataTables.autoFill.min.js"></script>
 		<script src="https://cdn.datatables.net/autofill/2.7.0/js/autoFill.bootstrap5.min.js"></script>
 
 		<!-- DATATABLES BUTTONS -->
-		<script src="https://cdn.datatables.net/buttons/3.0.1/js/dataTables.buttons.js"></script>
 		<script src="https://cdn.datatables.net/buttons/3.0.1/js/dataTables.buttons.min.js"></script>
 		<script src="https://cdn.datatables.net/buttons/3.0.1/js/buttons.bootstrap5.js"></script>
 		<script src="https://cdn.datatables.net/buttons/3.0.1/js/buttons.bootstrap5.min.js"></script>
@@ -210,24 +205,27 @@
 		<!-- DATATABLES MOMENT-->
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.2/moment.min.js"></script>
 		<script src="https://cdn.datatables.net/datetime/1.5.2/js/dataTables.dateTime.min.js"></script>
+		<script	src="https://cdn.datatables.net/plug-ins/1.10.20/sorting/datetime-moment.js"
+			type="text/javascript"
+			charset="utf8"></script>
 
 		<!-- DATATABLES EXCEL-->
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+		<script
+			src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"
+			integrity="sha512-XMVd28F1oH/O71fzwBnV7HucLxVwtxf26XV8P4wPk26EDxuGZ91N8bsOttmnomcCD3CS5ZMRL50H0GgOHvegtg=="
+			crossorigin="anonymous"
+			referrerpolicy="no-referrer"></script>
 
 		<!-- DATATABLES SCRIPTS-->
-		<script src="./plugins/datatables/jquery.dataTables.min.js"></script>
-		<script src="./plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
-		<script src="./plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
-		<script src="./plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
-		<script src="./plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
-		<script src="./plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
-		<script src="./plugins/jszip/jszip.min.js"></script>
-		<script src="./plugins/pdfmake/pdfmake.min.js"></script>
-		<script src="./plugins/pdfmake/vfs_fonts.js"></script>
-		<script src="./plugins/datatables-buttons/js/buttons.html5.min.js"></script>
-		<script src="./plugins/datatables-buttons/js/buttons.print.min.js"></script>
-		<script src="./plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+		<script
+			src="https://cdnjs.cloudflare.com/ajax/libs/datatables.net/2.1.1/jquery.dataTables.min.js"
+			integrity="sha512-CKwcR6t3iAghHw93W7LcmVlSRCoGXiYyjITGKrFyDFqWHt6LIJ3j5f1dSjvL+OJbvG0KvPgP/zBEOikHUIu+3Q=="
+			crossorigin="anonymous"
+			referrerpolicy="no-referrer"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/datatables-responsive/3.0.2/dataTables.responsive.min.js"></script>
 
-		<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/plug-ins/1.10.20/sorting/datetime-moment.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/datatables.net-buttons/3.0.2/js/buttons.colVis.min.js"></script>
+
+		<script src="https://cdn.datatables.net/v/bs5/jq-3.7.0/jszip-3.10.1/dt-2.0.5/af-2.7.0/b-3.0.2/b-colvis-3.0.2/b-html5-3.0.2/b-print-3.0.2/cr-2.0.1/date-1.5.2/fc-5.0.0/fh-4.0.1/r-3.0.2/rg-1.5.0/rr-1.5.0/sc-2.4.1/sb-1.7.1/sl-2.0.1/datatables.min.js"></script>
 	</body>
 </html>

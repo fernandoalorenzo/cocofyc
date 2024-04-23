@@ -36,7 +36,7 @@ const Perfil = () => {
 
 		// Llamar a la función para cargar los datos del usuario
 		loadUserFromLocalStorage();
-		fetchRoles();
+		// fetchRoles();
 	}, []);
 
 	// FUNCION PARA CONTROLAR EL CHECKBOX
@@ -150,30 +150,30 @@ const Perfil = () => {
 		}));
 	};
 
-	const fetchRoles = async () => {
-		try {
-			const endpoint = "http://127.0.0.1:5000/api/roles";
-			const direction = "";
-			const method = "GET";
-			const body = false;
-			const headers = {
-				"Content-Type": "application/json",
-				Authorization: localStorage.getItem("token"),
-			};
+	// const fetchRoles = async () => {
+	// 	try {
+	// 		const endpoint = "http://localhost:5000/api/roles";
+	// 		const direction = "";
+	// 		const method = "GET";
+	// 		const body = false;
+	// 		const headers = {
+	// 			"Content-Type": "application/json",
+	// 			// Authorization: localStorage.getItem("token"),
+	// 		};
 
-			const response = await apiConnection(
-				endpoint,
-				direction,
-				method,
-				body,
-				headers
-			);
+	// 		const response = await apiConnection(
+	// 			endpoint,
+	// 			direction,
+	// 			method,
+	// 			body,
+	// 			headers
+	// 		);
 
-			setRoles(response.data);
-		} catch (error) {
-			console.error("Error:", error.message);
-		}
-	};
+	// 		setRoles(response.data);
+	// 	} catch (error) {
+	// 		console.error("Error:", error.message);
+	// 	}
+	// };
 
 	return (
 		<>
@@ -215,23 +215,20 @@ const Perfil = () => {
 						</div>
 					</div>
 					<div className="row mb-3">
-						<div className="col-3">
+						{/* <div className="col-3">
 							<label htmlFor="rol">Rol</label>
 							<select
 								className="form-select"
 								id="rol"
 								name="rol"
-								value={selectedRolId}
+								value={inputValues.rol}
 								onChange={handleRolChange}
 								required>
 								<option value="">Selecciona un rol</option>
-								{roles.map((rol) => (
-									<option key={rol.id} value={rol.id}>
-										{rol.rol}
-									</option>
-								))}
+								<option value="Administrador">Administrador</option>
+								<option value="Usuario">Usuario</option>
 							</select>
-						</div>
+						</div> */}
 						<div className="col-7">
 							<label htmlFor="email">Email</label>
 							<input
@@ -256,6 +253,22 @@ const Perfil = () => {
 									name="activo"
 									value={setInputValues.activo}
 									checked={inputValues.activo}
+									onChange={handleSwitchChange}
+								/>
+							</div>
+						</div>
+						<div className="col-2 text-centea">
+							<label htmlFor="administrador" className="form-label mb-0">
+								Administrador
+							</label>
+							<div className="form-switch">
+								<input
+									type="checkbox"
+									className="form-check-input"
+									id="administrador"
+									name="administrador"
+									value={setInputValues.administrador}
+									checked={inputValues.administrador}
 									onChange={handleSwitchChange}
 								/>
 							</div>

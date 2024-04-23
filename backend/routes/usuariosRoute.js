@@ -9,7 +9,6 @@ import {
 	validatePassword,
 	updatePassword,
 } from "../controllers/usuariosController.js";
-import authenticateToken from "../functions/tokenVerify.js";
 
 const usuariosRouter = express.Router();
 

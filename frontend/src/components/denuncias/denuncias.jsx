@@ -353,7 +353,7 @@ const DenunciasTabla = () => {
 		// Si el usuario confirma la eliminación
 		if (result.isConfirmed) {
 			try {
-				const endpoint = "http://127.0.0.1:5000/api/denuncias/";
+				const endpoint = "http://localhost:5000/api/denuncias/";
 				const direction = denuncia.id;
 				const method = "DELETE";
 				const body = false;

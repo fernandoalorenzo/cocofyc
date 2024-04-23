@@ -41,7 +41,7 @@ const CuotasModal = ({
 
 		if (modalMode === "agregar") {
 			try {
-				const endpoint = "http://127.0.0.1:5000/api/cuotas/";
+				const endpoint = "http://localhost:5000/api/cuotas/";
 				const direction = cuota;
 				const method = "GET";
 				const body = "";
@@ -84,7 +84,7 @@ const CuotasModal = ({
 		formData = { ...formData, user_id: user.id };
 
 		try {
-			const endpoint = "http://127.0.0.1:5000/api/cuotas/";
+			const endpoint = "http://localhost:5000/api/cuotas/";
 			const direction = id ? `${id}` : "";
 			const method = id ? "PATCH" : "POST";
 			const body = formData;

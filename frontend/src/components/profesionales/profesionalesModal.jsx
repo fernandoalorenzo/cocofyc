@@ -137,7 +137,7 @@ const ProfesionalesModal = ({
 				}
 			}
 
-			const endpoint = "http://127.0.0.1:5000/api/profesionales/";
+			const endpoint = "http://localhost:5000/api/profesionales/";
 			const direction = formData.id ? `${formData.id}` : "";
 			const method = formData.id ? "PUT" : "POST";
 			const body = formData;
@@ -188,7 +188,7 @@ const ProfesionalesModal = ({
 	useEffect(() => {
 		const fetchEstadosMatriculas = async () => {
 			try {
-				const endpoint = "http://127.0.0.1:5000/api/estados";
+				const endpoint = "http://localhost:5000/api/estados";
 				const direction = "";
 				const method = "GET";
 				const body = false;

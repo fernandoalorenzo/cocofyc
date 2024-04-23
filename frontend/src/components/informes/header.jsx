@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text, Image, StyleSheet } from "@react-pdf/renderer";
-import logo from "./../../assets/img/LogoCOCOFYC_horizontal.png";
+import logo from "./../../../assets/img/LogoCOCOFYC_horizontal.png";
 import { globalStyles } from "./stylesReports";
 
 const Header = ({ title, subtitle }) => (
