@@ -177,7 +177,7 @@ const UsuariosModal = ({
 										/>
 										{errors.nombre?.type === "required" && (
 											<span className="row text-warning m-1">
-												El NOMBRE es requerido
+												El campo es requerido
 											</span>
 										)}
 									</div>
@@ -204,7 +204,7 @@ const UsuariosModal = ({
 										{errors.apellido?.type ===
 											"required" && (
 											<span className="row text-warning m-1">
-												El APELLIDO es requerido
+												El campo es requerido
 											</span>
 										)}
 									</div>
@@ -233,7 +233,7 @@ const UsuariosModal = ({
 										/>
 										{errors.email?.type === "required" && (
 											<span className="row text-warning m-1">
-												El E-MAIL es requerido
+												El campo es requerido
 											</span>
 										)}
 									</div>
@@ -301,8 +301,7 @@ const UsuariosModal = ({
 													{errors.password1?.type ===
 														"required" && (
 														<span className="row text-warning m-1">
-															La CONTRASEÑA es
-															requerida
+															La CONTRASEÑA es requerida
 														</span>
 													)}
 												</div>

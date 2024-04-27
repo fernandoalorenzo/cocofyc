@@ -3,11 +3,13 @@ import { useForm } from "react-hook-form";
 import Swal from "sweetalert2";
 import apiConnection from "../../../../backend/functions/apiConnection";
 
-const CargarPagosTab = ({ profesionalId }) => {
+const CargarPagosTab = ({
+	profesionalId,
+	toggleCardBodyForm,
+	updateMovimientos,
+}) => {
 	const [archivoSeleccionado, setArchivoSeleccionado] = useState(null);
 	const [mediosDePago, setMediosDePago] = useState([]);
-
-	// const [cuotas, setCuotas] = useState([]);
 	const [selectedCuota, setSelectedCuota] = useState("");
 	const [cuotasGeneradas, setCuotasGeneradas] = useState([]);
 
@@ -112,9 +114,15 @@ const CargarPagosTab = ({ profesionalId }) => {
 			if (selectedCuota) {
 				await asignarMovimientoACuota(selectedCuota, response.data.id);
 			}
+
+			// Forzar la actualización del componente MovimientosTab
+			updateMovimientos();
 			
 			// Resetear el formulario después de guardar los cambios
 			reset();
+			
+			// Ocultar el formulario
+			toggleCardBodyForm(false);
 		} catch (error) {
 			console.error("Error al guardar el registro:", error.message);
 			Swal.fire({
@@ -122,7 +130,7 @@ const CargarPagosTab = ({ profesionalId }) => {
 				text: "Ha ocurrido un error al intentar guardar el registro",
 				icon: "error",
 			});
-		}fsor
+		}
 	};
 
 	const asignarMovimientoACuota = async (cuotaId, movimientoId) => {
@@ -168,7 +176,7 @@ const CargarPagosTab = ({ profesionalId }) => {
 			fetchCuotasGeneradas(profesionalId);
 		}
 	}, [profesionalId]);
-	
+
 	const fetchCuotasGeneradas = async (profesionalId) => {
 		try {
 			const endpoint = `http://localhost:5000/api/profesionales/cuotas-generadas-profesional/${profesionalId}`;
@@ -251,146 +259,183 @@ const CargarPagosTab = ({ profesionalId }) => {
 		}
 	};
 
+	const handleCancelar = () => {
+		reset();
+		toggleCardBodyForm(false);
+	};
+
 	return (
 		<div className="container-fluid">
-			<form id="cargar-pago" onSubmit={handleSubmit(onSubmitCargarPago)}>
-				{/* user_id obtenido del localStorage */}
-				<input
-					type="hidden"
-					{...register("user_id")}
-					value={localStorage.getItem("user_id") || ""}
-				/>
-				<div className="row mt-2">
-					{/* fecha */}
-					<div className="col">
-						<label htmlFor="fecha">Fecha:</label>
-						<input
-							type="date"
-							id="fecha"
-							className="form-control"
-							defaultValue={getCurrentDate()}
-							{...register("fecha", {
-								required: true,
-							})}
-						/>
-						{errors.fecha?.type === "required" && (
-							<span className="row text-danger m-1">
-								Este campo es requerido
-							</span>
-						)}
-					</div>
-					{/* importe */}
-					<div className="col">
-						<label htmlFor="importe">Importe:</label>
-						<input
-							type="number"
-							id="importe"
-							className="form-control"
-							{...register("importe", {
-								required: true,
-							})}
-						/>
-						{errors.importe?.type === "required" && (
-							<span className="row text-danger m-1">
-								Este campo es requerido
-							</span>
-						)}
-					</div>
-					{/* medio_id */}
-					<div className="col">
-						<label htmlFor="medio_id">Medio de pago:</label>
-						<select
-							className="form-select"
-							id="medio_id"
-							{...register("medio_id", { required: true })}>
-							<option value="">Selecciona un medio</option>
-							{mediosDePago.map((medio) => (
-								<option key={medio.id} value={medio.id}>
-									{medio.medio}
-								</option>
-							))}
-						</select>
-						{errors.medio_id?.type === "required" && (
-							<span className="row text-danger m-1">
-								Este campo es requerido
-							</span>
-						)}
-					</div>
+			<div className="card">
+				<div className="card-header bg-primary bg-opacity-50 align-items-center text-center">
+					<h5 className="card-title fw-bold text-center">
+						Cargar nuevo pago
+					</h5>
 				</div>
-				<div className="row mt-2">
-					{/* concepto */}
-					<div className="col">
-						<label htmlFor="concepto">Concepto:</label>
-						<input
-							type="text"
-							className="form-control"
-							id="concepto"
-							{...register("concepto", {
-								required: true,
-							})}
-						/>
-						{errors.concepto?.type === "required" && (
-							<span className="row text-danger m-1">
-								Este campo es requerido
-							</span>
-						)}
-					</div>
 
-					{/* comprobante */}
-					<div className="col">
-						<label htmlFor="comprobante">Comprobante:</label>
+				<form
+					id="cargar-pago"
+					onSubmit={handleSubmit(onSubmitCargarPago)}>
+					<div className="card-body">
+						{/* user_id obtenido del localStorage */}
 						<input
-							type="file"
-							className="form-control"
-							id="comprobante"
-							onChange={handleFileChange}
+							type="hidden"
+							{...register("user_id")}
+							value={localStorage.getItem("user_id") || ""}
 						/>
-						{archivoSeleccionado && (
-							<img
-								src={URL.createObjectURL(archivoSeleccionado)}
-								alt="Vista previa"
-							/>
-						)}
-					</div>
-					<div className="row mt-2">
-						{/* cuotas generadas para asignar al pago */}
-						<div className="col-6">
-							<label htmlFor="cuotas">Asignar Pago a Cuota</label>
-							<select
-								className="form-select"
-								id="cuotasGeneradas"
-								onChange={(e) =>
-									setSelectedCuota(e.target.value)
-								}
-								value={selectedCuota}
-								{...register("cuotasGeneradas")}>
-								<option value="">Seleccione una Cuota</option>
-								{cuotasGeneradas.map((cuotaGenerada) => (
-									<option
-										key={cuotaGenerada.id}
-										value={cuotaGenerada.id}>
-										{cuotaGenerada.cuota}
+						<div className="row mt-2">
+							{/* fecha */}
+							<div className="col">
+								<label htmlFor="fecha">Fecha:</label>
+								<input
+									type="date"
+									id="fecha"
+									className="form-control"
+									defaultValue={getCurrentDate()}
+									{...register("fecha", {
+										required: true,
+									})}
+								/>
+								{errors.fecha?.type === "required" && (
+									<span className="row text-danger m-1">
+										Este campo es requerido
+									</span>
+								)}
+							</div>
+							{/* importe */}
+							<div className="col">
+								<label htmlFor="importe">Importe:</label>
+								<input
+									type="number"
+									id="importe"
+									className="form-control"
+									{...register("importe", {
+										required: true,
+									})}
+								/>
+								{errors.importe?.type === "required" && (
+									<span className="row text-danger m-1">
+										Este campo es requerido
+									</span>
+								)}
+							</div>
+							{/* medio_id */}
+							<div className="col">
+								<label htmlFor="medio_id">Medio de pago:</label>
+								<select
+									className="form-select"
+									id="medio_id"
+									{...register("medio_id", {
+										required: true,
+									})}>
+									<option value="">
+										Selecciona un medio
 									</option>
-								))}
-							</select>
-							{errors.concepto?.type === "required" && (
-								<span className="row text-danger m-1">
-									Este campo es requerido
-								</span>
-							)}
+									{mediosDePago.map((medio) => (
+										<option key={medio.id} value={medio.id}>
+											{medio.medio}
+										</option>
+									))}
+								</select>
+								{errors.medio_id?.type === "required" && (
+									<span className="row text-danger m-1">
+										Este campo es requerido
+									</span>
+								)}
+							</div>
+						</div>
+						<div className="row mt-2">
+							{/* concepto */}
+							<div className="col">
+								<label htmlFor="concepto">Concepto:</label>
+								<input
+									type="text"
+									className="form-control"
+									id="concepto"
+									{...register("concepto", {
+										required: true,
+									})}
+								/>
+								{errors.concepto?.type === "required" && (
+									<span className="row text-danger m-1">
+										Este campo es requerido
+									</span>
+								)}
+							</div>
+
+							{/* comprobante */}
+							<div className="col">
+								{/* <label htmlFor="comprobante">
+									Comprobante:
+								</label>
+								<input
+									type="file"
+									className="form-control"
+									id="comprobante"
+									onChange={handleFileChange}
+								/>
+								{archivoSeleccionado && (
+									<img
+										src={URL.createObjectURL(
+											archivoSeleccionado
+										)}
+										alt="Vista previa"
+									/>
+								)} */}
+							{/* </div>
+							<div className="row mt-2"> */}
+								{/* cuotas generadas para asignar al pago */}
+								<div className="col-6">
+									<label htmlFor="cuotas">
+										Asignar Pago a Cuota
+									</label>
+									<select
+										className="form-select"
+										id="cuotasGeneradas"
+										onChange={(e) =>
+											setSelectedCuota(e.target.value)
+										}
+										value={selectedCuota}
+										{...register("cuotasGeneradas")}>
+										<option value="">
+											Seleccione una Cuota
+										</option>
+										{cuotasGeneradas.map(
+											(cuotaGenerada) => (
+												<option
+													key={cuotaGenerada.id}
+													value={cuotaGenerada.id}>
+													{cuotaGenerada.cuota}
+												</option>
+											)
+										)}
+									</select>
+									{errors.concepto?.type === "required" && (
+										<span className="row text-danger m-1">
+											Este campo es requerido
+										</span>
+									)}
+								</div>
+							</div>
 						</div>
 					</div>
-				</div>
-				<div className="my-4 border-top border-secondary border-opacity-25">
-					<div className="row mt-3 mb-0 d-flex justify-content-end">
-						<button
-							type="submit"
-							className="btn btn-primary col-md-2 mx-2">
-							Guardar
-						</button>
+					<div className="card-footer text-muted">
+						<div className="row d-flex justify-content-end">
+							<button
+								type="button"
+								className="btn btn-secondary col-md-2 mx-2"
+								onClick={handleCancelar}>
+								Cancelar
+							</button>
+							<button
+								type="submit"
+								className="btn btn-primary col-md-2 mx-2">
+								Guardar
+							</button>
+						</div>
 					</div>
-				</div>
-			</form>
+				</form>
+			</div>
 		</div>
 	);
 };

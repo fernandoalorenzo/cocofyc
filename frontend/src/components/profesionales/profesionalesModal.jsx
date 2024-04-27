@@ -261,7 +261,7 @@ const ProfesionalesModal = ({
 										/>
 										{errors.nombre?.type === "required" && (
 											<span className="row text-warning m-1">
-												El NOMBRE es requerido
+												El campo es requerido
 											</span>
 										)}
 									</div>
@@ -288,7 +288,7 @@ const ProfesionalesModal = ({
 										/>
 										{errors.dni?.type === "required" && (
 											<span className="row text-warning m-1">
-												El DNI es requerido
+												El campo es requerido
 											</span>
 										)}
 									</div>
@@ -319,7 +319,7 @@ const ProfesionalesModal = ({
 										/>
 										{errors.cuit?.type === "required" && (
 											<span className="row text-warning m-1">
-												El CUIT es requerido
+												El campo es requerido
 											</span>
 										)}
 										{errors.cuit?.type === "maxLength" ||
@@ -479,8 +479,7 @@ const ProfesionalesModal = ({
 										{errors.estado_matricula_id?.type ===
 											"required" && (
 											<span className="row text-warning m-1">
-												El ESTADO DE LA MATRICULA es
-												requerido
+												El campo es requerido
 											</span>
 										)}
 									</div>

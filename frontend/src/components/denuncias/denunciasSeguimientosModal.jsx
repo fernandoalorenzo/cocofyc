@@ -18,7 +18,6 @@ const DenunciasSeguimientosModal = ({
 	const user = JSON.parse(localStorage.getItem("user")) || {};
 	const [denunciaId, setDenunciaId] = useState("");
 	const [seguimientos, setSeguimientos] = useState([]);
-	const [seguimientoId, setSeguimientoId] = useState("");
 	const [nroActa, setNroActa] = useState("");
 	const [cardBodyFormToggle, setCardBodyFormToggle] = useState(false);
 	const [modalFormMode, setModalFormMode] = useState("");
@@ -171,9 +170,9 @@ const DenunciasSeguimientosModal = ({
 					},
 				],
 				dom:
-					"<'row'<'col-md-6'B><'col-md-6'f>>" + // Agregamos contenedor para botones y cont para búsqueda
+					"<'row mb-2'<'col-md-6'B><'col-md-6'f>>" + // Agregamos contenedor para botones y cont para búsqueda
 					"<'row'<'col-md-12'tr>>" + // Agregamos contenedor para tabla
-					"<'row'<'col-md-6'i><'col-md-6'p>>",
+					"<'row mt-2'<'col-md-6'i><'col-md-6 d-flex justify-content-end'p>>",
 				columnDefs: [
 					{
 						targets: [0, 2], // El índice de la columna de fecha (0 es la primera columna)

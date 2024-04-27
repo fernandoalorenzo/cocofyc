@@ -1,6 +1,7 @@
 import Profesional from "../models/profesionalesModel.js";
 import Profesionales_Establecimientos from "./../models/profesionales_establecimientosModel.js";
 import authenticateToken from "../functions/tokenVerify.js";
+import moment from "moment-timezone";
 import { config } from "dotenv";
 config();
 
@@ -295,6 +296,44 @@ const desvincularProfesional = async (request, response) => {
 	});
 };
 
+// Obtener los profesionales por cumpleaños
+const getProfesionalesBirthDay = async (request, response) => {
+	try {
+		// Obtener el día y el mes de los parámetros de la URL
+		const { mes, dia } = request.params;
+
+		// Obtener todos los profesionales de la base de datos
+		const profesionales = await Profesional.findAll();
+
+		// Filtrar los profesionales cuya fecha de nacimiento no sea "0000-00-00"
+		const profesionalesFiltrados = profesionales.filter((profesional) => {
+			return profesional.fecha_nacimiento !== "0000-00-00";
+		});
+
+		// Filtrar los profesionales por día y mes de fecha de nacimiento
+		const profesionalesPorFecha = profesionalesFiltrados.filter(
+			(profesional) => {
+				const fechaNacimiento = moment(profesional.fecha_nacimiento);
+				const diaNacimiento = fechaNacimiento.format("DD");
+				const mesNacimiento = fechaNacimiento.format("MM");
+				return diaNacimiento === dia && mesNacimiento === mes;
+			}
+		);
+
+		response.status(200).json({
+			message:
+				"Profesionales cuyo cumpleaños coincide con el día y el mes proporcionados:",
+			Registros: profesionalesPorFecha.length,
+			data: profesionalesPorFecha,
+		});
+	} catch (error) {
+		console.error("Error:", error.message);
+		response
+			.status(500)
+			.json({ error: "Error al obtener los profesionales" });
+	}
+};
+
 export {
 	createProfesional,
 	getProfesionales,
@@ -307,4 +346,5 @@ export {
 	asignarProfesional,
 	desvincularProfesional,
 	getProfesionalesActivos,
+	getProfesionalesBirthDay,
 };

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import Swal from "sweetalert2";
 import apiConnection from "../../../../backend/functions/apiConnection";
 
-const MovimientosTab = ({ profesionalId, movimientos }) => {
+const MovimientosTab = ({ profesionalId, data, movimientos }) => {
 	const tablaMovimientosRef = useRef(null);
 	const dataTableRef = useRef(null);
 
@@ -13,6 +13,7 @@ const MovimientosTab = ({ profesionalId, movimientos }) => {
 		} else if (movimientos.length && tablaMovimientosRef.current) {
 			dataTableRef.current = $(tablaMovimientosRef.current).DataTable({
 				data: movimientos,
+				pageLength: 5,
 				language: {
 					// url: "//cdn.datatables.net/plug-ins/2.0.3/i18n/es-AR.json",
 					// aria: {
@@ -119,7 +120,7 @@ const MovimientosTab = ({ profesionalId, movimientos }) => {
 						extend: "print",
 						className: "btn btn-warning",
 						text: '<i class="fas fa-print"></i>',
-						title: "Movimientos",
+						title: `Pagos realizados por el Profesional ${data.nombre}`,
 						titleAttr: "Imprimir datos",
 					},
 					{
@@ -130,9 +131,9 @@ const MovimientosTab = ({ profesionalId, movimientos }) => {
 					},
 				],
 				dom:
-					"<'row'<'col-md-6'B><'col-md-6'f>>" + // Agregamos contenedor para botones y cont para búsqueda
+					"<'row mb-2'<'col-md-6'B><'col-md-6'f>>" + // Agregamos contenedor para botones y cont para búsqueda
 					"<'row'<'col-md-12'tr>>" + // Agregamos contenedor para tabla
-					"<'row'<'col-md-6'i><'col-md-6'p>>",
+					"<'row mt-2'<'col-md-6'i><'col-md-6 d-flex justify-content-end'p>>",
 				columns: [
 					{
 						data: "fecha",
@@ -167,8 +168,9 @@ const MovimientosTab = ({ profesionalId, movimientos }) => {
 				],
 				lengthChange: true,
 				lengthMenu: [
-					[10, 25, 50, 100, -1],
+					[5, 10, 25, 50, 100, -1],
 					[
+						"5 Registros",
 						"10 Registros",
 						"25 Registros",
 						"50 Registros",
@@ -182,6 +184,7 @@ const MovimientosTab = ({ profesionalId, movimientos }) => {
 				searching: true,
 				ordering: true,
 				info: true,
+				order: [[0, "desc"]], // Ordenar por la primera columna en orden descendente
 			});
 		}
 	}, [movimientos, profesionalId]);

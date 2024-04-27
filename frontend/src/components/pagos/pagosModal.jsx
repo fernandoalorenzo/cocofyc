@@ -170,10 +170,10 @@ useEffect(() => {
 		fetchMediosDePago();
 	}, []);
 
-	const handleFileChange = (event) => {
-		const file = event.target.files[0];
-		setArchivoSeleccionado(file);
-	};
+	// const handleFileChange = (event) => {
+	// 	const file = event.target.files[0];
+	// 	setArchivoSeleccionado(file);
+	// };
 
 	return (
 		<div

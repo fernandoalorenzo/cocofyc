@@ -4,6 +4,7 @@ import {
 	getParametroById,
 	getParametros,
 	patchParametro,
+	getParametroSinToken,
 } from "../controllers/parametrosController.js";
 import authenticateToken from "../functions/tokenVerify.js";
 
@@ -17,6 +18,7 @@ const parametrosRouter = express.Router();
 
 parametrosRouter.get("/", getParametros);
 parametrosRouter.get("/:id", getParametroById);
+parametrosRouter.get("/sinToken/:id", getParametroSinToken);
 parametrosRouter.post("/", createParametro);
 parametrosRouter.patch("/:id", patchParametro);
 

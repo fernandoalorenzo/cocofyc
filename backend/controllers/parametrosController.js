@@ -23,16 +23,16 @@ const createParametro = async (request, response) => {
 // Obtener parametros
 const getParametros = async (request, response) => {
 	// authenticateToken(request, response, async () => {
-		try {
-			const parametros = await Parametros.findAll(request.body);
-			response.status(201).json({
-				message: "Parámetros obtenidos exitosamente!",
-				data: parametros,
-			});
-		} catch (error) {
-			console.error("Error: " + error.message);
-			response.status(500).send({ message: error.message });
-		}
+	try {
+		const parametros = await Parametros.findAll(request.body);
+		response.status(201).json({
+			message: "Parámetros obtenidos exitosamente!",
+			data: parametros,
+		});
+	} catch (error) {
+		console.error("Error: " + error.message);
+		response.status(500).send({ message: error.message });
+	}
 	// });
 };
 
@@ -44,8 +44,7 @@ const getParametroById = async (request, response) => {
 			const parametro = await Parametros.findOne({ where: { id: id } });
 
 			response.status(201).json({
-				message:
-					"Los parámetros fueron obtenidos exitosamente!",
+				message: "Los parámetros fueron obtenidos exitosamente!",
 				data: parametro,
 			});
 		} catch (error) {
@@ -82,5 +81,21 @@ const patchParametro = async (request, response) => {
 	});
 };
 
+// Obtener un parametro por Id sin autenticación
+const getParametroSinToken = async (request, response) => {
+	const id = request.params.id;
+	try {
+		const parametro = await Parametros.findOne({ where: { id: id } });
+
+		response.status(201).json({
+			message: "Los parámetros fueron obtenidos exitosamente!",
+			data: parametro,
+		});
+	} catch (error) {
+		console.error("Error: " + error.message);
+		response.status(500).send({ message: error.message });
+	}
+};
+
 // Exportamos todas las rutas
-export { createParametro, getParametros, getParametroById, patchParametro };
+export { createParametro, getParametros, getParametroById, patchParametro, getParametroSinToken };

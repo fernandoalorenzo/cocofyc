@@ -10,7 +10,8 @@ const sequelize = new Sequelize(
 		define: {
 			timestamps: true,
 		},
-	}
+		// logging: false, // Aquí ajustamos la posición de logging
+	},
 );
 
 export default sequelize

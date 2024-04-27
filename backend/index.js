@@ -34,6 +34,9 @@ app.use("/api/movimientos", movimientosRoutes);
 app.use("/api/mediosdepago", medios_de_pagoRoutes)
 app.use("/api/denuncias", denunciasRouter);
 
+import "./functions/birthdayEmailScript.js";
+import "./functions/vencimientoCuotaEmailScript.js";
+
 // FUNCION PARA RENOMBRAR EL ARCHIVO
 // function saveFile(file) {
 // 	const newPath = `./../frontend/public/uploads/${file.originalname}`;

@@ -1,18 +1,15 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
-import { useTable, useSortBy, useFilters, usePagination } from "react-table";
-import { useForm } from "react-hook-form";
-import Swal from "sweetalert2";
-import apiConnection from "../../../../backend/functions/apiConnection";
 import CargarPagosTab from "./tabProfesionalesPagos";
 import MovimientosTab from "./tabProfesionalesMovimientos";
 import EstablecimientosTab from "./tabProfesionalesEstablecimientos.jsx";
 import GenerarCuotaTab from "./tabProfesionalesCuotas.jsx";
-// import DenunciasTab from "./tabProfesionalesDenuncias.jsx";
 
-const GestionesModal = ({ showModal, closeModal, data, movimientos }) => {
+const GestionesModal = ({ showModal, closeModal, data, movimientos, fetchMovimientos }) => {
 	const profesionalId = data ? data.id : null;
 	const [activeTab, setActiveTab] = useState("cargarPago"); // Estado local para controlar la pestaña activa
 	const user = JSON.parse(localStorage.getItem("user")) || {};
+	const [cardBodyFormToggle, setCardBodyFormToggle] = useState(false);
+	const [isBotonAgregarEnabled, setIsBotonAgregarEnabled] = useState(true);
 
 	useEffect(() => {
 		if (showModal) {
@@ -23,6 +20,11 @@ const GestionesModal = ({ showModal, closeModal, data, movimientos }) => {
 
 	const handleTabChange = (tabId) => {
 		setActiveTab(tabId); // Función para cambiar la pestaña activa
+	};
+
+	const updateMovimientos = () => {
+		// Actualizar los movimientos, por ejemplo, volviendo a llamar a fetchMovimientos
+		fetchMovimientos(data);
 	};
 
 	return (
@@ -85,7 +87,7 @@ const GestionesModal = ({ showModal, closeModal, data, movimientos }) => {
 								</button>
 							</li>
 							{/********************** MOVIMIENTOS **********************/}
-							<li className="nav-item" role="presentation">
+							{/* <li className="nav-item" role="presentation">
 								<button
 									className={`nav-link ${
 										activeTab === "movimientos"
@@ -103,7 +105,7 @@ const GestionesModal = ({ showModal, closeModal, data, movimientos }) => {
 									aria-controls="movimientos">
 									Pagos
 								</button>
-							</li>
+							</li> */}
 							{/********************** GENERAR CUOTA **********************/}
 							<li className="nav-item" role="presentation">
 								<button
@@ -175,10 +177,54 @@ const GestionesModal = ({ showModal, closeModal, data, movimientos }) => {
 								id="cargarPago"
 								role="tabpanel"
 								aria-labelledby="cargarPago-tab">
-								<CargarPagosTab profesionalId={profesionalId} />
+								<div className="card">
+									<div
+										className="card-header bg-white"
+										hidden={cardBodyFormToggle}>
+										<div className="justify-content-end text-end d-flex">
+											<button
+												type="button"
+												className="btn btn-primary"
+												id="abrirModalAgregar"
+												disabled={
+													!isBotonAgregarEnabled
+												}
+												onClick={() => {
+													setCardBodyFormToggle(true);
+												}}>
+												<i className="fa-regular fa-square-plus"></i>{" "}
+												Agregar
+											</button>
+										</div>
+									</div>
+									<div
+										className="card-body"
+										id="cardBodyForm"
+										hidden={!cardBodyFormToggle}>
+										<CargarPagosTab
+											profesionalId={profesionalId}
+											toggleCardBodyForm={
+												setCardBodyFormToggle
+											}
+											updateMovimientos={
+												updateMovimientos
+											} // Pasamos la función de actualización como prop
+											/>
+									</div>
+									<div
+										className="card-body"
+										id="cardBodyForm"
+										hidden={cardBodyFormToggle}>
+										<MovimientosTab
+											profesionalId={profesionalId}
+											data={data}
+											movimientos={movimientos}
+										/>
+									</div>
+								</div>
 							</div>
 							{/* ********************* MOVIMIENTOS ********************* */}
-							<div
+							{/* <div
 								className={`tab-pane fade ${
 									activeTab === "movimientos"
 										? "show active"
@@ -191,7 +237,7 @@ const GestionesModal = ({ showModal, closeModal, data, movimientos }) => {
 									profesionalId={profesionalId}
 									movimientos={movimientos}
 								/>
-							</div>
+							</div> */}
 							{/* ********************* GENERAR CUOTA ********************* */}
 							<div
 								className={`tab-pane fade ${
@@ -221,20 +267,6 @@ const GestionesModal = ({ showModal, closeModal, data, movimientos }) => {
 									profesionalId={profesionalId}
 								/>
 							</div>
-							{/* ********************* DENUNCIAS ********************* */}
-							{/* <div
-								className={`tab-pane fade ${
-									activeTab === "denuncias"
-										? "show active"
-										: ""
-								} bg-dark-subtle p-2`}
-								id="denuncias"
-								role="tabpanel"
-								aria-labelledby="denuncias-tab">
-								<DenunciasTab
-									profesionalId={profesionalId}
-								/>
-							</div> */}
 						</div>
 					</div>
 				</div>

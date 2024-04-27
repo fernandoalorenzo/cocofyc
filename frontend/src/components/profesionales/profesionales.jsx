@@ -351,9 +351,9 @@ const ProfesionalesTabla = () => {
 					},
 				],
 				dom:
-					"<'row'<'col-md-6'B><'col-md-6'f>>" + // Agregamos contenedor para botones y cont para búsqueda
+					"<'row mb-2'<'col-md-6'B><'col-md-6'f>>" + // Agregamos contenedor para botones y cont para búsqueda
 					"<'row'<'col-md-12'tr>>" + // Agregamos contenedor para tabla
-					"<'row'<'col-md-6'i><'col-md-6'p>>",
+					"<'row mt-2'<'col-md-6'i><'col-md-6 d-flex justify-content-end'p>>",
 				columnDefs: [
 					{
 						targets: 0,
@@ -574,7 +574,7 @@ const ProfesionalesTabla = () => {
 						<div className="card-header bg-white">
 							<div className="row d-flex m-0 mb-2 align-items-center justify-content-between">
 								<div className="col-auto">
-									<div className="border border-4 bg-primary bg-opacity-50 text-white border-primary cd  p-2">
+									<div className="border border-4 bg-primary bg-opacity-50 text-white border-primary rounded cd p-2">
 										<div className="row align-items-center">
 											<div className="col-auto text-start align-items-center">
 												<label
@@ -660,6 +660,7 @@ const ProfesionalesTabla = () => {
 				closeModal={closeGestionesModal}
 				data={selectedProfesional}
 				movimientos={movimientos}
+				fetchMovimientos={fetchMovimientos}
 			/>
 		</>
 	);

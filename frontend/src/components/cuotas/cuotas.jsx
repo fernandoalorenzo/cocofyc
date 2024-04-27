@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useTable, useSortBy, usePagination } from "react-table";
 import Swal from "sweetalert2";
 import apiConnection from "../../../../backend/functions/apiConnection";
 import CuotasModal from "./cuotasModal";
@@ -347,9 +346,9 @@ const Cuotas = () => {
 					},
 				],
 				dom:
-					"<'row'<'col-md-6'B><'col-md-6'f>>" + // Agregamos contenedor para botones y cont para búsqueda
+					"<'row mb-2'<'col-md-6'B><'col-md-6'f>>" + // Agregamos contenedor para botones y cont para búsqueda
 					"<'row'<'col-md-12'tr>>" + // Agregamos contenedor para tabla
-					"<'row'<'col-md-6'i><'col-md-6'p>>",
+					"<'row mt-2'<'col-md-6'i><'col-md-6 d-flex justify-content-end'p>>",
 				columnDefs: [
 					{
 						targets: 1,

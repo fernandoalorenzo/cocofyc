@@ -9,6 +9,10 @@ const Parametros = sequelize.define(
 			defaultValue: DataTypes.UUIDV4,
 			primaryKey: true,
 		},
+		establecimiento: {
+			type: DataTypes.STRING(100),
+			allowNull: false,
+		},
 		titular: {
 			type: DataTypes.STRING(50),
 			allowNull: false,
@@ -45,6 +49,15 @@ const Parametros = sequelize.define(
 		importe_cuota: {
 			type: DataTypes.DECIMAL(20, 2),
 		},
+		mensaje_cumpleanos: {
+			type: DataTypes.TEXT,
+		},
+		mensaje_vencimiento_cuota: {
+			type: DataTypes.TEXT,
+		},
+		mensaje_cuotas_adeudadas: {
+			type: DataTypes.TEXT,
+		}
 	},
 	{
 		timestamps: true,

@@ -11,6 +11,7 @@ import {
 	asignarProfesional,
 	desvincularProfesional,
 	getProfesionalesActivos,
+	getProfesionalesBirthDay,
 } from "../controllers/profesionalesController.js";
 
 import {
@@ -28,6 +29,8 @@ import authenticateToken from "../functions/tokenVerify.js";
 const profesionalesRouter = express.Router();
 
 // DEFINIMOS LAS RUTAS
+
+// Ruta para obtener profesionales que estan activos 
 profesionalesRouter.get("/activos", authenticateToken, getProfesionalesActivos);
 
 // Ruta para obtener profesionales que adeudan cuotas
@@ -43,6 +46,9 @@ profesionalesRouter.get(
 	authenticateToken,
 	getProfesionalesAlDia
 );
+
+// Ruta para obtener un profesional por cumpleaños
+profesionalesRouter.get("/:mes/:dia", getProfesionalesBirthDay);
 
 profesionalesRouter.get("/:id", authenticateToken, getProfesionalById);
 profesionalesRouter.get("/dni/:dni", authenticateToken, getProfesionalByDNI);
