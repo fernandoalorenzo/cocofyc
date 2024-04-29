@@ -34,8 +34,10 @@ app.use("/api/movimientos", movimientosRoutes);
 app.use("/api/mediosdepago", medios_de_pagoRoutes)
 app.use("/api/denuncias", denunciasRouter);
 
+// FUNCIONES AUTOMÁTICAS DE COMUNICACIÓN
 import "./functions/birthdayEmailScript.js";
 import "./functions/vencimientoCuotaEmailScript.js";
+import "./functions/birthdayWspScript.js";
 
 // FUNCION PARA RENOMBRAR EL ARCHIVO
 // function saveFile(file) {
