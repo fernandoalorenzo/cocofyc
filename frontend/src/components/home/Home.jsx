@@ -2,6 +2,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Logo from "./../../../assets/img/LogoCOCOFYC.png";
+import TotalMorosos from "./homeTotalMorosos";
+import MatriculasActivas from "./homeMatriculasActivas";
 
 export default function Home() {
 	const navigate = useNavigate();
@@ -36,19 +38,20 @@ export default function Home() {
 				<section className="content">
 					<div className="container-fluid">
 						{/* Small boxes (Stat box) */}
-						<div className="row">
+						<div className="row d-flex align-items-stretch">
 							<div className="col-lg-3 col-6">
 								{/* small box */}
-								<div className="small-box bg-info">
-									<div className="inner">
-										<h3>150</h3>
-										<p>New Orders</p>
+								<div className="small-box bg-success">
+									<div className="inner mb-5">
+										<h3>
+											<MatriculasActivas />
+										</h3>
 									</div>
 									<div className="icon">
-										<i className="ion ion-bag" />
+										<i className="fa-solid fa-id-card" />
 									</div>
-									<a href="#" className="small-box-footer">
-										More info{" "}
+									<a href="#" className="small-box-footer text-left ps-2">
+										Matrículas Activas{" "}
 										<i className="fas fa-arrow-circle-right" />
 									</a>
 								</div>
@@ -56,22 +59,19 @@ export default function Home() {
 							{/* ./col */}
 							<div className="col-lg-3 col-6">
 								{/* small box */}
-								<div className="small-box bg-success">
-									<div className="inner">
+								<div className="small-box bg-danger">
+									<div className="inner mb-5">
 										<h3>
-											53
-											<sup style={{ fontSize: 20 }}>
-												%
-											</sup>
+											<TotalMorosos />
 										</h3>
-										<p>Bounce Rate</p>
 									</div>
 									<div className="icon">
-										<i className="ion ion-stats-bars" />
+										<i className="fa-solid fa-triangle-exclamation"></i>
 									</div>
-									<a href="#" className="small-box-footer">
-										More info{" "}
-										<i className="fas fa-arrow-circle-right" />
+									<a
+										href="#"
+										className="small-box-footer text-left ps-2">
+										Profesionales Morosos{" "}
 									</a>
 								</div>
 							</div>

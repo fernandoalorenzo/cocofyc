@@ -152,7 +152,8 @@ const EstablecimientosModal = ({
 											className="form-label mb-0">
 											Establecimiento{" "}
 											{modalMode !== "mostrar" && (
-												<span className="text-danger">
+												<span className="text-warning">
+													{" "}
 													*
 												</span>
 											)}
@@ -169,7 +170,7 @@ const EstablecimientosModal = ({
 										{errors.establecimiento?.type ===
 											"required" && (
 											<span className="row text-warning m-1">
-												El ESTABLECIMIENTO es requerido
+												El campo es requerido
 											</span>
 										)}
 									</div>
@@ -179,7 +180,7 @@ const EstablecimientosModal = ({
 											className="form-label mb-0">
 											Titular{" "}
 											{modalMode !== "mostrar" && (
-												<span className="text-danger">
+												<span className="text-warning">
 													*
 												</span>
 											)}
@@ -196,7 +197,7 @@ const EstablecimientosModal = ({
 										{errors.titular?.type ===
 											"required" && (
 											<span className="row text-warning m-1">
-												El TITULAR es requerido
+												El campo es requerido
 											</span>
 										)}
 									</div>
@@ -208,7 +209,7 @@ const EstablecimientosModal = ({
 											className="form-label mb-0">
 											CUIT{" "}
 											{modalMode !== "mostrar" && (
-												<span className="text-danger">
+												<span className="text-warning">
 													*
 												</span>
 											)}
@@ -228,7 +229,7 @@ const EstablecimientosModal = ({
 										/>
 										{errors.cuit?.type === "required" && (
 											<span className="row text-warning m-1">
-												El CUIT es requerido
+												El campo es requerido
 											</span>
 										)}
 										{errors.cuit?.type === "maxLength" ||
@@ -246,7 +247,7 @@ const EstablecimientosModal = ({
 											className="form-label mb-0">
 											Teléfono{" "}
 											{modalMode !== "mostrar" && (
-												<span className="text-danger">
+												<span className="text-warning">
 													*
 												</span>
 											)}
@@ -262,7 +263,7 @@ const EstablecimientosModal = ({
 										/>
 										{errors.telefono && (
 											<span className="row text-warning m-1">
-												El TELEFONO es requerido
+												El campo es requerido
 											</span>
 										)}
 									</div>
@@ -272,7 +273,7 @@ const EstablecimientosModal = ({
 											className="form-label mb-0">
 											E-Mail{" "}
 											{modalMode !== "mostrar" && (
-												<span className="text-danger">
+												<span className="text-warning">
 													*
 												</span>
 											)}
@@ -292,7 +293,7 @@ const EstablecimientosModal = ({
 										/>
 										{errors.email?.type === "required" && (
 											<span className="row text-warning m-1">
-												El eMail es requerido
+												El campo es requerido
 											</span>
 										)}
 										{errors.email?.type === "pattern" && (

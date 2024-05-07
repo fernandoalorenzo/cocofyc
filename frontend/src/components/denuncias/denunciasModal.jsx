@@ -281,7 +281,14 @@ const DenunciasModal = ({
 								<div className="row mt-2">
 									{/* FECHA */}
 									<div className="col">
-										<label htmlFor="fecha">Fecha:</label>
+										<label htmlFor="fecha">
+											Fecha
+											{modalMode !== "mostrar" && (
+												<span className="text-warning">
+													*
+												</span>
+											)}
+										</label>
 										<input
 											type="date"
 											id="fecha"
@@ -297,15 +304,20 @@ const DenunciasModal = ({
 											})}
 										/>
 										{errors.fecha?.type === "required" && (
-											<span className="row text-danger m-1">
-												Este campo es requerido
+											<span className="row text-warning m-1">
+												El campo es requerido
 											</span>
 										)}
 									</div>
 									{/* Nº ACTA */}
 									<div className="col">
 										<label htmlFor="nro_acta">
-											Nº de Acta:
+											Nº de Acta
+											{modalMode !== "mostrar" && (
+												<span className="text-warning">
+													*
+												</span>
+											)}
 										</label>
 										<input
 											type="text"
@@ -318,15 +330,20 @@ const DenunciasModal = ({
 										/>
 										{errors.nro_acta?.type ===
 											"required" && (
-											<span className="row text-danger m-1">
-												Este campo es requerido
+											<span className="row text-warning m-1">
+												Campo requerido
 											</span>
 										)}
 									</div>
 									{/* PROFESIONAL */}
 									<div className="col-3">
 										<label htmlFor="profesional_id">
-											Profesional:
+											Profesional
+											{modalMode !== "mostrar" && (
+												<span className="text-warning">
+													*
+												</span>
+											)}
 										</label>
 										<select
 											className="form-select"
@@ -353,15 +370,15 @@ const DenunciasModal = ({
 										</select>
 										{errors.profesional_id?.type ===
 											"required" && (
-											<span className="row text-danger m-1">
-												Este campo es requerido
+											<span className="row text-warning m-1">
+												El campo es requerido
 											</span>
 										)}
 									</div>
 									{/* ESTABLECIMIENTO */}
 									<div className="col-3">
 										<label htmlFor="establecimiento_id">
-											Establecimiento:
+											Establecimiento
 										</label>
 										<select
 											className="form-select"
@@ -395,7 +412,7 @@ const DenunciasModal = ({
 									{/* FECHA DE CIERRE */}
 									<div className="col">
 										<label htmlFor="fecha">
-											Fecha de Cierre:
+											Fecha de Cierre
 										</label>
 										<input
 											type="date"
@@ -410,7 +427,12 @@ const DenunciasModal = ({
 									{/* INFRACCION */}
 									<div className="col">
 										<label htmlFor="infraccion">
-											Infracción:
+											Infracción
+											{modalMode !== "mostrar" && (
+												<span className="text-warning">
+													*
+												</span>
+											)}
 										</label>
 										<textarea
 											className="form-control"
@@ -422,15 +444,15 @@ const DenunciasModal = ({
 											})}></textarea>
 										{errors.infraccion?.type ===
 											"required" && (
-											<span className="row text-danger m-1">
-												Este campo es requerido
+											<span className="row text-warning m-1">
+												El campo es requerido
 											</span>
 										)}
 									</div>
 									{/* COMENTARIO */}
 									<div className="col">
 										<label htmlFor="comentario">
-											Comentario:
+											Comentario
 										</label>
 										<textarea
 											className="form-control"

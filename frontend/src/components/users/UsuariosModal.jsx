@@ -161,7 +161,7 @@ const UsuariosModal = ({
 											className="form-label mb-0">
 											Nombre{" "}
 											{modalMode !== "mostrar" && (
-												<span className="text-danger">
+												<span className="text-warning">
 													*
 												</span>
 											)}
@@ -187,7 +187,7 @@ const UsuariosModal = ({
 											className="form-label mb-0">
 											Apellido{" "}
 											{modalMode !== "mostrar" && (
-												<span className="text-danger">
+												<span className="text-warning">
 													*
 												</span>
 											)}
@@ -216,7 +216,7 @@ const UsuariosModal = ({
 											className="form-label mb-0">
 											Email{" "}
 											{modalMode !== "mostrar" && (
-												<span className="text-danger">
+												<span className="text-warning">
 													*
 												</span>
 											)}
@@ -286,6 +286,13 @@ const UsuariosModal = ({
 														htmlFor="password1"
 														className="form-label mb-0">
 														Contraseña
+														{modalMode !==
+															"mostrar" && (
+															<span className="text-warning">
+																{" "}
+																*
+															</span>
+														)}
 													</label>
 													<input
 														type="password"
@@ -301,7 +308,8 @@ const UsuariosModal = ({
 													{errors.password1?.type ===
 														"required" && (
 														<span className="row text-warning m-1">
-															La CONTRASEÑA es requerida
+															El campo es
+															requerido
 														</span>
 													)}
 												</div>
@@ -310,6 +318,13 @@ const UsuariosModal = ({
 														htmlFor="password2"
 														className="form-label mb-0">
 														Confirmar Contraseña
+														{modalMode !==
+															"mostrar" && (
+															<span className="text-warning">
+																{" "}
+																*
+															</span>
+														)}
 													</label>
 													<input
 														type="password"
@@ -331,9 +346,7 @@ const UsuariosModal = ({
 													{errors.password2?.type ===
 														"required" && (
 														<span className="row text-warning m-1">
-															La CONFIRMACIÓN DE
-															CONTRASEÑA es
-															requerida
+															El campo es requerido
 														</span>
 													)}
 													{errors.password2?.type ===

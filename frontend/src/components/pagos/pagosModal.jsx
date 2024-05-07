@@ -186,7 +186,7 @@ useEffect(() => {
 			data-bs-keyboard="false"
 			aria-labelledby="staticBackdropLabel"
 			aria-hidden={!showModal}>
-			<div className="modal-dialog modal-xl">
+			<div className="modal-dialog modal-lg">
 				<div className="modal-content bg-secondary">
 					<div className="modal-header bg-primary">
 						<h5 className="modal-title">{modalTitle}</h5>
@@ -202,7 +202,15 @@ useEffect(() => {
 								<div className="row mt-2">
 									{/* FECHA */}
 									<div className="col">
-										<label htmlFor="fecha">Fecha:</label>
+										<label htmlFor="fecha">
+											Fecha
+											{modalMode !== "mostrar" && (
+												<span className="text-warning">
+													{" "}
+													*
+												</span>
+											)}
+										</label>
 										<input
 											type="date"
 											id="fecha"
@@ -218,15 +226,21 @@ useEffect(() => {
 											})}
 										/>
 										{errors.fecha?.type === "required" && (
-											<span className="row text-danger m-1">
-												Este campo es requerido
+											<span className="row text-warning m-1">
+												El campo es requerido
 											</span>
 										)}
 									</div>
 									{/* IMPORTE */}
 									<div className="col">
 										<label htmlFor="importe">
-											Importe:
+											Importe
+											{modalMode !== "mostrar" && (
+												<span className="text-warning">
+													{" "}
+													*
+												</span>
+											)}
 										</label>
 										<input
 											type="text"
@@ -244,15 +258,23 @@ useEffect(() => {
 										/>
 										{errors.importe?.type ===
 											"required" && (
-											<span className="row text-danger m-1">
-												Este campo es requerido
+											<span className="row text-warning m-1">
+												El campo es requerido
 											</span>
 										)}
 									</div>
+								</div>
+								<div className="row mt-2">
 									{/* MEDIO DE PAGO */}
-									<div className="col-3">
+									<div className="col-6">
 										<label htmlFor="medio_id">
-											Medio de Pago:
+											Medio de Pago
+											{modalMode !== "mostrar" && (
+												<span className="text-warning">
+													{" "}
+													*
+												</span>
+											)}
 										</label>
 										<select
 											className="form-select"
@@ -274,17 +296,21 @@ useEffect(() => {
 										</select>
 										{errors.medio_id?.type ===
 											"required" && (
-											<span className="row text-danger m-1">
-												Este campo es requerido
+											<span className="row text-warning m-1">
+												El campo es requerido
 											</span>
 										)}
 									</div>
-								</div>
-								<div className="row mt-2">
 									{/* CONCEPTO */}
-									<div className="col-3">
+									<div className="col-6">
 										<label htmlFor="concepto">
-											Concepto:
+											Concepto
+											{modalMode !== "mostrar" && (
+												<span className="text-warning">
+													{" "}
+													*
+												</span>
+											)}
 										</label>
 										<input
 											type="text"
@@ -297,32 +323,11 @@ useEffect(() => {
 										/>
 										{errors.concepto?.type ===
 											"required" && (
-											<span className="row text-danger m-1">
-												Este campo es requerido
+											<span className="row text-warning m-1">
+												El campo es requerido
 											</span>
 										)}
 									</div>
-									{/* COMPROBANTE */}
-									{/* <div className="col">
-										<label htmlFor="comprobante">
-											Comprobante:
-										</label>
-										<input
-											type="file"
-											className="form-control"
-											id="comprobante"
-											disabled={modalMode === "mostrar"}
-											onChange={handleFileChange}
-										/>
-										{archivoSeleccionado && (
-											<img
-												src={URL.createObjectURL(
-													archivoSeleccionado
-												)}
-												alt="Vista previa"
-											/>
-										)}
-									</div> */}
 								</div>
 							</div>
 						</div>

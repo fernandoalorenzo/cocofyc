@@ -491,7 +491,16 @@ const DenunciasSeguimientosModal = ({
 					<div className="container-fluid">
 						<div className="modal-body">
 							<div className="card">
-								<div className="card-header bg-white">
+								<div
+									className="card-header bg-primary"
+									hidden={!cardBodyFormToggle}>
+									<div className="justify-content-start text-start d-flex">
+										<h5>Agregar seguimiento</h5>
+									</div>
+								</div>
+								<div
+									className="card-header bg-white"
+									hidden={cardBodyFormToggle}>
 									<div className="justify-content-end text-end d-flex">
 										<button
 											type="button"
@@ -519,6 +528,12 @@ const DenunciasSeguimientosModal = ({
 												htmlFor="fecha"
 												className="form-label">
 												Fecha
+												{modalFormMode !==
+													"mostrar" && (
+													<span className="text-danger">
+														*
+													</span>
+												)}
 											</label>
 											<input
 												type="date"
@@ -554,7 +569,9 @@ const DenunciasSeguimientosModal = ({
 														? editingSeguimiento.proximo_seguimiento
 														: ""
 												}
-												{...register("proximo_seguimiento")}
+												{...register(
+													"proximo_seguimiento"
+												)}
 											/>
 										</div>
 										<div className="mb-3">
@@ -562,6 +579,12 @@ const DenunciasSeguimientosModal = ({
 												htmlFor="respuesta"
 												className="form-label">
 												Respuesta
+												{modalFormMode !==
+													"mostrar" && (
+													<span className="text-danger">
+														*
+													</span>
+												)}
 											</label>
 											<input
 												type="text"

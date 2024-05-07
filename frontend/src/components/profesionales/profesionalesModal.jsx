@@ -245,7 +245,7 @@ const ProfesionalesModal = ({
 											className="form-label mb-0">
 											Nombre Completo{" "}
 											{modalMode !== "mostrar" && (
-												<span className="text-danger">
+												<span className="text-warning">
 													*
 												</span>
 											)}
@@ -272,7 +272,7 @@ const ProfesionalesModal = ({
 											className="form-label mb-0">
 											DNI{" "}
 											{modalMode !== "mostrar" && (
-												<span className="text-danger">
+												<span className="text-warning">
 													*
 												</span>
 											)}
@@ -299,7 +299,7 @@ const ProfesionalesModal = ({
 											className="form-label mb-0">
 											CUIT{" "}
 											{modalMode !== "mostrar" && (
-												<span className="text-danger">
+												<span className="text-warning">
 													*
 												</span>
 											)}
@@ -355,7 +355,7 @@ const ProfesionalesModal = ({
 											className="form-label mb-0">
 											E-Mail{" "}
 											{modalMode !== "mostrar" && (
-												<span className="text-danger">
+												<span className="text-warning">
 													*
 												</span>
 											)}
@@ -429,11 +429,6 @@ const ProfesionalesModal = ({
 											htmlFor="matricula"
 											className="form-label mb-0">
 											Matrícula{" "}
-											{modalMode !== "mostrar" && (
-												<span className="text-danger">
-													*
-												</span>
-											)}
 										</label>
 										<input
 											type="text"
@@ -449,11 +444,6 @@ const ProfesionalesModal = ({
 											htmlFor="estado_matricula_id"
 											className="form-label mb-0">
 											Estado de Matrícula{" "}
-											{modalMode !== "mostrar" && (
-												<span className="text-danger">
-													*
-												</span>
-											)}
 										</label>
 										<select
 											className="form-select"
@@ -461,9 +451,6 @@ const ProfesionalesModal = ({
 											id="estado_matricula_id"
 											{...register(
 												"estado_matricula_id",
-												{
-													required: true,
-												}
 											)}>
 											<option value="">
 												Seleccionar
@@ -476,12 +463,6 @@ const ProfesionalesModal = ({
 												</option>
 											))}
 										</select>
-										{errors.estado_matricula_id?.type ===
-											"required" && (
-											<span className="row text-warning m-1">
-												El campo es requerido
-											</span>
-										)}
 									</div>
 									{/* Activo */}
 									<div className="col-1 text-center">

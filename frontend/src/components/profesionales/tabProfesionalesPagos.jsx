@@ -286,7 +286,10 @@ const CargarPagosTab = ({
 						<div className="row mt-2">
 							{/* fecha */}
 							<div className="col">
-								<label htmlFor="fecha">Fecha:</label>
+								<label htmlFor="fecha">
+									Fecha
+									<span className="text-danger"> *</span>
+								</label>
 								<input
 									type="date"
 									id="fecha"
@@ -298,13 +301,16 @@ const CargarPagosTab = ({
 								/>
 								{errors.fecha?.type === "required" && (
 									<span className="row text-danger m-1">
-										Este campo es requerido
+										El campo es requerido
 									</span>
 								)}
 							</div>
 							{/* importe */}
 							<div className="col">
-								<label htmlFor="importe">Importe:</label>
+								<label htmlFor="importe">
+									Importe{" "}
+									<span className="text-danger"> *</span>
+								</label>
 								<input
 									type="number"
 									id="importe"
@@ -315,13 +321,16 @@ const CargarPagosTab = ({
 								/>
 								{errors.importe?.type === "required" && (
 									<span className="row text-danger m-1">
-										Este campo es requerido
+										El campo es requerido
 									</span>
 								)}
 							</div>
 							{/* medio_id */}
 							<div className="col">
-								<label htmlFor="medio_id">Medio de pago:</label>
+								<label htmlFor="medio_id">
+									Medio de pago{" "}
+									<span className="text-danger"> *</span>
+								</label>
 								<select
 									className="form-select"
 									id="medio_id"
@@ -339,7 +348,7 @@ const CargarPagosTab = ({
 								</select>
 								{errors.medio_id?.type === "required" && (
 									<span className="row text-danger m-1">
-										Este campo es requerido
+										El campo es requerido
 									</span>
 								)}
 							</div>
@@ -347,7 +356,10 @@ const CargarPagosTab = ({
 						<div className="row mt-2">
 							{/* concepto */}
 							<div className="col">
-								<label htmlFor="concepto">Concepto:</label>
+								<label htmlFor="concepto">
+									Concepto{" "}
+									<span className="text-danger"> *</span>
+								</label>
 								<input
 									type="text"
 									className="form-control"
@@ -358,32 +370,11 @@ const CargarPagosTab = ({
 								/>
 								{errors.concepto?.type === "required" && (
 									<span className="row text-danger m-1">
-										Este campo es requerido
+										El campo es requerido
 									</span>
 								)}
 							</div>
-
-							{/* comprobante */}
 							<div className="col">
-								{/* <label htmlFor="comprobante">
-									Comprobante:
-								</label>
-								<input
-									type="file"
-									className="form-control"
-									id="comprobante"
-									onChange={handleFileChange}
-								/>
-								{archivoSeleccionado && (
-									<img
-										src={URL.createObjectURL(
-											archivoSeleccionado
-										)}
-										alt="Vista previa"
-									/>
-								)} */}
-							{/* </div>
-							<div className="row mt-2"> */}
 								{/* cuotas generadas para asignar al pago */}
 								<div className="col-6">
 									<label htmlFor="cuotas">
@@ -412,7 +403,7 @@ const CargarPagosTab = ({
 									</select>
 									{errors.concepto?.type === "required" && (
 										<span className="row text-danger m-1">
-											Este campo es requerido
+											El campo es requerido
 										</span>
 									)}
 								</div>

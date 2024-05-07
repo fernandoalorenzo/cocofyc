@@ -171,7 +171,7 @@ const CuotasModal = ({
 											className="form-label mb-0">
 											Cuota{" "}
 											{modalMode !== "mostrar" && (
-												<span className="text-danger">
+												<span className="text-warning">
 													*
 												</span>
 											)}
@@ -188,7 +188,7 @@ const CuotasModal = ({
 										{errors.cuota?.type ===
 											"required" && (
 											<span className="row text-warning m-1">
-												CONCEPTO es requerido
+												El campo es requerido
 											</span>
 										)}
 									</div>
@@ -198,7 +198,7 @@ const CuotasModal = ({
 											className="form-label mb-0">
 											Vencimiento{" "}
 											{modalMode !== "mostrar" && (
-												<span className="text-danger">
+												<span className="text-warning">
 													*
 												</span>
 											)}
@@ -215,7 +215,7 @@ const CuotasModal = ({
 										{errors.vencimiento?.type ===
 											"required" && (
 											<span className="row text-warning m-1">
-												VENCIMIENTO es requerido
+												El campo es requerido
 											</span>
 										)}
 									</div>
@@ -225,7 +225,7 @@ const CuotasModal = ({
 											className="form-label mb-0">
 											Importe{" "}
 											{modalMode !== "mostrar" && (
-												<span className="text-danger">
+												<span className="text-warning">
 													*
 												</span>
 											)}
@@ -242,7 +242,7 @@ const CuotasModal = ({
 										{errors.importe?.type ===
 											"required" && (
 											<span className="row text-warning m-1">
-												IMPORTE es requerido
+												El campo es requerido
 											</span>
 										)}
 									</div>
