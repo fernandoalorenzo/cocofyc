@@ -15,6 +15,7 @@ const Profesional = sequelize.define(
 		telefono: DataTypes.STRING(30),
 		email: DataTypes.STRING(50),
 		matricula: { type: DataTypes.STRING(10) },
+		matricula_fecha: DataTypes.DATEONLY,
 		domicilio: DataTypes.STRING(50),
 		localidad: DataTypes.STRING(50),
 		fecha_nacimiento: DataTypes.DATEONLY,

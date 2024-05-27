@@ -7,11 +7,12 @@ import profesionalesRouter from "./routes/profesionalesRoute.js";
 import establecimientosRouter from "./routes/establecimientosRoute.js";
 import estadosRouter from "./routes/estadosMatriculaRoute.js";
 import usuariosRouter from "./routes/usuariosRoute.js";
-import parametrosRoutes from "./routes/parametrosRoute.js";
-import cuotasRoutes from "./routes/cuotasRoute.js";
-import movimientosRoutes from "./routes/movimientosRoute.js";
-import medios_de_pagoRoutes from "./routes/medios_de_pagoRoute.js";
 import denunciasRouter from "./routes/denunciasRoute.js";
+import archivosSeguimientosRouter from "./routes/archivosSeguimientosRoute.js";
+import parametrosRouter from "./routes/parametrosRoute.js";
+import cuotasRouter from "./routes/cuotasRoute.js";
+import movimientosRouter from "./routes/movimientosRoute.js";
+import medios_de_pagoRouter from "./routes/medios_de_pagoRoute.js";
 
 import connect from "./config/db.js";
 
@@ -28,11 +29,12 @@ app.use("/api/establecimientos", establecimientosRouter);
 app.use("/api/estados", estadosRouter);
 app.use("/api/usuarios", usuariosRouter);
 app.use("/api/usuarios/login", usuariosRouter);
-app.use("/api/parametros", parametrosRoutes);
-app.use("/api/cuotas", cuotasRoutes);
-app.use("/api/movimientos", movimientosRoutes);
-app.use("/api/mediosdepago", medios_de_pagoRoutes)
 app.use("/api/denuncias", denunciasRouter);
+app.use("/api/archivos-seguimientos", archivosSeguimientosRouter);
+app.use("/api/cuotas", cuotasRouter);
+app.use("/api/parametros", parametrosRouter);
+app.use("/api/movimientos", movimientosRouter);
+app.use("/api/mediosdepago", medios_de_pagoRouter)
 
 // FUNCIONES AUTOMÁTICAS DE COMUNICACIÓN
 import "./functions/birthdayEmailScript.js";

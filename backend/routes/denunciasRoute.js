@@ -10,7 +10,7 @@ import {
 	getSeguimientoById,
 	agregarSeguimiento,
 	modificarSeguimiento,
-	eliminarSeguimiento
+	eliminarSeguimiento,
 } from "../controllers/denunciasController.js";
 import authenticateToken from "../functions/tokenVerify.js";
 
@@ -24,24 +24,11 @@ denunciasRouter.get("/profesional/:profesional_id", authenticateToken, getDenunc
 denunciasRouter.put("/:id", authenticateToken, updateDenuncia);
 denunciasRouter.delete("/:id", authenticateToken, deleteDenuncia);
 
-// RUTAS DE SEGUIMIENTOS
+// DEFINIMOS LAS RUTAS DE SEGUIMIENTOS
 denunciasRouter.get("/seguimientos/:id", authenticateToken, getSeguimientosByDenunciaId);
 denunciasRouter.get("/seguimiento/:id", authenticateToken, getSeguimientoById);
 denunciasRouter.post("/seguimiento/:id", authenticateToken, agregarSeguimiento);
 denunciasRouter.put("/seguimiento/:id", authenticateToken, modificarSeguimiento);
 denunciasRouter.delete("/seguimiento/:id", authenticateToken, eliminarSeguimiento);
-
-// denunciasRouter.post("/", createDenuncia);
-// denunciasRouter.get("/", getDenuncias);
-// denunciasRouter.get("/:id", getDenunciaById);
-// denunciasRouter.get("/profesional/:profesional_id", getDenunciaByIdProfesional);
-// denunciasRouter.put("/:id", updateDenuncia);
-// denunciasRouter.delete("/:id", deleteDenuncia);
-
-// denunciasRouter.get("/seguimientos/:id", getSeguimientosByDenunciaId);
-// denunciasRouter.get("/seguimiento/:id", getSeguimientoById);
-// denunciasRouter.post("/seguimiento/:id", agregarSeguimiento);
-// denunciasRouter.put("/seguimiento/:id", modificarSeguimiento);
-// denunciasRouter.delete("/seguimiento/:id", eliminarSeguimiento);
 
 export default denunciasRouter;

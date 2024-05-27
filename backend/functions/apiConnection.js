@@ -17,21 +17,17 @@ const apiConnection = async (endpoint, direction, method, body, headers) => {
 		// 	throw new Error("Token no encontrado en los encabezados");
 		// }
 
-		// if (endpoint == "http://localhost:5000/api/profesionales/profesionales-morosos/") {
-		// console.log(
-		// "***************************************************************************"
-		// );
-		//  console.log("endpoint: ", endpoint);
-		// 	console.log("direction: ", direction);
-		// 	console.log("method: ", method);
-		// 	console.log("body: ", body);
-		//  console.log("headers: ", headers);
-		// 	console.log("url: ", url.href);
-		// 	console.log(
-		// 		"***************************************************************************"
-		// 	);
-		// return;
-		// }
+		if (endpoint == "http://localhost:5000/api/denuncias/seguimiento/archivos/") {
+			console.log("***************************************************************************");
+			console.log("endpoint: ", endpoint);
+			console.log("direction: ", direction);
+			console.log("method: ", method);
+			console.log("body: ", body);
+			console.log("headers: ", headers);
+			console.log("url: ", url.href);
+			console.log("***************************************************************************");
+			return;
+		}
 
 		const response = await fetch(url.href, {
 			method,

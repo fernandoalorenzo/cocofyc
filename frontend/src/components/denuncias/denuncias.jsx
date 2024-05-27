@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import Swal from "sweetalert2";
 import apiConnection from "../../../../backend/functions/apiConnection";
 import DenunciasModal from "./denunciasModal";
-import DenunciasSeguimientosModal from "./denunciasSeguimientosModal";
+import DenunciasSeguimientosListaModal from "./denunciasSeguimientosListaModal";
 
 const DenunciasTabla = () => {
 	const [showDenunciasModal, setShowDenunciasModal] = useState(false);
@@ -13,7 +13,7 @@ const DenunciasTabla = () => {
 	const [profesionales, setProfesionales] = useState({});
 	const [establecimientos, setEstablecimientos] = useState([]);
 
-	const [showDenunciasSeguimientosModal, setShowDenunciasSeguimientosModal] =	useState(false);
+	const [showDenunciasSeguimientosListaModal, setShowDenunciasSeguimientosListaModal] = useState(false);
 
 	const tablaDenunciasRef = useRef(null);
 	const dataTableRef = useRef(null);
@@ -224,6 +224,26 @@ const DenunciasTabla = () => {
 						},
 					},
 					{
+						targets: 3,
+						width: "15%",
+						render: function (data, type, row) {
+							if (type === "display") {
+								return `<div style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${data}</div>`;
+							}
+							return data;
+						},
+					},
+					{
+						targets: 4,
+						width: "15%",
+						render: function (data, type, row) {
+							if (type === "display") {
+								return `<div style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${data}</div>`;
+							}
+							return data;
+						},
+					},
+					{
 						targets: 5,
 						render: function (data, type, row) {
 							if (data === "0000-00-00") {
@@ -254,9 +274,11 @@ const DenunciasTabla = () => {
 					},
 					{
 						data: "infraccion",
+						width: "80px",
 					},
 					{
-						data: "comentario" 
+						data: "comentario",
+						width: "80px",
 					},
 					{
 						data: "fecha_cierre",
@@ -289,7 +311,7 @@ const DenunciasTabla = () => {
 					],
 				],
 				responsive: true,
-				autoWidth: true,
+				autoWidth: false,
 				paging: true,
 				searching: true,
 				ordering: true,
@@ -335,7 +357,7 @@ const DenunciasTabla = () => {
 
 	const mostrarSeguimiento = (data) => {
 		setSelectedDenunciaSeguimiento(data)
-		setShowDenunciasSeguimientosModal(true);
+		setShowDenunciasSeguimientosListaModal(true);
 	};
 
 	const eliminarDenuncia = async (denuncia) => {
@@ -470,10 +492,10 @@ const DenunciasTabla = () => {
 	}, [showDenunciasModal]);
 
 	const openDenunciasModal = () => setShowDenunciasModal(true);
-
+	
 	const closeDenunciasModal = () => setShowDenunciasModal(false);
 
-	const closeDenunciasSeguimientosModal = () => setShowDenunciasSeguimientosModal(false);
+	const closeDenunciasSeguimientosListaModal = () => setShowDenunciasSeguimientosListaModal(false);
 
 	return (
 		<>
@@ -535,10 +557,10 @@ const DenunciasTabla = () => {
 				data={selectedDenuncia}
 				modalMode={modalMode}
 			/>
-			<DenunciasSeguimientosModal
-				showModalSeguimiento={showDenunciasSeguimientosModal}
-				closeModalSeguimiento={closeDenunciasSeguimientosModal}
-				dataSeguimiento={selectedDenunciaSeguimiento}
+			<DenunciasSeguimientosListaModal
+				showModalSeguimientoLista={showDenunciasSeguimientosListaModal}
+				closeModalSeguimientoLista={closeDenunciasSeguimientosListaModal}
+				dataSeguimientoLista={selectedDenunciaSeguimiento}
 			/>
 		</>
 	);

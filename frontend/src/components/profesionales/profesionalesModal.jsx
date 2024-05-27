@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import Swal from "sweetalert2";
 import apiConnection from "../../../../backend/functions/apiConnection";
 import { useForm } from "react-hook-form";
@@ -10,6 +10,8 @@ const ProfesionalesModal = ({
 	modalMode,
 	fetchProfesionales,
 }) => {
+	const [estadosMatriculas, setEstadosMatriculas] = useState([]);
+
 	const {
 		register,
 		formState: { errors },
@@ -17,6 +19,10 @@ const ProfesionalesModal = ({
 		reset,
 		setValue,
 	} = useForm();
+
+	const [selectedImages, setSelectedImages] = useState([]);
+	const [file, setFile] = useState(null);
+	const [currentImage, setCurrentImage] = useState(null); // Estado para manejar la imagen actual
 
 	// DEFINE EL TITULO DEL MODAL
 	let modalTitle = "";
@@ -28,12 +34,6 @@ const ProfesionalesModal = ({
 		modalTitle = "Agregar Profesional";
 	}
 
-	useEffect(() => {
-		if (data) {
-			reset(data);
-		}
-	}, [data, reset]);
-
 	const initialState = {
 		nombre: "",
 		dni: "",
@@ -41,10 +41,11 @@ const ProfesionalesModal = ({
 		telefono: "",
 		email: "",
 		matricula: "",
+		matricula_fecha: "",
 		domicilio: "",
 		localidad: "",
 		fecha_nacimiento: "",
-		imagen: "",
+		imagen: null,
 		activo: false,
 		estado_matricula_id: "",
 	};
@@ -56,11 +57,22 @@ const ProfesionalesModal = ({
 			if (data.fecha_nacimiento == "0000-00-00") {
 				data.fecha_nacimiento = "";
 			}
+			if (data.matricula_fecha == "0000-00-00") {
+				data.matricula_fecha = "";
+			}
 			reset(data);
 		}
 	}, [modalMode]);
 
-	const [estadosMatriculas, setEstadosMatriculas] = useState([]);
+	useEffect(() => {
+		setSelectedImages([]);
+		setFile(null);
+		setCurrentImage(null);
+		if (data) {
+			reset(data);
+			setCurrentImage(data.imagen); // Establece la imagen actual si está disponible en los datos
+		}
+	}, [data, reset]);
 
 	// Manejador de cambios para el campo CUIT
 	const handleCUITChange = (e) => {
@@ -107,13 +119,11 @@ const ProfesionalesModal = ({
 			if (data) {
 				return data.success;
 			}
-		} catch (error) {
-			
-		}
+		} catch (error) {}
 	};
 
 	// FUNCION PARA ACTUALIZAR LOS DATOS
-	const onSubmit = async (formData, id) => {
+	const onSubmit = async (formData) => {
 		try {
 			if (modalMode === "agregar") {
 				// Verificar si el DNI ya existe
@@ -134,6 +144,28 @@ const ProfesionalesModal = ({
 					console.log(
 						"El DNI no esta duplicado en la base de datos."
 					);
+				}
+			}
+
+			if (file) {
+				const fileName = await uploadImage(file);
+				formData.imagen = fileName;
+			} else if (!currentImage && formData.imagen) {
+				const confirmed = await Swal.fire({
+					title: "¿Estás seguro?",
+					text: "¿Está seguro que desea eliminar la imagen actual?",
+					icon: "warning",
+					showCancelButton: true,
+					confirmButtonColor: "#3085d6",
+					cancelButtonColor: "#d33",
+					confirmButtonText: "Sí, eliminar",
+					cancelButtonText: "Cancelar",
+				});
+				if (confirmed.isConfirmed) {
+					await deleteImageAndData();
+					formData.imagen = null;
+				} else {
+					return; // No proceder con la eliminación
 				}
 			}
 
@@ -213,303 +245,612 @@ const ProfesionalesModal = ({
 		fetchEstadosMatriculas();
 	}, []);
 
+	// ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ IMAGEN ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+	const onSelectFile = (event) => {
+		const selectedFile = event.target.files[0]; // 
+		
+		//Obtener el archivo seleccionado
+		setFile(selectedFile);
+
+		const imagesArray = URL.createObjectURL(selectedFile);
+
+		setSelectedImages((previousImages) =>
+			previousImages.concat(imagesArray)
+		);
+
+		// FOR BUG IN CHROME
+		event.target.value = "";
+	};
+
+	function deleteHandler(image) {
+		if (image === `http://localhost:5173/uploads/${currentImage}`) {
+			setCurrentImage(null);
+		} else {
+			setSelectedImages(selectedImages.filter((e) => e !== image));
+			URL.revokeObjectURL(image);
+		}
+	}
+
+	// Modal Imagen Ampliada
+	const [showImageModal, setShowImageModal] = useState(false);
+	const [imageToShow, setImageToShow] = useState(null);
+
+	const openImageModal = (image) => {
+		setImageToShow(image);
+		setShowImageModal(true);
+	};
+
+	const closeImageModal = () => {
+		setShowImageModal(false);
+		setImageToShow(null);
+	};
+
+	// Función para subir la imagen al servidor
+	const uploadImage = async (archivo) => {
+		try {
+			if (archivo) {
+				// Extraer el nombre del archivo del Blob
+				const nombreArchivo = archivo.name;
+
+				// Crear un objeto FormData para enviar la imagen al servidor
+				const formData = new FormData();
+				formData.append("file", archivo);
+				const fileExtension = archivo.name.split(".").pop();
+				const fileName = `avatar_${data.id}.${fileExtension}`;
+				formData.set("file", archivo, fileName);
+
+				// Endpoint para la subida de la imagen
+				const endpoint = "http://localhost:5000/api/loadimage";
+
+				// Realizar la petición al servidor
+				const response = await fetch(endpoint, {
+					method: "POST",
+					body: formData,
+				});
+
+				if (response.ok) {
+					return fileName;
+				} else {
+					// Error al subir la imagen
+					throw new Error("Error al subir la imagen al servidor");
+				}
+			} else {
+				// No hay imagen seleccionada
+				throw new Error("No se ha seleccionado ninguna imagen.");
+			}
+		} catch (error) {
+			console.error("Error al subir la imagen:", error.message);
+			Swal.fire({
+				icon: "error",
+				title: "Error al subir la imagen",
+				text: "Ocurrió un error al subir la imagen al servidor. Por favor, inténtelo de nuevo más tarde.",
+			});
+			return null;
+		}
+	};
+
+	const deleteImageAndData = async () => {
+		if (data && data.imagen) {
+			try {
+				const response = await fetch(
+					"http://localhost:5000/api/deleteimage/" + data.imagen,
+					{
+						method: "DELETE",
+						headers: {
+							"Content-Type": "application/json",
+							Authorization: localStorage.getItem("token"),
+						},
+						body: JSON.stringify({
+							filename: data.imagen,
+						}),
+					}
+				);
+				setSelectedImages([]);
+				setFile(null);
+				setCurrentImage(null);
+			} catch (error) {
+				console.error("Error deleting image:", error);
+			}
+		}
+	};
+
+	const combinedImages = currentImage
+		? [`http://localhost:5173/uploads/${currentImage}`]
+		: selectedImages;
+	// ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+
 	return (
-		<div
-			className={`modal fade ${showModal ? "show" : ""}`}
-			tabIndex="-1"
-			style={{ display: showModal ? "block" : "none" }}
-			id="staticBackdrop"
-			data-bs-target="#staticBackdrop"
-			data-bs-backdrop="static"
-			data-bs-keyboard="false"
-			aria-labelledby="staticBackdropLabel"
-			aria-hidden={!showModal}>
-			<div className="modal-dialog modal-xl">
-				<div className="modal-content bg-secondary">
-					<div className="modal-header bg-primary">
-						<h5 className="modal-title">{modalTitle}</h5>
-						<button
-							type="button"
-							className="btn-close"
-							aria-label="Close"
-							onClick={closeModal}></button>
-					</div>
-					<form onSubmit={handleSubmit(onSubmit)}>
-						<div className="modal-body">
-							<div className="container-fluid">
-								<div className="row">
-									{/* Nombre Completo */}
-									<div className="col-6 mb-3">
-										<label
-											htmlFor="nombre"
-											className="form-label mb-0">
-											Nombre Completo{" "}
-											{modalMode !== "mostrar" && (
-												<span className="text-warning">
-													*
-												</span>
-											)}
-										</label>
-										<input
-											type="text"
-											className="form-control"
-											id="nombre"
-											readOnly={modalMode === "mostrar"}
-											{...register("nombre", {
-												required: true,
-											})}
-										/>
-										{errors.nombre?.type === "required" && (
-											<span className="row text-warning m-1">
-												El campo es requerido
-											</span>
+		<>
+			<div
+				className={`modal fade ${showModal ? "show" : ""}`}
+				tabIndex="-1"
+				style={{ display: showModal ? "block" : "none" }}
+				id="staticBackdrop"
+				data-bs-target="#staticBackdrop"
+				data-bs-backdrop="static"
+				data-bs-keyboard="false"
+				aria-labelledby="staticBackdropLabel"
+				aria-hidden={!showModal}>
+				<div className="modal-dialog modal-xl">
+					<div className="modal-content bg-secondary">
+						<div className="modal-header bg-primary">
+							<h5 className="modal-title">{modalTitle}</h5>
+							<button
+								type="button"
+								className="btn-close"
+								aria-label="Close"
+								onClick={closeModal}></button>
+						</div>
+						<form onSubmit={handleSubmit(onSubmit)}>
+							<div className="modal-body">
+								<div className="container-fluid">
+									<div className="row mb-3">
+										{modalMode !== "agregar" && (
+											// {/* Columna Avatar */ }
+											<div className="col-lg-1">
+												<div className="avatar-column d-flex flex-column align-items-center">
+													{!combinedImages ||
+													combinedImages.length ===
+														0 ? (
+														<label className="btn btn-dark opacity-25 mb-3 agregar border-light">
+															Foto de Perfil
+															<input
+																className="inputProfile"
+																type="file"
+																name="images"
+																onChange={
+																	onSelectFile
+																}
+																accept="image/png , image/jpeg, image/webp"
+															/>
+														</label>
+													) : null}
+													<div className="d-flex flex-wrap">
+														{combinedImages &&
+															combinedImages.map(
+																(
+																	image,
+																	index
+																) => (
+																	<div
+																		key={
+																			image
+																		}>
+																		<div>
+																			<img
+																				className={`border border-secondary  rounded-top p-0 ${
+																					modalMode !==
+																					"mostrar"
+																						? "border-bottom-0"
+																						: "rounded-bottom"
+																				}`}
+																				src={
+																					image
+																				}
+																				height="80"
+																				alt="Avatar"
+																				onClick={() =>
+																					openImageModal(
+																						image
+																					)
+																				}
+																				style={{
+																					cursor: "zoom-in",
+																				}}
+																			/>
+																		</div>
+																		<div
+																			style={{
+																				display:
+																					modalMode !=
+																					"mostrar"
+																						? ""
+																						: "none",
+																			}}
+																			className="delete-button bg-danger border border-secondary border-top-0 rounded-bottom p-0"
+																			onClick={() =>
+																				deleteHandler(
+																					image
+																				)
+																			}>
+																			Eliminar
+																		</div>
+																	</div>
+																)
+															)}
+													</div>
+												</div>
+											</div>
 										)}
-									</div>
-									{/* DNI */}
-									<div className="col mb-3">
-										<label
-											htmlFor="dni"
-											className="form-label mb-0">
-											DNI{" "}
-											{modalMode !== "mostrar" && (
-												<span className="text-warning">
-													*
-												</span>
-											)}
-										</label>
-										<input
-											type="text"
-											className="form-control"
-											id="dni"
-											readOnly={modalMode === "mostrar"}
-											{...register("dni", {
-												required: true,
-											})}
-										/>
-										{errors.dni?.type === "required" && (
-											<span className="row text-warning m-1">
-												El campo es requerido
-											</span>
-										)}
-									</div>
-									{/* CUIT */}
-									<div className="col mb-3">
-										<label
-											htmlFor="cuit"
-											className="form-label mb-0">
-											CUIT{" "}
-											{modalMode !== "mostrar" && (
-												<span className="text-warning">
-													*
-												</span>
-											)}
-										</label>
-										<input
-											type="text"
-											className="form-control"
-											id="cuit"
-											readOnly={modalMode === "mostrar"}
-											maxLength="13"
-											{...register("cuit", {
-												required: true,
-												maxLength: 13,
-												minLength: 13,
-											})}
-											onChange={handleCUITChange}
-										/>
-										{errors.cuit?.type === "required" && (
-											<span className="row text-warning m-1">
-												El campo es requerido
-											</span>
-										)}
-										{errors.cuit?.type === "maxLength" ||
-											(errors.cuit?.type ===
-												"minLength" && (
-												<span className="row text-warning m-1">
-													El CUIT debe contener 13
-													digitos en total
-												</span>
-											))}
-									</div>
-								</div>
-								<div className="row">
-									{/* Teléfono */}
-									<div className="col-4 mb-3">
-										<label
-											htmlFor="telefono"
-											className="form-label mb-0">
-											Teléfono
-										</label>
-										<input
-											type="text"
-											className="form-control"
-											id="telefono"
-											readOnly={modalMode === "mostrar"}
-											{...register("telefono")}
-										/>
-									</div>
-									{/* E-Mail */}
-									<div className="col mb-3">
-										<label
-											htmlFor="email"
-											className="form-label mb-0">
-											E-Mail{" "}
-											{modalMode !== "mostrar" && (
-												<span className="text-warning">
-													*
-												</span>
-											)}
-										</label>
-										<input
-											type="email"
-											className="form-control"
-											id="email"
-											readOnly={modalMode === "mostrar"}
-											{...register("email", {
-												required: "required",
-												pattern: {
-													value: /\S+@\S+\.\S+/,
-												},
-											})}
-											autoComplete="off"
-										/>
-									</div>
-									{/* Fecha de Nacimiento */}
-									<div className="col-2 mb-3">
-										<label
-											htmlFor="fecha_nacimiento"
-											className="form-label mb-0">
-											Fecha de Nacimiento
-										</label>
-										<input
-											type="date"
-											className="form-control"
-											id="fecha_nacimiento"
-											readOnly={modalMode === "mostrar"}
-											{...register("fecha_nacimiento")}
-										/>
-									</div>
-								</div>
-								<div className="row">
-									{/* Domicilio */}
-									<div className="col mb-3">
-										<label
-											htmlFor="domicilio"
-											className="form-label mb-0">
-											Domicilio
-										</label>
-										<input
-											type="text"
-											className="form-control"
-											id="domicilio"
-											readOnly={modalMode === "mostrar"}
-											{...register("domicilio")}
-										/>
-									</div>
-									{/* Localidad */}
-									<div className="col mb-3">
-										<label
-											htmlFor="localidad"
-											className="form-label mb-0">
-											Localidad
-										</label>
-										<input
-											type="text"
-											className="form-control"
-											id="localidad"
-											readOnly={modalMode === "mostrar"}
-											{...register("localidad")}
-										/>
-									</div>
-								</div>
-								<div className="row">
-									{/* Matrícula */}
-									<div className="col-2 ">
-										<label
-											htmlFor="matricula"
-											className="form-label mb-0">
-											Matrícula{" "}
-										</label>
-										<input
-											type="text"
-											className="form-control"
-											id="matricula"
-											readOnly={modalMode === "mostrar"}
-											{...register("matricula")}
-										/>
-									</div>
-									{/* Estado de Matrícula */}
-									<div className="col-3 ">
-										<label
-											htmlFor="estado_matricula_id"
-											className="form-label mb-0">
-											Estado de Matrícula{" "}
-										</label>
-										<select
-											className="form-select"
-											disabled={modalMode === "mostrar"}
-											id="estado_matricula_id"
-											{...register(
-												"estado_matricula_id",
-											)}>
-											<option value="">
-												Seleccionar
-											</option>
-											{estadosMatriculas.map((estado) => (
-												<option
-													key={estado.id}
-													value={estado.id}>
-													{estado.estado}
-												</option>
-											))}
-										</select>
-									</div>
-									{/* Activo */}
-									<div className="col-1 text-center">
-										<label
-											htmlFor="activo"
-											className="form-label mb-0">
-											Activo
-										</label>
-										<div className="form-switch">
-											<input
-												type="checkbox"
-												className="form-check-input"
-												id="activo"
-												disabled={
-													modalMode === "mostrar"
-												}
-												{...register("activo")}
-											/>
+										{/* Form */}
+										<div
+											className={`col-lg-${
+												modalMode === "agregar"
+													? "12"
+													: "11"
+											}`}>
+											<div className="row mb-3">
+												{/* Nombre Completo */}
+												<div className="col-6">
+													<label
+														htmlFor="nombre"
+														className="form-label mb-0">
+														Nombre Completo{" "}
+														{modalMode !==
+															"mostrar" && (
+															<span className="text-warning">
+																*
+															</span>
+														)}
+													</label>
+													<input
+														type="text"
+														className="form-control"
+														id="nombre"
+														readOnly={
+															modalMode ===
+															"mostrar"
+														}
+														{...register("nombre", {
+															required: true,
+														})}
+													/>
+													{errors.nombre?.type ===
+														"required" && (
+														<span className="row text-warning m-1">
+															El campo es
+															requerido
+														</span>
+													)}
+												</div>
+												{/* DNI */}
+												<div className="col">
+													<label
+														htmlFor="dni"
+														className="form-label mb-0">
+														DNI{" "}
+														{modalMode !==
+															"mostrar" && (
+															<span className="text-warning">
+																*
+															</span>
+														)}
+													</label>
+													<input
+														type="text"
+														className="form-control"
+														id="dni"
+														readOnly={
+															modalMode ===
+															"mostrar"
+														}
+														{...register("dni", {
+															required: true,
+														})}
+													/>
+													{errors.dni?.type ===
+														"required" && (
+														<span className="row text-warning m-1">
+															El campo es
+															requerido
+														</span>
+													)}
+												</div>
+												{/* CUIT */}
+												<div className="col">
+													<label
+														htmlFor="cuit"
+														className="form-label mb-0">
+														CUIT{" "}
+														{modalMode !==
+															"mostrar" && (
+															<span className="text-warning">
+																*
+															</span>
+														)}
+													</label>
+													<input
+														type="text"
+														className="form-control"
+														id="cuit"
+														readOnly={
+															modalMode ===
+															"mostrar"
+														}
+														maxLength="13"
+														{...register("cuit", {
+															required: true,
+															maxLength: 13,
+															minLength: 13,
+														})}
+														onChange={
+															handleCUITChange
+														}
+													/>
+													{errors.cuit?.type ===
+														"required" && (
+														<span className="row text-warning m-1">
+															El campo es
+															requerido
+														</span>
+													)}
+													{errors.cuit?.type ===
+														"maxLength" ||
+														(errors.cuit?.type ===
+															"minLength" && (
+															<span className="row text-warning m-1">
+																El CUIT debe
+																contener 13
+																digitos en total
+															</span>
+														))}
+												</div>
+											</div>
+											<div className="row mb-3">
+												{/* Teléfono */}
+												<div className="col-3">
+													<label
+														htmlFor="telefono"
+														className="form-label mb-0">
+														Teléfono
+													</label>
+													<input
+														type="text"
+														className="form-control"
+														id="telefono"
+														readOnly={
+															modalMode ===
+															"mostrar"
+														}
+														{...register(
+															"telefono"
+														)}
+													/>
+												</div>
+												{/* E-Mail */}
+												<div className="col">
+													<label
+														htmlFor="email"
+														className="form-label mb-0">
+														E-Mail{" "}
+														{modalMode !==
+															"mostrar" && (
+															<span className="text-warning">
+																*
+															</span>
+														)}
+													</label>
+													<input
+														type="email"
+														className="form-control"
+														id="email"
+														readOnly={
+															modalMode ===
+															"mostrar"
+														}
+														{...register("email", {
+															required:
+																"required",
+															pattern: {
+																value: /\S+@\S+\.\S+/,
+															},
+														})}
+														autoComplete="off"
+													/>
+												</div>
+												{/* Fecha de Nacimiento */}
+												<div className="col-3">
+													<label
+														htmlFor="fecha_nacimiento"
+														className="form-label mb-0">
+														Fecha de Nacimiento
+													</label>
+													<input
+														type="date"
+														className="form-control"
+														id="fecha_nacimiento"
+														readOnly={
+															modalMode ===
+															"mostrar"
+														}
+														{...register(
+															"fecha_nacimiento"
+														)}
+													/>
+												</div>
+											</div>
+											<div className="row mb-3">
+												{/* Domicilio */}
+												<div className="col">
+													<label
+														htmlFor="domicilio"
+														className="form-label mb-0">
+														Domicilio
+													</label>
+													<input
+														type="text"
+														className="form-control"
+														id="domicilio"
+														readOnly={
+															modalMode ===
+															"mostrar"
+														}
+														{...register(
+															"domicilio"
+														)}
+													/>
+												</div>
+												{/* Localidad */}
+												<div className="col">
+													<label
+														htmlFor="localidad"
+														className="form-label mb-0">
+														Localidad
+													</label>
+													<input
+														type="text"
+														className="form-control"
+														id="localidad"
+														readOnly={
+															modalMode ===
+															"mostrar"
+														}
+														{...register(
+															"localidad"
+														)}
+													/>
+												</div>
+											</div>
+											<div className="row mb-3">
+												{/* Matrícula */}
+												<div className="col-2">
+													<label
+														htmlFor="matricula"
+														className="form-label mb-0">
+														Matrícula{" "}
+													</label>
+													<input
+														type="text"
+														className="form-control"
+														id="matricula"
+														readOnly={
+															modalMode ===
+															"mostrar"
+														}
+														{...register(
+															"matricula"
+														)}
+													/>
+												</div>
+												{/* Fecha de Matrícula */}
+												<div className="col-2">
+													<label
+														htmlFor="matricula_fecha"
+														className="form-label mb-0">
+														Fecha Matr.{" "}
+													</label>
+													<input
+														type="date"
+														className="form-control"
+														id="matricula_fecha"
+														readOnly={
+															modalMode ===
+															"mostrar"
+														}
+														{...register(
+															"matricula_fecha"
+														)}
+													/>
+												</div>
+												{/* Estado de Matrícula */}
+												<div className="col-3">
+													<label
+														htmlFor="estado_matricula_id"
+														className="form-label mb-0">
+														Estado de Matrícula{" "}
+													</label>
+													<select
+														className="form-select"
+														disabled={
+															modalMode ===
+															"mostrar"
+														}
+														id="estado_matricula_id"
+														{...register(
+															"estado_matricula_id"
+														)}>
+														<option value="">
+															Seleccionar
+														</option>
+														{estadosMatriculas.map(
+															(estado) => (
+																<option
+																	key={
+																		estado.id
+																	}
+																	value={
+																		estado.id
+																	}>
+																	{
+																		estado.estado
+																	}
+																</option>
+															)
+														)}
+													</select>
+												</div>
+												{/* Activo */}
+												<div className="col-1 text-center">
+													<label
+														htmlFor="activo"
+														className="form-label mb-0">
+														Activo
+													</label>
+													<div className="form-switch">
+														<input
+															type="checkbox"
+															className="form-check-input"
+															id="activo"
+															disabled={
+																modalMode ===
+																"mostrar"
+															}
+															{...register(
+																"activo"
+															)}
+														/>
+													</div>
+												</div>
+											</div>
 										</div>
 									</div>
 								</div>
 							</div>
-						</div>
-						<div
-							className="modal-footer bg-dark"
-							// LO MUESTRA SI ESTA EDITANDO O AGREGANDO REGISTROS
-							style={{
-								display: modalMode != "mostrar" ? "" : "none",
-							}}>
-							<button
-								type="button"
-								className="btn btn-secondary col-md-2"
-								onClick={closeModal}>
-								<i className="fa-solid fa-ban me-2"></i>
-								Cancelar
-							</button>
-							<button
-								type="submit"
-								className="btn btn-primary col-md-2">
-								<i className="fa-regular fa-floppy-disk me-2"></i>
-								Guardar
-							</button>
-						</div>
-					</form>
+							<div
+								className="modal-footer bg-dark"
+								// LO MUESTRA SI ESTA EDITANDO O AGREGANDO REGISTROS
+								style={{
+									display:
+										modalMode != "mostrar" ? "" : "none",
+								}}>
+								<button
+									type="button"
+									className="btn btn-secondary col-md-2"
+									onClick={closeModal}>
+									<i className="fa-solid fa-ban me-2"></i>
+									Cancelar
+								</button>
+								<button
+									type="submit"
+									className="btn btn-primary col-md-2">
+									<i className="fa-regular fa-floppy-disk me-2"></i>
+									Guardar
+								</button>
+							</div>
+						</form>
+					</div>
 				</div>
 			</div>
-		</div>
+			{showImageModal && (
+				<div
+					className="modal show"
+					tabIndex="-1"
+					style={{ display: "block" }}
+					onClick={closeImageModal}>
+					<div className="modal-dialog modal-sm modal-dialog-centered">
+						<div className="modal-content">
+							<div className="modal-body p-0 m-0">
+								<img
+									src={imageToShow}
+									className="img-fluid"
+									alt="Ampliada"
+								/>
+							</div>
+						</div>
+					</div>
+				</div>
+			)}
+		</>
 	);
 };
 export default ProfesionalesModal;

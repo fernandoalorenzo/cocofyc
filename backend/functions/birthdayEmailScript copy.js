@@ -1,51 +1,13 @@
 import cron from "node-cron";
 import nodemailer from "nodemailer";
-// import moment from "moment";
-import moment from "moment-timezone";
+import moment from "moment";
 import fs from "fs";
 
 // Configuración del momento de ejecución del script
 // Segundos (0-59) Minutos (0-59) Horas (0-23) Días del mes (1-31) Meses (1-12) Días de la semana (0-7, donde 0 y 7 representan Domingo)
 // "0 8 * * *" // se ejecutara a las 08.00
 // "0 1 * * *" // se ejecutara a las 01.00
-
-// const momento = "00 00 09 * * *"; // se ejecutara a las 09.00
-
-// Zona horaria local deseada
-const desiredTimezone = "America/Argentina/Buenos_Aires";
-
-// Determinar la zona horaria del servidor
-const serverTimezone = moment.tz.guess();
-
-// Calcular la diferencia horaria entre el servidor y la zona horaria local deseada
-const serverOffset = moment.tz(serverTimezone).utcOffset();
-// const serverOffset = moment.tz("America/New_York").utcOffset();
-const desiredOffset = moment.tz(desiredTimezone).utcOffset();
-const timezoneDifference = (desiredOffset - serverOffset) / 60; // Diferencia en horas
-
-// Establecer la hora deseada
-const horaDeseada = 23;
-const minutoDeseado = 0;
-const segundoDeseado = 0;
-
-// const desiredTime = moment().startOf("day").add(9 - timezoneDifference, "hours");
-const desiredTime = moment()
-	.startOf("day")
-	.add(horaDeseada - timezoneDifference, "hours")
-	.add(minutoDeseado, "minutes")
-	.add(segundoDeseado, "seconds");
-
-
-// Extraer los componentes de hora, minutos y segundos de la hora deseada
-const year = "*";
-const month = "*"; // Los meses en JavaScript empiezan en 0
-const day = "*";
-const hour = desiredTime.hours().toString().padStart(2, "0"); // Formatear a dos dígitos
-const minute = desiredTime.minutes().toString().padStart(2, "0"); // Formatear a dos dígitos
-const second = "00";
-
-// Formatear los componentes en una cadena cron
-const cronTime = `${second} ${minute} ${hour} ${day} ${month} ${year}`;
+const momento = "00 00 09 * * *"; // se ejecutara a las 09.00
 
 // Lee la imagen como base64
 const imgLogo = fs.readFileSync(
@@ -158,7 +120,7 @@ const fetchParametros = async () => {
 };
 
 fetchParametros().then(() => {
-	cron.schedule(cronTime, async () => {
+	cron.schedule(momento, async () => {
 		await sendBirthdayEmails();
 	});
 });
@@ -171,7 +133,6 @@ const sendBirthdayEmails = async () => {
 		// Enviar un correo por cada profesional
 		for (const profesional of profesionales) {
 			await sendEmail(profesional);
-			console.log("Correo enviado a ", profesional.nombre);
 		}
 
 		console.log(

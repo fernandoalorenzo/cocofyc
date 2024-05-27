@@ -1,0 +1,47 @@
+.color-morado {
+    background-color: #8e308e;
+    border-color: #8e308e;
+    color: white;
+}
+
+.color-morado:hover {
+    background-color: #591d59;
+    border-color: #591d59;
+    color: white;
+}
+
+.color-coral {
+    background-color: #de571d;
+    border-color: #de571d;
+    color: white;
+}
+
+.color-coral:hover {
+    background-color: #c04848;
+    border-color: #c04848;
+    color: white;
+}
+
+.color-fucsia {
+    background-color: #c048ba;
+    border-color: #c048ba;
+    color: white;
+}
+
+.color-fucsia:hover {
+    background-color: #e000d5;
+    border-color: #e000d5;
+    color: white;
+}
+
+.color-naranja {
+    background-color: #f07241;
+    border-color: #f07241;
+    color: white;
+}
+
+.color-naranja:hover {
+    background-color: #c44c1c;
+    border-color: #c44c1c;
+    color: white;
+}

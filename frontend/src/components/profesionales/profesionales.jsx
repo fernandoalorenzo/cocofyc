@@ -105,6 +105,8 @@ const ProfesionalesTabla = () => {
 					"Content-Type": "application/json",
 					Authorization: localStorage.getItem("token"),
 				};
+			
+				console.log("id: ", id);
 
 				const data = await apiConnection(
 					endpoint,
@@ -113,6 +115,8 @@ const ProfesionalesTabla = () => {
 					body,
 					headers
 				);
+
+				console.log("data: ", data);
 
 				Swal.fire({
 					title: "Eliminado",
@@ -504,7 +508,7 @@ const ProfesionalesTabla = () => {
 				const rowData = dataTableRef.current
 					.row($(this).closest("tr"))
 					.data();
-				handleEliminar(rowData);
+				handleEliminar(rowData.id);
 			}
 		);
 
@@ -549,7 +553,10 @@ const ProfesionalesTabla = () => {
 
 	const openProfesionalesModal = () => setShowProfesionalesModal(true);
 
-	const closeProfesionalesModal = () => setShowProfesionalesModal(false);
+	const closeProfesionalesModal = () => {
+		setShowProfesionalesModal(false);
+		setModalMode(""); // Aquí estableces el valor deseado para modalMode
+	};
 
 	useEffect(() => {
 		if (!showProfesionalesModal) {
