@@ -17,6 +17,7 @@ const DenunciasActivasPorFechaReport = ({
 	nombreInforme,
 	fechaDesde,
 	fechaHasta,
+	API_ENDPOINT,
 }) => {
 	const [data, setData] = useState([]);
 	const [profesional, setProfesional] = useState({});
@@ -25,7 +26,7 @@ const DenunciasActivasPorFechaReport = ({
 	useEffect(() => {
 		const fetchDenunciasActivas = async () => {
 			try {
-				const endpoint = "http://localhost:5000/api/denuncias";
+				const endpoint = `${API_ENDPOINT}/denuncias`;
 				const direction = "";
 				const method = "GET";
 				const body = false;
@@ -61,7 +62,7 @@ const DenunciasActivasPorFechaReport = ({
 				// Recorrer cada denuncia activa para obtener los seguimientos
 				for (const denuncia of denunciasActivasEnRango) {
 					// Obtener los seguimientos asociados a la denuncia
-					const seguimientosEndpoint = `http://localhost:5000/api/denuncias/seguimientos/${denuncia.id}`;
+					const seguimientosEndpoint = `${API_ENDPOINT}/denuncias/seguimientos/${denuncia.id}`;
 					const seguimientosResponse = await apiConnection(
 						seguimientosEndpoint,
 						direction,
@@ -99,7 +100,7 @@ const DenunciasActivasPorFechaReport = ({
 			try {
 				const profesionales = {};
 				for (const id of ids) {
-					const endpoint = `http://localhost:5000/api/profesionales/${id}`;
+					const endpoint = `${API_ENDPOINT}/profesionales/${id}`;
 					const direction = "";
 					const method = "GET";
 					const body = false;
@@ -129,7 +130,7 @@ const DenunciasActivasPorFechaReport = ({
 			try {
 				const establecimientos = {};
 				for (const id of ids) {
-					const endpoint = `http://localhost:5000/api/establecimientos/${id}`;
+					const endpoint = `${API_ENDPOINT}/establecimientos/${id}`;
 					const direction = "";
 					const method = "GET";
 					const body = false;

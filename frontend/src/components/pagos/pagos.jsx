@@ -3,7 +3,7 @@ import Swal from "sweetalert2";
 import apiConnection from "../../../../backend/functions/apiConnection";
 import PagosModal from "./pagosModal";
 
-const Pagos = () => {
+const Pagos = ( { API_ENDPOINT } ) => {
 	const [pagos, setPagos] = useState([]);
 	const [showPagosModal, setShowPagosModal] = useState(false);
 	const [selectedPago, setSelectedPago] = useState(null);
@@ -229,7 +229,7 @@ const Pagos = () => {
 
 	const fetchPagos = async () => {
 		try {
-			const endpoint = "http://localhost:5000/api/movimientos/";
+			const endpoint = `${API_ENDPOINT}/movimientos/`;
 			const direction = "";
 			const method = "GET";
 			const body = false;
@@ -301,7 +301,7 @@ const Pagos = () => {
 		// Si el usuario confirma la eliminación
 		if (result.isConfirmed) {
 			try {
-				const endpoint = "http://localhost:5000/api/movimientos/";
+				const endpoint = `${API_ENDPOINT}/movimientos/`;
 				const direction = pago.id;
 				const method = "DELETE";
 				const body = false;
@@ -365,7 +365,7 @@ const Pagos = () => {
 
 	const fetchMedioDePago = async (medioId) => {
 		try {
-			const endpoint = `http://localhost:5000/api/mediosdepago/${medioId}`;
+			const endpoint = `${API_ENDPOINT}/mediosdepago/${medioId}`;
 			const direction = "";
 			const method = "GET";
 			const body = false;
@@ -460,6 +460,7 @@ const Pagos = () => {
 				data={selectedPago}
 				modalMode={modalMode}
 				fetchPagos={fetchPagos}
+				API_ENDPOINT={API_ENDPOINT}
 			/>
 		</>
 	);

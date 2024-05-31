@@ -3,7 +3,7 @@ import Swal from "sweetalert2";
 import apiConnection from "../../../../backend/functions/apiConnection";
 import CuotasModal from "./cuotasModal";
 
-const Cuotas = () => {
+const Cuotas = ( {API_ENDPOINT} ) => {
 	const [data, setData] = useState([]);
 	const [showCuotasModal, setShowCuotasModal] = useState(false);
 	const [selectedCuota, setSelectedCuota] = useState(null);
@@ -15,7 +15,7 @@ const Cuotas = () => {
 
 	const fetchCuotas = async () => {
 		try {
-			const endpoint = "http://localhost:5000/api/cuotas/";
+			const endpoint = `${API_ENDPOINT}/cuotas`;
 			const direction = "";
 			const method = "GET";
 			const body = false;
@@ -45,8 +45,7 @@ const Cuotas = () => {
 	const handleEliminar = async (id) => {
 		// Verificar si ya estan generadas las cuotas
 		try {
-			const endpoint =
-				"http://localhost:5000/api/cuotas/cuotas-generadas/";
+			const endpoint = `${API_ENDPOINT}/cuotas/cuotas-generadas/`;
 			const direction = id;
 			const method = "GET";
 			const body = false;
@@ -91,7 +90,7 @@ const Cuotas = () => {
 		// Si el usuario confirma la eliminación
 		if (result.isConfirmed) {
 			try {
-				const endpoint = "http://localhost:5000/api/cuotas/";
+				const endpoint = `${API_ENDPOINT}/cuotas/`;
 				const direction = id;
 				const method = "DELETE";
 				const body = false;
@@ -135,8 +134,7 @@ const Cuotas = () => {
 	const handleGenerar = async (id) => {
 		// Verificar si ya estan generadas las cuotas
 		try {
-			const endpoint =
-				"http://localhost:5000/api/cuotas/cuotas-generadas/";
+			const endpoint = `${API_ENDPOINT}/cuotas/cuotas-generadas/`;
 			const direction = id;
 			const method = "GET";
 			const body = false;
@@ -181,8 +179,7 @@ const Cuotas = () => {
 		if (!result.isConfirmed) return;
 
 		try {
-			const endpoint =
-				"http://localhost:5000/api/profesionales/generar-cuotas/";
+			const endpoint = `${API_ENDPOINT}/profesionales/generar-cuotas/`;
 			const direction = "";
 			const method = "POST";
 			const body = {
@@ -531,6 +528,7 @@ const Cuotas = () => {
 				data={selectedCuota}
 				modalMode={modalMode}
 				fetchCuotas={fetchCuotas}
+				API_ENDPOINT={API_ENDPOINT}
 			/>
 		</>
 	);

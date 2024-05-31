@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import apiConnection from "../../../../backend/functions/apiConnection";
 
-const EstablecimientosTab = ({ profesionalId }) => {
+const EstablecimientosTab = ({ profesionalId, API_ENDPOINT }) => {
 	const [establecimientos, setEstablecimientos] = useState([]);
 	const [selectedEstablecimiento, setSelectedEstablecimiento] = useState("");
 	const [establecimientosAsignados, setEstablecimientosAsignados] = useState(
@@ -12,8 +12,7 @@ const EstablecimientosTab = ({ profesionalId }) => {
 
 	const obtenerEstablecimientosAsignados = async (profesionalId) => {
 		try {
-			const endpoint =
-				"http://localhost:5000/api/establecimientos/asignados/";
+			const endpoint = `${API_ENDPOINT}/establecimientos/asignados/`;
 			const direction = `${profesionalId}`;
 			const method = "GET";
 			const body = false;
@@ -31,7 +30,6 @@ const EstablecimientosTab = ({ profesionalId }) => {
 			);
 
 			if (response) {
-				// Ordenar los establecimientos asignados alfabéticamente por nombre antes de establecer el estado
 				const sortedEstablecimientosAsignados = response.sort((a, b) =>
 					a.establecimiento.localeCompare(b.establecimiento)
 				);
@@ -58,7 +56,7 @@ const EstablecimientosTab = ({ profesionalId }) => {
 
 	const fetchEstablecimientos = async () => {
 		try {
-			const endpoint = "http://localhost:5000/api/establecimientos/";
+			const endpoint = `${API_ENDPOINT}/establecimientos`;
 			const direction = "";
 			const method = "GET";
 			const body = false;
@@ -115,8 +113,7 @@ const EstablecimientosTab = ({ profesionalId }) => {
 	const handleAsignarClick = async () => {
 		if (selectedEstablecimiento) {
 			try {
-				const endpoint =
-					"http://localhost:5000/api/establecimientos/asignar-establecimiento";
+				const endpoint = `${API_ENDPOINT}/establecimientos/asignar-establecimiento`;
 				const direction = "";
 				const method = "POST";
 				const headers = {
@@ -153,8 +150,7 @@ const EstablecimientosTab = ({ profesionalId }) => {
 
 	const handleDesvincularClick = async (establecimientoId) => {
 		try {
-			const endpoint =
-				"http://localhost:5000/api/establecimientos/desvincular-establecimiento/";
+			const endpoint = `${API_ENDPOINT}/establecimientos/desvincular-establecimiento/`;
 			const direction = `${profesionalId}/${establecimientoId}`;
 			const method = "DELETE";
 			const headers = {

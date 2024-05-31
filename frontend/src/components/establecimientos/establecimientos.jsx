@@ -4,7 +4,7 @@ import apiConnection from "../../../../backend/functions/apiConnection";
 import EstablecimientosModal from "./establecimientosModal";
 import ProfesionalesModal from "./establecimientosProfesionalesModal";
 
-const EstablecimientosTabla = () => {
+const EstablecimientosTabla = ( { API_ENDPOINT } ) => {
 	const [data, setData] = useState([]);
 	const [showEstablecimientosModal, setShowEstablecimientosModal] =
 		useState(false);
@@ -18,7 +18,7 @@ const EstablecimientosTabla = () => {
 
 	const fetchEstablecimientos = async () => {
 		try {
-			const endpoint = "http://localhost:5000/api/establecimientos";
+			const endpoint = `${API_ENDPOINT}/establecimientos`;
 			const direction = "";
 			const method = "GET";
 			const body = false;
@@ -60,7 +60,7 @@ const EstablecimientosTabla = () => {
 		// Si el usuario confirma la eliminación
 		if (result.isConfirmed) {
 			try {
-				const endpoint = "http://localhost:5000/api/establecimientos/";
+				const endpoint = `${API_ENDPOINT}/establecimientos/`;
 				const direction = id;
 				const method = "DELETE";
 				const body = false;
@@ -403,11 +403,13 @@ const EstablecimientosTabla = () => {
 				data={selectedEstablecimiento}
 				modalMode={modalMode}
 				fetchEstablecimientos={fetchEstablecimientos}
+				API_ENDPOINT={API_ENDPOINT}
 			/>
 			<ProfesionalesModal
 				showModal={showProfesionalesModal}
 				closeModal={closeProfesionalesModal}
 				data={selectedEstablecimiento}
+				API_ENDPOINT={API_ENDPOINT}
 			/>
 		</>
 	);

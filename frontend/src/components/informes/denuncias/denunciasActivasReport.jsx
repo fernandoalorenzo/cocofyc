@@ -10,7 +10,7 @@ Font.register({
 	src: "https://fonts.gstatic.com/s/oswald/v13/Y_TKV6o8WovbUd3m_X9aAA.ttf",
 });
 
-const DenunciasActivasReport = ({ title, nombreInforme }) => {
+const DenunciasActivasReport = ({ title, nombreInforme, API_ENDPOINT }) => {
 	const [data, setData] = useState([]);
 	const [profesional, setProfesional] = useState({});
 	const [establecimiento, setEstablecimiento] = useState({});
@@ -18,7 +18,7 @@ const DenunciasActivasReport = ({ title, nombreInforme }) => {
 	useEffect(() => {
 		const fetchDenunciasActivas = async () => {
 			try {
-				const endpoint = "http://localhost:5000/api/denuncias";
+				const endpoint = `${API_ENDPOINT}/denuncias`;
 				const direction = "";
 				const method = "GET";
 				const body = false;
@@ -43,7 +43,7 @@ const DenunciasActivasReport = ({ title, nombreInforme }) => {
 				// Recorrer cada denuncia activa para obtener los seguimientos
 				for (const denuncia of denunciasActivas) {
 					// Obtener los seguimientos asociados a la denuncia
-					const seguimientosEndpoint = `http://localhost:5000/api/denuncias/seguimientos/${denuncia.id}`;
+					const seguimientosEndpoint = `${API_ENDPOINT}/denuncias/seguimientos/${denuncia.id}`;
 					const seguimientosResponse = await apiConnection(
 						seguimientosEndpoint,
 						direction,
@@ -81,7 +81,7 @@ const DenunciasActivasReport = ({ title, nombreInforme }) => {
 			try {
 				const profesionales = {};
 				for (const id of ids) {
-					const endpoint = `http://localhost:5000/api/profesionales/${id}`;
+					const endpoint = `${API_ENDPOINT}/profesionales/${id}`;
 					const direction = "";
 					const method = "GET";
 					const body = false;
@@ -111,7 +111,7 @@ const DenunciasActivasReport = ({ title, nombreInforme }) => {
 			try {
 				const establecimientos = {};
 				for (const id of ids) {
-					const endpoint = `http://localhost:5000/api/establecimientos/${id}`;
+					const endpoint = `${API_ENDPOINT}/establecimientos/${id}`;
 					const direction = "";
 					const method = "GET";
 					const body = false;

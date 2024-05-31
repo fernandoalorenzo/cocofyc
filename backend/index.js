@@ -1,6 +1,6 @@
 import express from "express";
 import cors from "cors";
-import multer from "multer";// Middleware para manejar archivos multipart/form-data
+import multer from "multer"; // Middleware para manejar archivos multipart/form-data
 import fs, { exists } from "fs";
 
 import profesionalesRouter from "./routes/profesionalesRoute.js";
@@ -16,6 +16,7 @@ import medios_de_pagoRouter from "./routes/medios_de_pagoRoute.js";
 
 import connect from "./config/db.js";
 
+// VARIABLES DE ENTORNO
 import { config } from "dotenv";
 config();
 
@@ -25,6 +26,7 @@ app.use(cors());
 
 // RUTAS
 app.use("/api/profesionales", profesionalesRouter);
+app.use("/api/profesionales/asignados", profesionalesRouter);
 app.use("/api/establecimientos", establecimientosRouter);
 app.use("/api/estados", estadosRouter);
 app.use("/api/usuarios", usuariosRouter);
@@ -34,19 +36,26 @@ app.use("/api/archivos-seguimientos", archivosSeguimientosRouter);
 app.use("/api/cuotas", cuotasRouter);
 app.use("/api/parametros", parametrosRouter);
 app.use("/api/movimientos", movimientosRouter);
-app.use("/api/mediosdepago", medios_de_pagoRouter)
+app.use("/api/mediosdepago", medios_de_pagoRouter);
+
+// Ruta para enviar las variables de entorno al frontend
+app.get("/apiendpoint", (req, res) => {
+	res.json({
+		API_ENDPOINT: process.env.API_ENDPOINT,
+	});
+});
 
 // FUNCIONES AUTOMÁTICAS DE COMUNICACIÓN
 import "./functions/birthdayEmailScript.js";
 import "./functions/vencimientoCuotaEmailScript.js";
-import "./functions/birthdayWspScript.js";
+//import "./functions/birthdayWspScript.js";
 
 // FUNCION PARA RENOMBRAR EL ARCHIVO
-// function saveFile(file) {
-// 	const newPath = `./../frontend/public/uploads/${file.originalname}`;
-// 	fs.renameSync(file.path, newPath);
-// 	return newPath;
-// }
+function saveFile(file) {
+	const newPath = `./../frontend/public/uploads/${file.originalname}`;
+	fs.renameSync(file.path, newPath);
+	return newPath;
+}
 
 const storage = multer.diskStorage({
 	destination: function (req, file, cb) {
@@ -69,7 +78,6 @@ app.post("/api/loadimage/", upload.single("file"), (req, res) => {
 app.delete("/api/deleteimage/:filename", (req, res) => {
 	const filename = req.params.filename;
 
-	// Lógica para eliminar el archivo
 	fs.unlink(`./../frontend/public/uploads/${filename}`, (err) => {
 		if (err) {
 			console.error("Error al eliminar el archivo:", err);
@@ -87,25 +95,28 @@ app.delete("/api/deleteimage/:filename", (req, res) => {
 
 // Ruta para verificar la existencia de una imagen
 app.get("/api/checkimage/:filename", (req, res) => {
-    const filename = req.params.filename;
+	const filename = req.params.filename;
 
-	// Verificar si el archivo existe en el sistema de archivos
-	console.log("Ruta para verificar la existencia de una imagen: ", `./../frontend/public/uploads/${filename}`);
-    fs.access(`./../frontend/public/uploads/${filename}`, fs.constants.F_OK, (err) => {
-        if (err) {
-			console.error("El archivo no existe:", err);
-			return res.status(200).json({ exists: false });
-        }
-        console.log("El archivo existe");
-        return res.status(200).json({ exists: true }); // El archivo existe
-    });
+	fs.access(
+		`./../frontend/public/uploads/${filename}`,
+		fs.constants.F_OK,
+		(err) => {
+			if (err) {
+				console.error("El archivo no existe:", err);
+				return res.status(200).json({ exists: false });
+			}
+			console.log("El archivo existe");
+			return res.status(200).json({ exists: true }); // El archivo existe
+		}
+	);
 });
+
+// SERVIDOR
+const PORT = process.env.PORT || 5000;
 
 // CONEXION A LA BASE DE DATOS
 connect();
 
-// SERVIDOR
-const port = process.env.PORT || 5000;
 app.listen(process.env.PORT, () => {
-	console.log(`Servidor corriendo en el puerto ${port}!`);
+	console.log(`Servidor corriendo en el puerto ${PORT}!`);
 });

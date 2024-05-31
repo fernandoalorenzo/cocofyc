@@ -19,7 +19,7 @@ Font.register({
 	src: "https://fonts.gstatic.com/s/oswald/v13/Y_TKV6o8WovbUd3m_X9aAA.ttf",
 });
 
-const ProfesionalesMorososReport = ({ title, nombreInforme }) => {
+const ProfesionalesMorososReport = ({ title, nombreInforme, API_ENDPOINT }) => {
 	const [data, setData] = useState([]);
 	let totalProfesionales = 0; // Inicializar contador de profesionales
 
@@ -35,8 +35,7 @@ const ProfesionalesMorososReport = ({ title, nombreInforme }) => {
 	useEffect(() => {
 		const fetchProfesionalesMorosos = async () => {
 			try {
-				const endpoint =
-					"http://localhost:5000/api/profesionales/profesionales-morosos";
+				const endpoint = `${API_ENDPOINT}/profesionales/profesionales-morosos`;
 				const direction = "";
 				const method = "GET";
 				const body = false;

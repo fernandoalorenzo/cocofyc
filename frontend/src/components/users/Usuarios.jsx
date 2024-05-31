@@ -4,7 +4,7 @@ import apiConnection from "../../../../backend/functions/apiConnection";
 import UsuariosModal from "./UsuariosModal";
 import UsuariosPasswordModal from "./UsuariosPasswordModal";
 
-const UsuariosTabla = () => {
+const UsuariosTabla = ( {API_ENDPOINT} ) => {
 	const [data, setData] = useState([]);
 	const [showUsuariosModal, setShowUsuariosModal] = useState(false);
 	const [selectedUsuario, setSelectedUsuario] = useState(null);
@@ -16,7 +16,7 @@ const UsuariosTabla = () => {
 
 	const fetchUsuarios = async () => {
 		try {
-			const endpoint = "http://localhost:5000/api/usuarios";
+			const endpoint = `${API_ENDPOINT}/usuarios`;
 			const direction = "";
 			const method = "GET";
 			const body = false;
@@ -49,7 +49,7 @@ const UsuariosTabla = () => {
 		setShowPasswordModal(true); // Abrir el modal de contraseña
 	};
 
-	const handleEliminar = async (id) => {
+	const handleEliminar = async (user) => {
 		const result = await Swal.fire({
 			title: "¿Estás seguro?",
 			text: "Esta acción no se puede deshacer",
@@ -64,8 +64,8 @@ const UsuariosTabla = () => {
 		// Si el usuario confirma la eliminación
 		if (result.isConfirmed) {
 			try {
-				const endpoint = "http://localhost:5000/api/usuarios/";
-				const direction = id;
+				const endpoint = `${API_ENDPOINT}/usuarios/`;
+				const direction = user.id;
 				const method = "DELETE";
 				const body = false;
 				const headers = {
@@ -425,11 +425,13 @@ const UsuariosTabla = () => {
 				data={selectedUsuario}
 				modalMode={modalMode}
 				fetchUsuarios={fetchUsuarios}
+				API_ENDPOINT={API_ENDPOINT}
 			/>
 			<UsuariosPasswordModal
 				showModalPassword={showPasswordModal}
 				closeModalPassword={() => setShowPasswordModal(false)}
 				usuario={selectedUsuario}
+				API_ENDPOINT={API_ENDPOINT}
 			/>
 		</>
 	);

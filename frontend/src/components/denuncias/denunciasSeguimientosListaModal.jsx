@@ -8,6 +8,7 @@ const DenunciasSeguimientosListaModal = ({
 	showModalSeguimientoLista,
 	closeModalSeguimientoLista,
 	dataSeguimientoLista,
+	API_ENDPOINT,
 }) => {
 	const {
 		register,
@@ -297,8 +298,7 @@ const DenunciasSeguimientosListaModal = ({
 
 		if (result.isConfirmed) {
 			try {
-				const endpoint =
-					"http://localhost:5000/api/denuncias/seguimiento/";
+				const endpoint = `${API_ENDPOINT}/denuncias/seguimiento/`;
 				const direction = seguimientoId;
 				const method = "DELETE";
 				const body = false;
@@ -342,8 +342,7 @@ const DenunciasSeguimientosListaModal = ({
 	const fetchSeguimientos = async (dataSeguimientoLista) => {
 		const denunciaId = dataSeguimientoLista.id;
 		try {
-			const endpoint =
-				"http://localhost:5000/api/denuncias/seguimientos/";
+			const endpoint = `${API_ENDPOINT}/denuncias/seguimientos/`;
 			const direction = denunciaId ? `${denunciaId}` : denunciaId;
 			const method = "GET";
 			const body = false;
@@ -425,7 +424,7 @@ const DenunciasSeguimientosListaModal = ({
 				data-bs-keyboard="false"
 				aria-labelledby="staticBackdropLabel"
 				aria-hidden={!showModalSeguimientoLista}>
-				<div className="modal-dialog modal-xl">
+				<div className="modal-dialog modal-xl modal-dialog-centered">
 					<div className="modal-content bg-secondary">
 						<div className="modal-header bg-primary">
 							<h5 className="modal-title">
@@ -486,6 +485,7 @@ const DenunciasSeguimientosListaModal = ({
 				modalSeguimientoMode={modalSeguimientoMode}
 				updateSeguimientos={updateSeguimientos}
 				denunciaId={denunciaId}
+				API_ENDPOINT={API_ENDPOINT}
 			/>
 		</>
 	);

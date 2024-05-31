@@ -19,14 +19,13 @@ Font.register({
 	src: "https://fonts.gstatic.com/s/oswald/v13/Y_TKV6o8WovbUd3m_X9aAA.ttf",
 });
 
-const ProfesionalesAlDiaReport = ({ title, nombreInforme }) => {
+const ProfesionalesAlDiaReport = ({ title, nombreInforme, API_ENDPOINT }) => {
 	const [data, setData] = useState([]);
 
 	useEffect(() => {
 		const fetchProfesionalesAlDia = async () => {
 			try {
-				const endpoint =
-					"http://localhost:5000/api/profesionales/profesionales-aldia";
+				const endpoint = `${API_ENDPOINT}/profesionales/profesionales-aldia`;
 				const direction = "";
 				const method = "GET";
 				const body = false;

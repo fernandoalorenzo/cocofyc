@@ -3,7 +3,7 @@ import Swal from "sweetalert2";
 import apiConnection from "../../../../backend/functions/apiConnection";
 import { useForm } from "react-hook-form";
 
-const Parametros = () => {
+const Parametros = ( {API_ENDPOINT} ) => {
 	const {
 		register,
 		handleSubmit,
@@ -23,7 +23,7 @@ const Parametros = () => {
 
 	const fetchMediosDePago = async () => {
 		try {
-			const endpoint = "http://localhost:5000/api/mediosdepago/";
+			const endpoint = `${API_ENDPOINT}/mediosdepago`;
 			const direction = "";
 			const method = "GET";
 			const body = false;
@@ -64,7 +64,7 @@ const Parametros = () => {
 				await handleActualizarMedioPago();
 			} else {
 				// Agregar un nuevo medio de pago
-				const endpoint = "http://localhost:5000/api/mediosdepago/";
+				const endpoint = `${API_ENDPOINT}/mediosdepago`;
 				const method = "POST";
 				const body = { medio: nuevoMedioPago };
 
@@ -115,17 +115,9 @@ const Parametros = () => {
 		}
 	};
 
-	// const handleGuardarMedioPago = async () => {
-	// 	if (editandoMedioPago) {
-	// 		await guardarCambiosMedioPago();
-	// 	} else {
-	// 		await agregarMedioPago();
-	// 	}
-	// };
-
 	const fetchParametros = async () => {
 		try {
-			const endpoint = "http://localhost:5000/api/parametros/";
+			const endpoint = `${API_ENDPOINT}/parametros/sinToken/`;
 			const direction = "1";
 			const method = "GET";
 			const body = false;
@@ -189,7 +181,7 @@ const Parametros = () => {
 
 	const handleActualizarMedioPago = async () => {
 		try {
-			const endpoint = `http://localhost:5000/api/mediosdepago/${selectedMedioPago.id}`;
+			const endpoint = `${API_ENDPOINT}/mediosdepago/${selectedMedioPago.id}`;
 			const method = "PATCH";
 			const body = { medio: nuevoMedioPago };
 
@@ -261,7 +253,7 @@ const Parametros = () => {
 				importe_cuota: importeCuotaModicado,
 			};
 
-			const endpoint = "http://localhost:5000/api/parametros/";
+			const endpoint = `${API_ENDPOINT}/parametros`;
 			const direction = "1";
 			const method = "PATCH";
 
@@ -330,7 +322,7 @@ const Parametros = () => {
 	// FUNCION PARA ACTUALIZAR LOS DATOS
 	const onSubmit = async (formData) => {
 		try {
-			const endpoint = "http://localhost:5000/api/parametros/";
+			const endpoint = `${API_ENDPOINT}/parametros`;
 			const direction = "1";
 			const method = "PATCH";
 			const body = formData;

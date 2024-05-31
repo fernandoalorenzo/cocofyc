@@ -17,6 +17,7 @@ const DenunciasProximosSeguimientosReport = ({
 	fechaDesde,
 	fechaHasta,
 	refreshKey,
+	API_ENDPOINT,
 }) => {
 	const [data, setData] = useState([]);
 	const [profesional, setProfesional] = useState({});
@@ -26,7 +27,7 @@ const DenunciasProximosSeguimientosReport = ({
 	useEffect(() => {
 		const fetchDenunciasActivas = async () => {
 			try {
-				const endpoint = "http://localhost:5000/api/denuncias";
+				const endpoint = `${API_ENDPOINT}/denuncias`;
 				const direction = "";
 				const method = "GET";
 				const body = false;
@@ -51,7 +52,7 @@ const DenunciasProximosSeguimientosReport = ({
 				// Recorrer cada denuncia activa para obtener los seguimientos
 				for (const denuncia of denunciasActivas) {
 					// Obtener los seguimientos asociados a la denuncia
-					const seguimientosEndpoint = `http://localhost:5000/api/denuncias/seguimientos/${denuncia.id}`;
+					const seguimientosEndpoint = `${API_ENDPOINT}/denuncias/seguimientos/${denuncia.id}`;
 					const seguimientosResponse = await apiConnection(
 						seguimientosEndpoint,
 						direction,
@@ -143,7 +144,7 @@ const DenunciasProximosSeguimientosReport = ({
 			denunciasConSeguimientoYReciente
 		) => {
 			for (const denuncia of denunciasConSeguimientoYReciente) {
-				const endpoint = `http://localhost:5000/api/denuncias/seguimientos/${denuncia.id}`;
+				const endpoint = `${API_ENDPOINT}/denuncias/seguimientos/${denuncia.id}`;
 				const direction = "";
 				const method = "GET";
 				const body = false;
@@ -175,7 +176,7 @@ const DenunciasProximosSeguimientosReport = ({
 			try {
 				const profesionales = {};
 				for (const id of ids) {
-					const endpoint = `http://localhost:5000/api/profesionales/${id}`;
+					const endpoint = `${API_ENDPOINT}/profesionales/${id}`;
 					const direction = "";
 					const method = "GET";
 					const body = false;
@@ -205,7 +206,7 @@ const DenunciasProximosSeguimientosReport = ({
 			try {
 				const establecimientos = {};
 				for (const id of ids) {
-					const endpoint = `http://localhost:5000/api/establecimientos/${id}`;
+					const endpoint = `${API_ENDPOINT}/establecimientos/${id}`;
 					const direction = "";
 					const method = "GET";
 					const body = false;

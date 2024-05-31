@@ -6,6 +6,10 @@ import fs from "fs";
 import Cuota from "./../models/cuotasModel.js";
 import Profesionales_Cuotas from "./../models/profesionales_cuotasModel.js";
 import Profesional from "./../models/profesionalesModel.js";
+import { config } from "dotenv";
+config();
+
+const API_ENDPOINT = process.env.API_ENDPOINT;
 
 // Configuración del momento de ejecución del script
 // Segundos (0-59) Minutos (0-59) Horas (0-23) Días del mes (1-31) Meses (1-12) Días de la semana (0-7, donde 0 y 7 representan Domingo)
@@ -15,6 +19,7 @@ const momento = "32 16 20 27 * * "; // Ejecutar los días 27 a las xx:xx AM
 // Lee la imagen como base64
 const imgLogo = fs.readFileSync(
 	"./../frontend/assets/img/LogoCOCOFYC_horizontal.png",
+	//"./public/assets/img/LogoCOCOFYC_horizontal.png",
 	{ encoding: "base64" }
 );
 

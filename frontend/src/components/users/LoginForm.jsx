@@ -6,7 +6,7 @@ import backgroundImage from "./../../../assets/img/login.jpg";
 import viewImage from "./../../../assets/img/view.png";
 import hideImage from "./../../../assets/img/hide.png";
 
-const LoginForm = () => {
+const LoginForm = ( {API_ENDPOINT} ) => {
 	const [loginData, setLoginData] = useState({
 		email: "",
 		password: "",
@@ -50,7 +50,7 @@ const LoginForm = () => {
 
 		try {
 			const response = await fetch(
-				"http://localhost:5000/api/usuarios/login",
+				`${API_ENDPOINT}/usuarios/login`,
 				{
 					method: "POST",
 					headers: {
@@ -68,8 +68,7 @@ const LoginForm = () => {
 
 				const fetchParametros = async () => {
 					try {
-						const endpoint =
-							"http://localhost:5000/api/parametros/";
+						const endpoint = `${API_ENDPOINT}/parametros`;
 						const direction = "1";
 						const method = "GET";
 						const body = false;

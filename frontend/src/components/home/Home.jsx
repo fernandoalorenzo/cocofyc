@@ -5,7 +5,7 @@ import Logo from "./../../../assets/img/LogoCOCOFYC.png";
 import TotalMorosos from "./homeTotalMorosos";
 import MatriculasActivas from "./homeMatriculasActivas";
 
-export default function Home() {
+export default function Home( {API_ENDPOINT} ) {
 	const navigate = useNavigate();
 
 	const handleLogout = () => {

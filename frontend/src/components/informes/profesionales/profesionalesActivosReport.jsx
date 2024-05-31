@@ -19,13 +19,13 @@ Font.register({
 });
 
 
-const ProfesionalesActivosReport = ({ title, nombreInforme }) => {
+const ProfesionalesActivosReport = ({ title, nombreInforme, API_ENDPOINT }) => {
 	const [data, setData] = useState([]);
 
 	useEffect(() => {
 		const fetchProfesionalesActivos = async () => {
 			try {
-				const endpoint = "http://localhost:5000/api/profesionales";
+				const endpoint = `${API_ENDPOINT}/profesionales`;
 				const direction = "";
 				const method = "GET";
 				const body = false;
@@ -65,7 +65,10 @@ const ProfesionalesActivosReport = ({ title, nombreInforme }) => {
 	return (
 		<>
 			<Document author="CoCoFyC" title={nombreInforme}>
-				<Page size="A4" orientation="landscape" style={globalStyles.page}>
+				<Page
+					size="A4"
+					orientation="landscape"
+					style={globalStyles.page}>
 					{/* Encabezado */}
 					<Header title={title} />
 					<View
@@ -80,37 +83,67 @@ const ProfesionalesActivosReport = ({ title, nombreInforme }) => {
 								color: "#ffffff",
 							},
 						]}>
-						<Text style={[globalStyles.tableCell, { textAlign: "left" }]}>
+						<Text
+							style={[
+								globalStyles.tableCell,
+								{ textAlign: "left" },
+							]}>
 							Nombre
 						</Text>
 						<Text
-							style={[globalStyles.tableCell, { textAlign: "center" }]}>
+							style={[
+								globalStyles.tableCell,
+								{ textAlign: "center" },
+							]}>
 							DNI
 						</Text>
 						<Text
-							style={[globalStyles.tableCell, { textAlign: "center" }]}>
+							style={[
+								globalStyles.tableCell,
+								{ textAlign: "center" },
+							]}>
 							CUIT
 						</Text>
 						<Text
-							style={[globalStyles.tableCell, { textAlign: "center" }]}>
+							style={[
+								globalStyles.tableCell,
+								{ textAlign: "center" },
+							]}>
 							Teléfono
 						</Text>
-						<Text style={[globalStyles.tableCell, { textAlign: "left" }]}>
+						<Text
+							style={[
+								globalStyles.tableCell,
+								{ textAlign: "left" },
+							]}>
 							Email
 						</Text>
 						<Text
-							style={[globalStyles.tableCell, { textAlign: "center" }]}>
+							style={[
+								globalStyles.tableCell,
+								{ textAlign: "center" },
+							]}>
 							Matrícula
 						</Text>
-						<Text style={[globalStyles.tableCell, { textAlign: "left" }]}>
+						<Text
+							style={[
+								globalStyles.tableCell,
+								{ textAlign: "left" },
+							]}>
 							Domicilio
 						</Text>
-						<Text style={[globalStyles.tableCell, { textAlign: "left" }]}>
+						<Text
+							style={[
+								globalStyles.tableCell,
+								{ textAlign: "left" },
+							]}>
 							Localidad
 						</Text>
 					</View>
 					{data.map((profesional) => (
-						<View style={globalStyles.tableRow} key={profesional.id}>
+						<View
+							style={globalStyles.tableRow}
+							key={profesional.id}>
 							<Text
 								style={[
 									globalStyles.tableCell,

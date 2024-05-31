@@ -18,13 +18,14 @@ const PagosRealizadosPorFechaReport = ({
 	fechaDesde,
 	fechaHasta,
 	refreshKey,
+	API_ENDPOINT,
 }) => {
 	const [data, setData] = useState([]);
 
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
-				const endpoint = "http://localhost:5000/api/movimientos";
+				const endpoint = `${API_ENDPOINT}/movimientos`;
 				const direction = "";
 				const method = "GET";
 				const body = false;
@@ -73,7 +74,7 @@ const PagosRealizadosPorFechaReport = ({
 
 		const fetchMedioDePago = async (id) => {
 			try {
-				const endpoint = `http://localhost:5000/api/mediosdepago/${id}`;
+				const endpoint = `${API_ENDPOINT}/mediosdepago/${id}`;
 				const direction = "";
 				const method = "GET";
 				const body = false;

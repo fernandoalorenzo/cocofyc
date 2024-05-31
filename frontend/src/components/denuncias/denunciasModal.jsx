@@ -8,6 +8,7 @@ const DenunciasModal = ({
 	closeModal,
 	data,
 	modalMode,
+	API_ENDPOINT,
 }) => {
 	const {
 		register,
@@ -47,7 +48,7 @@ const DenunciasModal = ({
 
 	const fetchProfesionales = async () => {
 		try {
-			const endpoint = "http://localhost:5000/api/profesionales/";
+			const endpoint = `${API_ENDPOINT}/profesionales/`;
 			const direction = "";
 			const method = "GET";
 			const body = false;
@@ -82,7 +83,7 @@ const DenunciasModal = ({
 
 	const fetchEstablecimientos = async (profesionalId) => {
 		try {
-			const endpoint = `http://localhost:5000/api/establecimientos/asignados/${profesionalId}`;
+			const endpoint = `${API_ENDPOINT}/establecimientos/asignados/${profesionalId}`;
 			const method = "GET";
 			const headers = {
 				"Content-Type": "application/json",
@@ -185,7 +186,7 @@ const DenunciasModal = ({
 			user_id: user.id,
 		};
 		try {
-			const endpoint = "http://localhost:5000/api/denuncias/";
+			const endpoint = `${API_ENDPOINT}/denuncias/`;
 			const direction = newData.id ? `${newData.id}` : "";
 			const method = newData.id ? "PUT" : "POST";
 			const body = newData;

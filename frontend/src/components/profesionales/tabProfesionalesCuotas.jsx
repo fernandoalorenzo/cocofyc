@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import apiConnection from "../../../../backend/functions/apiConnection";
 import Swal from "sweetalert2";
 
-const GenerarCuotaTab = ({ profesionalId, userId }) => {
+const GenerarCuotaTab = ({ profesionalId, userId, API_ENDPOINT }) => {
 	const tablaCuotasGeneradasRef = useRef(null);
 	const dataTableRef = useRef(null);
 
@@ -174,7 +174,7 @@ const GenerarCuotaTab = ({ profesionalId, userId }) => {
 
 	const fetchCuotas = async () => {
 		try {
-			const endpoint = "http://localhost:5000/api/cuotas/";
+			const endpoint = `${API_ENDPOINT}/cuotas/`;
 			const direction = "";
 			const method = "GET";
 			const body = false;
@@ -221,7 +221,7 @@ const GenerarCuotaTab = ({ profesionalId, userId }) => {
 
 	const fetchCuotasGeneradas = async () => {
 		try {
-			const endpoint = `http://localhost:5000/api/profesionales/cuotas-generadas-profesional/${profesionalId}`;
+			const endpoint = `${API_ENDPOINT}/profesionales/cuotas-generadas-profesional/${profesionalId}`;
 			const direction = "";
 			const method = "GET";
 			const body = false;
@@ -267,7 +267,7 @@ const GenerarCuotaTab = ({ profesionalId, userId }) => {
 
 	const fetchCuotaDetails = async (cuotaId) => {
 		try {
-			const endpoint = `http://localhost:5000/api/cuotas/${cuotaId}`;
+			const endpoint = `${API_ENDPOINT}/cuotas/${cuotaId}`;
 			const direction = "";
 			const method = "GET";
 			const body = false;
@@ -314,7 +314,7 @@ const GenerarCuotaTab = ({ profesionalId, userId }) => {
 		}
 
 		try {
-			const endpoint = `http://localhost:5000/api/profesionales/generar-cuota`;
+			const endpoint = `${API_ENDPOINT}/profesionales/generar-cuota`;
 			const direction = "";
 			const method = "POST";
 			const body = {

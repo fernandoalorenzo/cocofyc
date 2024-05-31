@@ -9,6 +9,7 @@ const EstablecimientosModal = ({
 	data,
 	modalMode,
 	fetchEstablecimientos,
+	API_ENDPOINT,
 }) => {
 	const {
 		register,
@@ -65,7 +66,7 @@ const EstablecimientosModal = ({
 
 	const onSubmit = async (formData, id) => {
 		try {
-			const endpoint = "http://localhost:5000/api/establecimientos/";
+			const endpoint = `${API_ENDPOINT}/establecimientos/`;
 			const direction = id ? `${id}` : "";
 			const method = id ? "PUT" : "POST";
 			const body = formData;

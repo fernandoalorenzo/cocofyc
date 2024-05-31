@@ -4,7 +4,7 @@ import apiConnection from "../../../../backend/functions/apiConnection";
 import DenunciasModal from "./denunciasModal";
 import DenunciasSeguimientosListaModal from "./denunciasSeguimientosListaModal";
 
-const DenunciasTabla = () => {
+const DenunciasTabla = ( { API_ENDPOINT } ) => {
 	const [showDenunciasModal, setShowDenunciasModal] = useState(false);
 	const [selectedDenuncia, setSelectedDenuncia] = useState(null);
 	const [selectedDenunciaSeguimiento, setSelectedDenunciaSeguimiento] = useState(null);
@@ -20,7 +20,7 @@ const DenunciasTabla = () => {
 
 	const fetchDenuncias = async () => {
 		try {
-			const endpoint = "http://localhost:5000/api/denuncias/";
+			const endpoint = `${API_ENDPOINT}/denuncias`;
 			const direction = "";
 			const method = "GET";
 			const body = false;
@@ -375,7 +375,7 @@ const DenunciasTabla = () => {
 		// Si el usuario confirma la eliminación
 		if (result.isConfirmed) {
 			try {
-				const endpoint = "http://localhost:5000/api/denuncias/";
+				const endpoint = `${API_ENDPOINT}/denuncias/`;
 				const direction = denuncia.id;
 				const method = "DELETE";
 				const body = false;
@@ -437,7 +437,7 @@ const DenunciasTabla = () => {
 
 	const fetchProfesionales = async () => {
 		try {
-			const endpoint = "http://localhost:5000/api/profesionales/";
+			const endpoint = `${API_ENDPOINT}/profesionales/`;
 			const method = "GET";
 			const headers = {
 				"Content-Type": "application/json",
@@ -462,7 +462,7 @@ const DenunciasTabla = () => {
 
 	const fetchEstablecimientos = async () => {
 		try {
-			const endpoint = "http://localhost:5000/api/establecimientos/";
+			const endpoint = `${API_ENDPOINT}/establecimientos/`;
 			const method = "GET";
 			const headers = {
 				"Content-Type": "application/json",
@@ -556,11 +556,13 @@ const DenunciasTabla = () => {
 				closeModal={closeDenunciasModal}
 				data={selectedDenuncia}
 				modalMode={modalMode}
+				API_ENDPOINT={API_ENDPOINT}
 			/>
 			<DenunciasSeguimientosListaModal
 				showModalSeguimientoLista={showDenunciasSeguimientosListaModal}
 				closeModalSeguimientoLista={closeDenunciasSeguimientosListaModal}
 				dataSeguimientoLista={selectedDenunciaSeguimiento}
+				API_ENDPOINT={API_ENDPOINT}
 			/>
 		</>
 	);

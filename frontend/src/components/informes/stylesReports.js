@@ -38,7 +38,6 @@ export const globalStyles = StyleSheet.create({
 	},
 	logo: {
 		height: 50,
-		// marginRight: 20,
 	},
 	tableRow: {
 		flexDirection: "row",

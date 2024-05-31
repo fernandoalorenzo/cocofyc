@@ -3,7 +3,7 @@
 /* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
 
-const UserRegister = () => {
+const UserRegister = ( { API_ENDPOINT } ) => {
 	const [formData, setFormData] = useState({
 		email: "",
 		password: "",
@@ -17,7 +17,7 @@ const UserRegister = () => {
 		event.preventDefault();
 
 		try {
-			const url = "http://localhost:5000/api/usuarios/";
+			const url = `${API_ENDPOINT}/usuarios/`;
 			const method = "POST";
 			const response = await fetch(url, {
 				method: method,

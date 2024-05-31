@@ -12,7 +12,7 @@ const DenunciasSeguimientoArchivos = sequelize.define(
 		user_id: { type: DataTypes.STRING(36) },
 		denuncia_seguimiento_id: { type: DataTypes.UUID, allowNull: false },
 		fecha: { type: DataTypes.DATEONLY, allowNull: false },
-		archivo: { type: DataTypes.STRING(255) },
+		archivo: { type: DataTypes.STRING(255), unique: true, allowNull: false },
 		archivo_descripcion: { type: DataTypes.STRING(255) },
 	},
 	{

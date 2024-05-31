@@ -3,7 +3,7 @@ import Swal from "sweetalert2";
 import apiConnection from "../../../../backend/functions/apiConnection";
 import { useNavigate } from "react-router-dom";
 
-const Perfil = () => {
+const Perfil = ( {API_ENDPOINT} ) => {
 	const initialState = {
 		email: "",
 		password: "",
@@ -49,7 +49,7 @@ const Perfil = () => {
 
 	const handleSave = async () => {
 		// const user = JSON.parse(localStorage.getItem("user"));
-		const endpoint = "http://localhost:5000/api/usuarios/";
+		const endpoint = `${API_ENDPOINT}/usuarios/`;
 		const direction = user.id;
 		const method = "PATCH";
 		const body = inputValues;

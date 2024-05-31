@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from "react";
 import apiConnection from "../../../../backend/functions/apiConnection";
 
-const MatriculasActivas = () => {
+const MatriculasActivas = ( { API_ENDPOINT }) => {
 	const [totalMatriculasActivas, setTotalMatriculasActivas] = useState(0);
 
 	useEffect(() => {
 		const fetchMatriculasActivas = async () => {
 			try {
-				const endpoint =
-					"http://localhost:5000/api/profesionales/profesionales-morosos";
+				const endpoint = `${API_ENDPOINT}/profesionales/profesionales-morosos`;
 				const direction = "";
 				const method = "GET";
 				const body = false;

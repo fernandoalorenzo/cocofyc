@@ -7,6 +7,7 @@ const CargarPagosTab = ({
 	profesionalId,
 	toggleCardBodyForm,
 	updateMovimientos,
+	API_ENDPOINT,
 }) => {
 	const [archivoSeleccionado, setArchivoSeleccionado] = useState(null);
 	const [mediosDePago, setMediosDePago] = useState([]);
@@ -35,7 +36,7 @@ const CargarPagosTab = ({
 
 	const fetchMediosDePago = async () => {
 		try {
-			const endpoint = "http://localhost:5000/api/mediosdepago/";
+			const endpoint = `${API_ENDPOINT}/mediosdepago`;
 			const direction = "";
 			const method = "GET";
 			const body = false;
@@ -86,7 +87,7 @@ const CargarPagosTab = ({
 			profesional_id: profesionalId,
 		};
 		try {
-			const endpoint = "http://localhost:5000/api/movimientos/";
+			const endpoint = `${API_ENDPOINT}/movimientos`;
 			const direction = "";
 			const method = "POST";
 			const body = newData;
@@ -134,9 +135,8 @@ const CargarPagosTab = ({
 	};
 
 	const asignarMovimientoACuota = async (cuotaId, movimientoId) => {
-		console.log("movimientoId:", movimientoId, " / cuotaId:", cuotaId);
 		try {
-			const endpoint = `http://localhost:5000/api/profesionales/asignar-movimiento-a-cuota/`;
+			const endpoint = `${API_ENDPOINT}/profesionales/asignar-movimiento-a-cuota/`;
 			const direction = `${cuotaId}/${movimientoId}`;
 			const method = "PATCH";
 			const body = { id: cuotaId, movimiento_id: movimientoId };
@@ -179,7 +179,7 @@ const CargarPagosTab = ({
 
 	const fetchCuotasGeneradas = async (profesionalId) => {
 		try {
-			const endpoint = `http://localhost:5000/api/profesionales/cuotas-generadas-profesional/${profesionalId}`;
+			const endpoint = `${API_ENDPOINT}/profesionales/cuotas-generadas-profesional/${profesionalId}`;
 			const direction = "";
 			const method = "GET";
 			const body = false;
@@ -225,7 +225,7 @@ const CargarPagosTab = ({
 
 	const fetchCuotaDetails = async (cuotaId) => {
 		try {
-			const endpoint = `http://localhost:5000/api/cuotas/${cuotaId}`;
+			const endpoint = `${API_ENDPOINT}/cuotas/${cuotaId}`;
 			const direction = "";
 			const method = "GET";
 			const body = false;

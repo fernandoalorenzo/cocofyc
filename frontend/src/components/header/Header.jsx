@@ -1,5 +1,3 @@
-/* eslint-disable no-unused-vars */
-
 export default function Header() {
 	return (
 		<>
@@ -28,19 +26,8 @@ export default function Header() {
 							<i className="fas fa-expand-arrows-alt" />
 						</a>
 					</li>
-					{/* <li className="nav-item">
-						<a
-							className="nav-link"
-							data-widget="control-sidebar"
-							data-controlsidebar-slide="true"
-							href="#"
-							role="button">
-							<i className="fas fa-th-large" />
-						</a>
-					</li> */}
 				</ul>
 			</nav>
-
 			{/* <!-- /.navbar --> */}
 		</>
 	);

@@ -1,32 +1,28 @@
-/* eslint-disable no-unused-vars */
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate, NavLink } from "react-router-dom";
 import { Logo } from "./../logo/logo";
 
 export default function SideBar() {
 	const navigate = useNavigate();
 
+	const [establecimiento, setEstablecimiento] = useState("");
+
+	useEffect(() => {
+		const parametros = JSON.parse(localStorage.getItem("parametros"));
+		if (parametros && parametros.establecimiento) {
+			setEstablecimiento(parametros.establecimiento);
+		}
+	}, []);
+
 	const user = JSON.parse(localStorage.getItem("user"));
 	const userName = user ? user.nombre : null;
 	const isAdmin = user ? user.administrador : false;
-
-	// const defaultAvatar = "./../../assets/img/noimage.png";
-	// const [userAvatar, setUserAvatar] = useState(""); // Estado para almacenar el avatar del usuario
 
 	const handleLogout = () => {
 		localStorage.removeItem("user");
 		localStorage.removeItem("token");
 		navigate("/login");
 	};
-
-	// Lógica para cargar el avatar del usuario desde el localStorage al cargar la página
-	// useEffect(() => {
-	// 	const userString = localStorage.getItem("user");
-	// 	if (userString) {
-	// 		const user = JSON.parse(userString);
-	// 		setUserAvatar(user.avatar);
-	// 	}
-	// }, []);
 
 	return (
 		<>
@@ -36,7 +32,9 @@ export default function SideBar() {
 				<Link to="/" className="brand-link text-decoration-none ">
 					<Logo />
 					<span className="brand-text font-weight-light">
-						CoCoFyC
+						<span className="brand-text font-weight-light">
+							{establecimiento}
+						</span>
 					</span>
 				</Link>
 				{/* Sidebar */}
@@ -182,20 +180,6 @@ export default function SideBar() {
 								</NavLink>
 							</li>
 							<hr className="text-light"></hr>
-
-							{/* <li className="nav-item">
-								<NavLink
-									to="/roles"
-									className="nav-link"
-									activeclassname="active">
-									<i className="nav-icon fa-solid fa-people-line" />
-									<p>Roles</p>
-								</NavLink>
-							</li> */}
-							{/*---------- OPERATORIA ----------*/}
-							{/* <li className="nav-header text-warning">
-								OPERATORIA
-							</li> */}
 							{/*---------- CONFIGURACION ----------*/}
 							{isAdmin && (
 								<>
@@ -222,149 +206,6 @@ export default function SideBar() {
 									</li>
 								</>
 							)}
-							{/* <li className="nav-header text-warning">EXAMPLES</li>
-							<li className="nav-item">
-								<a
-									href="pages/widgets.html"
-									className="nav-link">
-									<i className="nav-icon fas fa-th" />
-									<p>
-										Widgets
-										<span className="right badge badge-danger">
-											New
-										</span>
-									</p>
-								</a>
-							</li>
-							<li className="nav-item">
-								<a href="#" className="nav-link">
-									<i className="nav-icon fas fa-copy" />
-									<p>
-										Layout Options
-										<i className="fas fa-angle-left right" />
-										<span className="badge badge-info right">
-											6
-										</span>
-									</p>
-								</a>
-								<ul className="nav nav-treeview">
-									<li className="nav-item">
-										<a
-											href="pages/layout/top-nav.html"
-											className="nav-link">
-											<i className="far fa-circle nav-icon" />
-											<p>Top Navigation</p>
-										</a>
-									</li>
-									<li className="nav-item">
-										<a
-											href="pages/layout/top-nav-sidebar.html"
-											className="nav-link">
-											<i className="far fa-circle nav-icon" />
-											<p>Top Navigation + Sidebar</p>
-										</a>
-									</li>
-									<li className="nav-item">
-										<a
-											href="pages/layout/boxed.html"
-											className="nav-link">
-											<i className="far fa-circle nav-icon" />
-											<p>Boxed</p>
-										</a>
-									</li>
-									<li className="nav-item">
-										<a
-											href="pages/layout/fixed-sidebar.html"
-											className="nav-link">
-											<i className="far fa-circle nav-icon" />
-											<p>Fixed Sidebar</p>
-										</a>
-									</li>
-									<li className="nav-item">
-										<a
-											href="pages/layout/fixed-sidebar-custom.html"
-											className="nav-link">
-											<i className="far fa-circle nav-icon" />
-											<p>
-												Fixed Sidebar{" "}
-												<small>+ Custom Area</small>
-											</p>
-										</a>
-									</li>
-									<li className="nav-item">
-										<a
-											href="pages/layout/fixed-topnav.html"
-											className="nav-link">
-											<i className="far fa-circle nav-icon" />
-											<p>Fixed Navbar</p>
-										</a>
-									</li>
-									<li className="nav-item">
-										<a
-											href="pages/layout/fixed-footer.html"
-											className="nav-link">
-											<i className="far fa-circle nav-icon" />
-											<p>Fixed Footer</p>
-										</a>
-									</li>
-									<li className="nav-item">
-										<a
-											href="pages/layout/collapsed-sidebar.html"
-											className="nav-link">
-											<i className="far fa-circle nav-icon" />
-											<p>Collapsed Sidebar</p>
-										</a>
-									</li>
-								</ul>
-							</li>
-							<li className="nav-item">
-								<a
-									href="pages/calendar.html"
-									className="nav-link">
-									<i className="nav-icon far fa-calendar-alt" />
-									<p>
-										Calendar
-										<span className="badge badge-info right">
-											2
-										</span>
-									</p>
-								</a>
-							</li>
-							<li className="nav-item">
-								<a
-									href="pages/gallery.html"
-									className="nav-link">
-									<i className="nav-icon far fa-image" />
-									<p>Gallery</p>
-								</a>
-							</li>
-							<li className="nav-item">
-								<a
-									href="pages/kanban.html"
-									className="nav-link">
-									<i className="nav-icon fas fa-columns" />
-									<p>Kanban Board</p>
-								</a>
-							</li>
-							<li className="nav-header">LABELS</li>
-							<li className="nav-item">
-								<a href="#" className="nav-link">
-									<i className="nav-icon far fa-circle text-danger" />
-									<p className="text">Important</p>
-								</a>
-							</li>
-							<li className="nav-item">
-								<a href="#" className="nav-link">
-									<i className="nav-icon far fa-circle text-warning" />
-									<p>Warning</p>
-								</a>
-							</li>
-							<li className="nav-item">
-								<a href="#" className="nav-link">
-									<i className="nav-icon far fa-circle text-info" />
-									<p>Informational</p>
-								</a>
-							</li> */}
 						</ul>
 					</nav>
 					{/* /.sidebar-menu */}

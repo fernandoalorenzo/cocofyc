@@ -3,7 +3,7 @@ import Swal from "sweetalert2";
 import apiConnection from "../../../../backend/functions/apiConnection";
 import { useForm } from "react-hook-form";
 
-const PagosModal = ({ showModal, closeModal, data, modalMode }) => {
+const PagosModal = ({ showModal, closeModal, data, modalMode, API_ENDPOINT }) => {
 	const {
 		register,
 		formState: { errors },
@@ -64,7 +64,7 @@ useEffect(() => {
 
 	const fetchMediosDePago = async () => {
 		try {
-			const endpoint = "http://localhost:5000/api/mediosdepago/";
+			const endpoint = `${API_ENDPOINT}/mediosdepago/`;
 			const direction = "";
 			const method = "GET";
 			const body = false;
@@ -120,7 +120,7 @@ useEffect(() => {
 		};
 
 		try {
-			const endpoint = "http://localhost:5000/api/movimientos/";
+			const endpoint = `${API_ENDPOINT}/movimientos/`;
 			const direction = newData.id ? `${newData.id}` : "";
 			const method = newData.id ? "PUT" : "POST";
 			const body = newData;

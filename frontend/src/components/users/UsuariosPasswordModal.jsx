@@ -4,7 +4,7 @@ import apiConnection from "../../../../backend/functions/apiConnection";
 import viewImage from "./../../../assets/img/view.png";
 import hideImage from "./../../../assets/img/hide.png";
 
-const PasswordModal = ({ showModalPassword, closeModalPassword, usuario }) => {
+const PasswordModal = ({ showModalPassword, closeModalPassword, usuario, API_ENDPOINT }) => {
 	const initialState = {
 		password1: "",
 		password2: "",
@@ -39,7 +39,7 @@ const PasswordModal = ({ showModalPassword, closeModalPassword, usuario }) => {
 		};
 
 		try {
-			const endpoint = "http://localhost:5000/api/usuarios/";
+			const endpoint = `${API_ENDPOINT}/usuarios/`;
 			const direction = `${usuario.id}`;
 			const method = "PATCH";
 			const body = data;

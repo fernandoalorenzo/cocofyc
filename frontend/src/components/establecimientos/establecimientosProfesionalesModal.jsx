@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import apiConnection from "../../../../backend/functions/apiConnection";
 
-const ProfesionalesModal = ({ showModal, closeModal, data }) => {
+const ProfesionalesModal = ({ showModal, closeModal, data, API_ENDPOINT, }) => {
 	const [profesionales, setProfesionales] = useState([]);
 	const [selectedProfesional, setSelectedProfesional] = useState("");
 	const [profesionalesAsignados, setProfesionalesAsignados] = useState(
@@ -12,8 +12,7 @@ const ProfesionalesModal = ({ showModal, closeModal, data }) => {
 	
 	const obtenerProfesionalesAsignados = async (establecimientoId) => {
 		try {
-			const endpoint =
-				"http://localhost:5000/api/profesionales/asignados/";
+			const endpoint = `${API_ENDPOINT}/profesionales/asignados/`;
 			const direction = `${establecimientoId}`;
 			const method = "GET";
 			const body = false;
@@ -52,7 +51,7 @@ const ProfesionalesModal = ({ showModal, closeModal, data }) => {
 
 	const fetchProfesionales = async () => {
 		try {
-			const endpoint = "http://localhost:5000/api/profesionales/";
+			const endpoint = `${API_ENDPOINT}/profesionales/`;
 			const direction = "";
 			const method = "GET";
 			const body = false;
@@ -111,8 +110,7 @@ const ProfesionalesModal = ({ showModal, closeModal, data }) => {
 	const handleAsignarClick = async () => {
 		if (selectedProfesional) {
 			try {
-				const endpoint =
-					"http://localhost:5000/api/profesionales/asignar-profesional";
+				const endpoint = `${API_ENDPOINT}/profesionales/asignar-profesional`;
 				const direction = "";
 				const method = "POST";
 				const headers = {
@@ -149,8 +147,7 @@ const ProfesionalesModal = ({ showModal, closeModal, data }) => {
 
 	const handleDesvincularClick = async (profesionalId) => {
 		try {
-			const endpoint =
-				"http://localhost:5000/api/profesionales/desvincular-profesional/";
+			const endpoint = `${API_ENDPOINT}/profesionales/desvincular-profesional/`;
 			const direction = `${profesionalId}/${data.id}`;
 			const method = "DELETE";
 			const headers = {

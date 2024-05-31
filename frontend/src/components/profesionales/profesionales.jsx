@@ -4,7 +4,7 @@ import apiConnection from "../../../../backend/functions/apiConnection";
 import ProfesionalesModal from "./profesionalesModal";
 import GestionesModal from "./profesionalesGestionModal";
 
-const ProfesionalesTabla = () => {
+const ProfesionalesTabla = ( {API_ENDPOINT} ) => {
 	const [data, setData] = useState([]);
 	const [showProfesionalesModal, setShowProfesionalesModal] = useState(false);
 	const [selectedProfesional, setSelectedProfesional] = useState(null);
@@ -18,7 +18,7 @@ const ProfesionalesTabla = () => {
 
 	const fetchProfesionales = async () => {
 		try {
-			const endpoint = "http://localhost:5000/api/profesionales";
+			const endpoint = `${API_ENDPOINT}/profesionales`;
 			const direction = "";
 			const method = "GET";
 			const body = false;
@@ -49,7 +49,7 @@ const ProfesionalesTabla = () => {
 	// OBTENER LISTA DE ESTADOS DE MATRICULA
 	const fetchEstadosMatriculas = async () => {
 		try {
-			const endpoint = "http://localhost:5000/api/estados";
+			const endpoint = `${API_ENDPOINT}/estados`;
 			const direction = "";
 			const method = "GET";
 			const body = false;
@@ -97,7 +97,7 @@ const ProfesionalesTabla = () => {
 		// Si el usuario confirma la eliminación
 		if (result.isConfirmed) {
 			try {
-				const endpoint = "http://localhost:5000/api/profesionales/";
+				const endpoint = `${API_ENDPOINT}/profesionales/`;
 				const direction = id;
 				const method = "DELETE";
 				const body = false;
@@ -147,8 +147,7 @@ const ProfesionalesTabla = () => {
 	const fetchMovimientos = async (profesional) => {
 		const profesionalId = profesional.id;
 		try {
-			const endpoint =
-				"http://localhost:5000/api/movimientos/profesional/";
+			const endpoint = `${API_ENDPOINT}/movimientos/profesional/`;
 			const direction = profesionalId;
 			const method = "GET";
 			const body = false;
@@ -207,7 +206,7 @@ const ProfesionalesTabla = () => {
 
 	const fetchMedioDePago = async (medioId) => {
 		try {
-			const endpoint = `http://localhost:5000/api/mediosdepago/${medioId}`;
+			const endpoint = `${API_ENDPOINT}/mediosdepago/${medioId}`;
 			const direction = "";
 			const method = "GET";
 			const body = false;
@@ -661,6 +660,7 @@ const ProfesionalesTabla = () => {
 				data={selectedProfesional}
 				modalMode={modalMode}
 				fetchProfesionales={fetchProfesionales}
+				API_ENDPOINT={API_ENDPOINT}
 			/>
 			<GestionesModal
 				showModal={showGestionesModal}
@@ -668,6 +668,7 @@ const ProfesionalesTabla = () => {
 				data={selectedProfesional}
 				movimientos={movimientos}
 				fetchMovimientos={fetchMovimientos}
+				API_ENDPOINT={API_ENDPOINT}
 			/>
 		</>
 	);

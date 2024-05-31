@@ -14,7 +14,7 @@ import MovimientosPorFechaReport from "./movimientos/MovimientosPorFechaReport";
 import PagosRealizadosPorFechaReport from "./movimientos/PagosRealizadosPorFechaReport";
 import CobranzasPorFechaReport from "./movimientos/CobranzaPorFechaReport";
 
-const Informes = () => {
+const Informes = ( { API_ENDPOINT } ) => {
 	const [showInforme, setShowInforme] = useState(false);
 	const [nombreInforme, setNombreInforme] = useState("");
 	const [informeComponent, setInformeComponent] = useState(null);
@@ -89,6 +89,7 @@ const Informes = () => {
 							subtitle={`desde ${moment(fechaDesde).format(
 								"DD-MM-YYYY"
 							)} al ${moment(fechaHasta).format("DD-MM-YYYY")}`}
+							API_ENDPOINT={API_ENDPOINT}
 						/>
 					),
 					title: "Denuncias Activas",
@@ -103,6 +104,7 @@ const Informes = () => {
 							subtitle={`desde ${moment(fechaDesde).format(
 								"DD-MM-YYYY"
 							)} al ${moment(fechaHasta).format("DD-MM-YYYY")}`}
+							API_ENDPOINT={API_ENDPOINT}
 						/>
 					),
 					title: "Próximos Seguimientos",
@@ -125,6 +127,7 @@ const Informes = () => {
 							subtitle={`desde ${moment(fechaDesde).format(
 								"DD-MM-YYYY"
 							)} al ${moment(fechaHasta).format("DD-MM-YYYY")}`}
+							API_ENDPOINT={API_ENDPOINT}
 						/>
 					),
 					title: "Movimientos",
@@ -139,6 +142,7 @@ const Informes = () => {
 							subtitle={`desde ${moment(fechaDesde).format(
 								"DD-MM-YYYY"
 							)} al ${moment(fechaHasta).format("DD-MM-YYYY")}`}
+							API_ENDPOINT={API_ENDPOINT}
 						/>
 					),
 					title: "Pagos Realizados",
@@ -153,6 +157,7 @@ const Informes = () => {
 							subtitle={`desde ${moment(fechaDesde).format(
 								"DD-MM-YYYY"
 							)} al ${moment(fechaHasta).format("DD-MM-YYYY")}`}
+							API_ENDPOINT={API_ENDPOINT}
 						/>
 					),
 					title: "Cobranzas",

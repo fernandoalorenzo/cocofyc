@@ -11,15 +11,16 @@ import authenticateToken from "../functions/tokenVerify.js";
 const parametrosRouter = express.Router();
 
 // DEFINIMOS LAS RUTAS
-// parametrosRouter.get("/", authenticateToken, getParametros);
-// parametrosRouter.get("/:id", authenticateToken, getParametroById);
-// parametrosRouter.post("/", authenticateToken, createParametro);
-// parametrosRouter.patch("/:id", authenticateToken, patchParametro);
+parametrosRouter.get("/", authenticateToken, getParametros);
+parametrosRouter.get("/:id", authenticateToken, getParametroById);
+parametrosRouter.post("/", authenticateToken, createParametro);
+parametrosRouter.patch("/:id", authenticateToken, patchParametro);
 
-parametrosRouter.get("/", getParametros);
-parametrosRouter.get("/:id", getParametroById);
+// parametrosRouter.get("/", getParametros);
+// parametrosRouter.get("/:id", getParametroById);
+// parametrosRouter.post("/", createParametro);
+// parametrosRouter.patch("/:id", patchParametro);
+
 parametrosRouter.get("/sinToken/:id", getParametroSinToken);
-parametrosRouter.post("/", createParametro);
-parametrosRouter.patch("/:id", patchParametro);
 
 export default parametrosRouter;

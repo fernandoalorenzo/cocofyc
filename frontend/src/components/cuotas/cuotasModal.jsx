@@ -9,6 +9,7 @@ const CuotasModal = ({
 	data,
 	modalMode,
 	fetchCuotas,
+	API_ENDPOINT,
 }) => {
 	const {
 		register,
@@ -41,7 +42,7 @@ const CuotasModal = ({
 
 		if (modalMode === "agregar") {
 			try {
-				const endpoint = "http://localhost:5000/api/cuotas/";
+				const endpoint = `${API_ENDPOINT}/cuotas/`;
 				const direction = cuota;
 				const method = "GET";
 				const body = "";
@@ -84,7 +85,7 @@ const CuotasModal = ({
 		formData = { ...formData, user_id: user.id };
 
 		try {
-			const endpoint = "http://localhost:5000/api/cuotas/";
+			const endpoint = `${API_ENDPOINT}/cuotas/`;
 			const direction = id ? `${id}` : "";
 			const method = id ? "PATCH" : "POST";
 			const body = formData;

@@ -4,7 +4,7 @@ import MovimientosTab from "./tabProfesionalesMovimientos";
 import EstablecimientosTab from "./tabProfesionalesEstablecimientos.jsx";
 import GenerarCuotaTab from "./tabProfesionalesCuotas.jsx";
 
-const GestionesModal = ({ showModal, closeModal, data, movimientos, fetchMovimientos }) => {
+const GestionesModal = ({ showModal, closeModal, data, movimientos, fetchMovimientos, API_ENDPOINT }) => {
 	const profesionalId = data ? data.id : null;
 	const [activeTab, setActiveTab] = useState("cargarPago"); // Estado local para controlar la pestaña activa
 	const user = JSON.parse(localStorage.getItem("user")) || {};
@@ -86,26 +86,6 @@ const GestionesModal = ({ showModal, closeModal, data, movimientos, fetchMovimie
 									Cargar Pago
 								</button>
 							</li>
-							{/********************** MOVIMIENTOS **********************/}
-							{/* <li className="nav-item" role="presentation">
-								<button
-									className={`nav-link ${
-										activeTab === "movimientos"
-											? "active"
-											: ""
-									}`}
-									onClick={() =>
-										handleTabChange("movimientos")
-									}
-									id="movimientos-tab"
-									data-bs-toggle="tab"
-									data-bs-target="#movimientos"
-									type="button"
-									role="tab"
-									aria-controls="movimientos">
-									Pagos
-								</button>
-							</li> */}
 							{/********************** GENERAR CUOTA **********************/}
 							<li className="nav-item" role="presentation">
 								<button
@@ -146,24 +126,6 @@ const GestionesModal = ({ showModal, closeModal, data, movimientos, fetchMovimie
 									Establecimientos
 								</button>
 							</li>
-							{/********************** DENUNCIAS **********************/}
-							{/* <li className="nav-item" role="presentation">
-								<button
-									className={`nav-link ${
-										activeTab === "denuncias"
-											? "active"
-											: ""
-									}`}
-									onClick={() => handleTabChange("denuncias")}
-									id="denuncias-tab"
-									data-bs-toggle="tab"
-									data-bs-target="#denuncias"
-									type="button"
-									role="tab"
-									aria-controls="establecimientos">
-									Denuncias
-								</button>
-							</li> */}
 						</ul>
 						{/* ********************* CONTENIDO ********************* */}
 						<div className="tab-content" id="myTabContent">
@@ -209,6 +171,7 @@ const GestionesModal = ({ showModal, closeModal, data, movimientos, fetchMovimie
 											updateMovimientos={
 												updateMovimientos
 											} // Pasamos la función de actualización como prop
+											API_ENDPOINT={API_ENDPOINT}
 											/>
 									</div>
 									<div
@@ -219,25 +182,11 @@ const GestionesModal = ({ showModal, closeModal, data, movimientos, fetchMovimie
 											profesionalId={profesionalId}
 											data={data}
 											movimientos={movimientos}
+											API_ENDPOINT={API_ENDPOINT}
 										/>
 									</div>
 								</div>
 							</div>
-							{/* ********************* MOVIMIENTOS ********************* */}
-							{/* <div
-								className={`tab-pane fade ${
-									activeTab === "movimientos"
-										? "show active"
-										: ""
-								} bg-dark-subtle p-2`}
-								id="movimientos"
-								role="tabpanel"
-								aria-labelledby="movimientos-tab">
-								<MovimientosTab
-									profesionalId={profesionalId}
-									movimientos={movimientos}
-								/>
-							</div> */}
 							{/* ********************* GENERAR CUOTA ********************* */}
 							<div
 								className={`tab-pane fade ${
@@ -251,6 +200,7 @@ const GestionesModal = ({ showModal, closeModal, data, movimientos, fetchMovimie
 								<GenerarCuotaTab
 									profesionalId={profesionalId}
 									userId={user.id}
+									API_ENDPOINT={API_ENDPOINT}
 								/>
 							</div>
 							{/* ********************* ESTABLECIMIENTOS ********************* */}
@@ -265,6 +215,7 @@ const GestionesModal = ({ showModal, closeModal, data, movimientos, fetchMovimie
 								aria-labelledby="establecimientos-tab">
 								<EstablecimientosTab
 									profesionalId={profesionalId}
+									API_ENDPOINT={API_ENDPOINT}
 								/>
 							</div>
 						</div>

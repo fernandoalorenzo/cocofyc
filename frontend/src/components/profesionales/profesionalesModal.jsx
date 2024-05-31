@@ -9,6 +9,7 @@ const ProfesionalesModal = ({
 	data,
 	modalMode,
 	fetchProfesionales,
+	API_ENDPOINT,
 }) => {
 	const [estadosMatriculas, setEstadosMatriculas] = useState([]);
 
@@ -98,7 +99,7 @@ const ProfesionalesModal = ({
 	// FUNCION PARA VERIFICAR SI EL DNI EXISTE
 	const checkDniExists = async (dni) => {
 		try {
-			const endpoint = "http://localhost:5000/api/profesionales/dni/";
+			const endpoint = `${API_ENDPOINT}/profesionales/dni/`;
 			const direction = `${dni}`;
 			const method = "GET";
 			const body = false;
@@ -169,7 +170,7 @@ const ProfesionalesModal = ({
 				}
 			}
 
-			const endpoint = "http://localhost:5000/api/profesionales/";
+			const endpoint = `${API_ENDPOINT}/profesionales/`;
 			const direction = formData.id ? `${formData.id}` : "";
 			const method = formData.id ? "PUT" : "POST";
 			const body = formData;
@@ -220,7 +221,7 @@ const ProfesionalesModal = ({
 	useEffect(() => {
 		const fetchEstadosMatriculas = async () => {
 			try {
-				const endpoint = "http://localhost:5000/api/estados";
+				const endpoint = `${API_ENDPOINT}/estados`;
 				const direction = "";
 				const method = "GET";
 				const body = false;
@@ -300,7 +301,7 @@ const ProfesionalesModal = ({
 				formData.set("file", archivo, fileName);
 
 				// Endpoint para la subida de la imagen
-				const endpoint = "http://localhost:5000/api/loadimage";
+				const endpoint = `${API_ENDPOINT}/loadimage`;
 
 				// Realizar la petición al servidor
 				const response = await fetch(endpoint, {
@@ -333,7 +334,7 @@ const ProfesionalesModal = ({
 		if (data && data.imagen) {
 			try {
 				const response = await fetch(
-					"http://localhost:5000/api/deleteimage/" + data.imagen,
+					`${API_ENDPOINT}/deleteimage/${data.imagen}`,
 					{
 						method: "DELETE",
 						headers: {

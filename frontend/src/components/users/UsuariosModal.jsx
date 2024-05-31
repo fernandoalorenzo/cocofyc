@@ -9,6 +9,7 @@ const UsuariosModal = ({
 	data,
 	modalMode,
 	fetchUsuarios,
+	API_ENDPOINT,
 }) => {
 	const {
 		register,
@@ -66,7 +67,7 @@ const UsuariosModal = ({
 		console.log("formData:", formData);
 
 		try {
-			const endpoint = "http://localhost:5000/api/usuarios/";
+			const endpoint = `${API_ENDPOINT}/usuarios/`;
 			const direction = formData.id ? `${formData.id}` : "";
 			const method = formData.id ? "PATCH" : "POST";
 			const body = formData;

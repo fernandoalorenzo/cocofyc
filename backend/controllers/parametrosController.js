@@ -22,7 +22,7 @@ const createParametro = async (request, response) => {
 
 // Obtener parametros
 const getParametros = async (request, response) => {
-	// authenticateToken(request, response, async () => {
+	authenticateToken(request, response, async () => {
 	try {
 		const parametros = await Parametros.findAll(request.body);
 		response.status(201).json({
@@ -33,7 +33,7 @@ const getParametros = async (request, response) => {
 		console.error("Error: " + error.message);
 		response.status(500).send({ message: error.message });
 	}
-	// });
+	});
 };
 
 // Obtener un parametro por Id

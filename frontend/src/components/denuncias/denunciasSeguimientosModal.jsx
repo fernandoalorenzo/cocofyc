@@ -10,6 +10,7 @@ const DenunciasSeguimientosModal = ({
 	modalSeguimientoMode,
 	updateSeguimientos,
 	denunciaId,
+	API_ENDPOINT,
 }) => {
 	const {
 		register,
@@ -19,6 +20,8 @@ const DenunciasSeguimientosModal = ({
 	} = useForm();
 
 	const user = JSON.parse(localStorage.getItem("user")) || {};
+	const [data, setData] = useState([]);
+	const [archivosSeguimiento, setArchivosSeguimiento] = useState([]);
 
 	const getCurrentDate = () => {
 		const now = new Date();
@@ -46,7 +49,7 @@ const DenunciasSeguimientosModal = ({
 		};
 
 		try {
-			const endpoint = "http://localhost:5000/api/denuncias/seguimiento/";
+			const endpoint = `${API_ENDPOINT}/denuncias/seguimiento/`;
 			if (modalSeguimientoMode === "editar") {
 				direction = editingSeguimiento.id;
 				method = "PUT";
@@ -75,15 +78,14 @@ const DenunciasSeguimientosModal = ({
 					uploadedFileNames = await uploadFile(
 						selectedFiles,
 						editingSeguimiento.id
-                    );
+					);
 					if (uploadedFileNames.length > 0) {
 						try {
 							for (const archivo of uploadedFileNames) {
 								const formData = new FormData();
 								formData.append("file", archivo);
 
-								const endpoint =
-									"http://localhost:5000/api/archivos-seguimientos/";
+								const endpoint = `${API_ENDPOINT}/archivos-seguimientos/`;
 								const method = "POST";
 								const body = {
 									user_id: user.id,
@@ -91,7 +93,7 @@ const DenunciasSeguimientosModal = ({
 										editingSeguimiento.id,
 									fecha: getCurrentDate(),
 									archivo: archivo.nombre,
-									archivo_descripcion: archivo.descripcion
+									archivo_descripcion: archivo.descripcion,
 								};
 								const headers = {
 									"Content-Type": "application/json",
@@ -118,25 +120,7 @@ const DenunciasSeguimientosModal = ({
 							);
 						}
 					}
-				} else if (!currentFile && formData.archivo) {
-					const confirmed = await Swal.fire({
-						title: "¿Estás seguro?",
-						text: "¿Está seguro que desea eliminar el archivo actual?",
-						icon: "warning",
-						showCancelButton: true,
-						confirmButtonColor: "#3085d6",
-						cancelButtonColor: "#d33",
-						confirmButtonText: "Sí, eliminar",
-						cancelButtonText: "Cancelar",
-					});
-					if (confirmed.isConfirmed) {
-						await deleteFileAndData();
-						formData.archivo = null;
-					} else {
-						return; // No proceder con la eliminación
-					}
 				}
-
 				Swal.fire({
 					icon: "success",
 					title: "Operación exitosa!",
@@ -148,6 +132,10 @@ const DenunciasSeguimientosModal = ({
 				// CERRAR MODAL
 				setTimeout(() => {
 					updateSeguimientos();
+					reset(initialState);
+					setSelectedFiles([]);
+					setArchivosSeguimiento([]);
+					setData([]);
 					closeModalSeguimiento(true);
 				}, 2500);
 			} else {
@@ -173,10 +161,34 @@ const DenunciasSeguimientosModal = ({
 				respuesta: editingSeguimiento.respuesta,
 				proximo_seguimiento: editingSeguimiento.proximo_seguimiento,
 			});
+			fetchArchivos();
 		} else if (modalSeguimientoMode === "agregar") {
 			reset(initialState);
 		}
 	}, [editingSeguimiento, modalSeguimientoMode, reset]);
+
+	useEffect(() => {
+		if (data && data.length > 0) {
+			setArchivosSeguimiento(data);
+		}
+	}, [data]);
+
+	useEffect(() => {
+		setArchivosSeguimiento([]);
+		if (editingSeguimiento && modalSeguimientoMode === "editar") {
+			reset({
+				fecha: editingSeguimiento.fecha,
+				respuesta: editingSeguimiento.respuesta,
+				proximo_seguimiento: editingSeguimiento.proximo_seguimiento,
+			});
+			fetchArchivos();
+		} else if (modalSeguimientoMode === "agregar") {
+			reset(initialState);
+		}
+		if (showModalSeguimiento) {
+			fetchArchivos();
+		}
+	}, [showModalSeguimiento]);
 
 	// ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ ARCHIVOS ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
 	const [selectedFiles, setSelectedFiles] = useState([]);
@@ -210,11 +222,41 @@ const DenunciasSeguimientosModal = ({
 		});
 	};
 
-	function deleteHandler(fileUrl) {
+	function deleteFilesSelectedHandler(fileUrl) {
 		setSelectedFiles((previousFiles) =>
 			previousFiles.filter((file) => file.url !== fileUrl)
 		);
 	}
+
+	const fetchArchivos = async () => {
+		try {
+			const endpoint = `${API_ENDPOINT}/archivos-seguimientos/`;
+			const direction = editingSeguimiento.id;
+			const method = "GET";
+			const body = false;
+			const headers = {
+				"Content-Type": "application/json",
+				Authorization: localStorage.getItem("token"),
+			};
+
+			const response = await apiConnection(
+				endpoint,
+				direction,
+				method,
+				body,
+				headers
+			);
+
+			if (response.data) {
+				// const responseData = await response.json();
+				setData(response.data);
+			} else {
+				throw new Error("Failed to fetch archivos seguimientos.");
+			}
+		} catch (error) {
+			console.error("Error:", error.message);
+		}
+	};
 
 	// Función para subir el archivo al servidor
 	const uploadFile = async (archivos, id_seguimiento) => {
@@ -222,13 +264,14 @@ const DenunciasSeguimientosModal = ({
 			const promises = archivos.map(async (archivo) => {
 				if (archivo) {
 					// Crear un objeto FormData para enviar la archivo al servidor
-					const formData = new FormData();
-					const fileExtension = archivo.name.split(".").pop();
-					const fileName = `seguimiento_${id_seguimiento}_${archivo.name}`;
-
+					// const fileExtension = archivo.name.split(".").pop();
+                    const fileName = `seguimiento_${id_seguimiento}_${normalizeFileName(
+                        archivo.name
+                    )}`;
+                    const formData = new FormData();
 					formData.append("file", archivo.file, fileName);
 
-					const endpoint = "http://localhost:5000/api/loadimage";
+					const endpoint = `${API_ENDPOINT}/loadimage/`;
 
 					const response = await fetch(endpoint, {
 						method: "POST",
@@ -250,9 +293,7 @@ const DenunciasSeguimientosModal = ({
 				}
 			});
 
-			// const fileNames = await Promise.all(promises);
-            // return fileNames;
-            const fileData = await Promise.all(promises);
+			const fileData = await Promise.all(promises);
 			return fileData;
 		} catch (error) {
 			console.error("Error al subir los archivos:", error.message);
@@ -260,11 +301,22 @@ const DenunciasSeguimientosModal = ({
 		}
 	};
 
-	const deleteFileAndData = async () => {
-		if (data && data.archivo) {
+	const deleteFilesSavedHandler = async (archivo) => {
+		const confirmed = await Swal.fire({
+			title: "¿Estás seguro?",
+			text: "¿Está seguro que desea eliminar este archivo?",
+			icon: "warning",
+			showCancelButton: true,
+			confirmButtonColor: "#3085d6",
+			cancelButtonColor: "#d33",
+			confirmButtonText: "Sí, eliminar",
+			cancelButtonText: "Cancelar",
+		});
+
+		if (confirmed.isConfirmed) {
 			try {
 				const response = await fetch(
-					"http://localhost:5000/api/deleteimage/" + data.archivo,
+					`${API_ENDPOINT}/deleteimage/${archivo.archivo}`,
 					{
 						method: "DELETE",
 						headers: {
@@ -276,13 +328,54 @@ const DenunciasSeguimientosModal = ({
 						}),
 					}
 				);
-				setSelectedFiles([]);
-				setFile(null);
-				setCurrentFile(null);
+
+				if (response.ok) {
+					const endpoint = `${API_ENDPOINT}/archivos-seguimientos/`;
+					const direction = archivo.id;
+					const method = "DELETE";
+					const body = archivo;
+					const headers = {
+						"Content-Type": "application/json",
+						Authorization: localStorage.getItem("token"),
+					};
+
+					const responseFetch = await apiConnection(
+						endpoint,
+						direction,
+						method,
+						body,
+						headers
+					);
+
+					Swal.fire({
+						icon: "success",
+						title: "Operación exitosa!",
+						text: "Archivo eliminado exitosamente.",
+						showConfirmButton: false,
+						timer: 2500,
+					});
+
+					setTimeout(() => {}, 2500);
+					await fetchArchivos();
+				}
 			} catch (error) {
 				console.error("Error deleting image:", error);
 			}
 		}
+	};
+
+    const normalizeFileName = (originalName) => {
+		// Reemplazar caracteres acentuados y espacios
+		const normalized = originalName.toLowerCase()
+			.replace(/[áÁ]/g, "a")
+			.replace(/[éÉ]/g, "e")
+			.replace(/[íÍ]/g, "i")
+			.replace(/[óÓ]/g, "o")
+			.replace(/[úÚ]/g, "u")
+			.replace(/[ñÑ]/g, "n")
+			.replace(/ /g, "_");
+
+        return normalized;
 	};
 	// ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ ARCHIVOS ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 
@@ -302,7 +395,9 @@ const DenunciasSeguimientosModal = ({
 				aria-hidden={!showModalSeguimiento}>
 				<div className="modal-dialog modal-xl modal-dialog-centered">
 					<div className="modal-content bg-dark">
-						<div className="modal-header p-2 px-3 bg-success">
+						<div
+							className="modal-header p-2 px-3"
+							style={{ background: "#efb68b" }}>
 							<h5 className="modal-title text-white">
 								{modalSeguimientoMode === "agregar"
 									? "Agregar "
@@ -316,7 +411,9 @@ const DenunciasSeguimientosModal = ({
 								onClick={() => {
 									reset(initialState);
 									setSelectedFiles([]);
-									closeModalSeguimiento();
+									setArchivosSeguimiento([]);
+									setData([]);
+									closeModalSeguimiento(true);
 								}}></button>
 						</div>
 						<div className="container-fluid mt-3">
@@ -380,14 +477,175 @@ const DenunciasSeguimientosModal = ({
 										</span>
 									)}
 								</div>
-								<div className="row mb-3">
-									<div className="col-2">
-										<label className="btn btn-success position-relative">
-											<i className="fa-solid fa-square-plus fa-lg"></i>
+								{archivosSeguimiento &&
+								archivosSeguimiento.length > 0 ? (
+									<div className="card">
+										<div className="card-header bg-warning opacity-75 text-bold py-0 d-flex">
+											<label className="btn-sm position-relative m-0">
+												Archivos almacenados
+												{archivosSeguimiento.length >
+													0 && (
+													<span className="position-absolute ms-2 top-50 start-100 translate-middle badge rounded-pill bg-danger">
+														{
+															archivosSeguimiento.length
+														}
+													</span>
+												)}
+											</label>
+											<button
+												type="button"
+												className="btn btn-warning btn-sm ml-auto"
+												data-card-widget="collapse"
+												title="Collapse">
+												<i className="fas fa-minus"></i>
+											</button>
+										</div>
+										<div className="card-body bg-secondary">
+											<div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-3 mb-3">
+												{archivosSeguimiento.map(
+													(archivo, index) => {
+														const nombreArchivo =
+															archivo.archivo;
+														const getFileExtension =
+															(nombreArchivo) => {
+																return nombreArchivo
+																	.split(".")
+																	.pop()
+																	.toLowerCase();
+															};
+														const fileExtension =
+															getFileExtension(
+																nombreArchivo
+															);
+														const fileIcon =
+															fileExtension !==
+															"pdf"
+																? `http://localhost:5173/uploads/${nombreArchivo}`
+																: "../../../assets/img/icon_pdf_512.png";
+														return (
+															<div
+																className="col-12 col-md-6 col-lg-4 col-xl-4"
+																key={
+																	archivo.id
+																}>
+																<div className="card shadow h-100">
+																	<div className="row g-0 h-100">
+																		<div className="col-md-2 p-1 d-flex flex-column justify-content-center align-items-center">
+																			<img
+																				style={{
+																					borderRadius:
+																						".25rem",
+																					maxWidth:
+																						"3.75rem",
+																					maxHeight:
+																						"3.75rem",
+																					objectFit:
+																						"cover",
+																				}}
+																				className="img-fluid rounded-start"
+																				src={
+																					fileIcon
+																				}
+																				alt={
+																					fileExtension ===
+																					"pdf"
+																						? "PDF Icon"
+																						: "IMG Preview"
+																				}
+																			/>
+																			<div className="d-flex justify-content-around align-items-center mt-2 w-100">
+																				<span
+																					className="badge bg-danger d-flex justify-content-center align-items-center mb-2"
+																					style={{
+																						width: "1.35rem",
+																						height: "1.35rem",
+																						cursor: "pointer",
+																					}}
+																					onClick={() =>
+																						deleteFilesSavedHandler(
+																							archivo
+																						)
+																					}>
+																					<i className="fa-solid fa-trash text-white"></i>
+																				</span>
+																				<span
+																					className="badge bg-info d-flex justify-content-center align-items-center mb-2"
+																					style={{
+																						width: "1.35rem",
+																						height: "1.35rem",
+																						cursor: "pointer",
+																					}}
+																					onClick={() =>
+																						window.open(
+																							`http://localhost:5173/uploads/${nombreArchivo}`,
+																							"_blank"
+																						)
+																					}>
+																					<i className="fa-solid fa-eye text-white"></i>
+																				</span>
+																			</div>
+																		</div>
+																		<div className="col-md-10 d-flex flex-column">
+																			<div className="card-body p-2 flex-grow-1">
+																				<div className="d-flex justify-content-between align-items-center">
+																					<h6
+																						className="card-title"
+																						style={{
+																							overflow:
+																								"hidden",
+																							textOverflow:
+																								"ellipsis",
+																							whiteSpace:
+																								"nowrap",
+																							fontSize:
+																								"smaller",
+																						}}
+																						title={
+																							archivo.archivo
+																						}>
+																						{archivo.archivo.substring(
+																							49
+																						)}
+																					</h6>
+																				</div>
+																				<span
+																					className="form-control"
+																					id={`archivo.descripcion${index}`}
+																					style={{
+																						minHeight:
+																							"3.5rem",
+																						maxHeight:
+																							"3.5rem",
+																						resize: "none",
+																						fontSize:
+																							"smaller",
+																					}}>
+																					{
+																						archivo.archivo_descripcion
+																					}
+																				</span>
+																			</div>
+																		</div>
+																	</div>
+																</div>
+															</div>
+														);
+													}
+												)}
+											</div>
+										</div>
+									</div>
+								) : null}
+								<div className="card">
+									<div className="card-header bg-primary opacity-75 text-bold pt-1 pb-0 d-flex ">
+										<label
+											className="btn-sm position-relative m-0"
+											style={{ cursor: "pointer" }}>
+											<i className="fa-solid fa-square-plus fa-xl"></i>
 											{"  "}
-											Archivos
+											Agregar archivos
 											{selectedFiles.length > 0 && (
-												<span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+												<span className="position-absolute ms-2 top-50 start-100 translate-middle badge rounded-pill bg-danger">
 													{selectedFiles.length}
 												</span>
 											)}
@@ -402,121 +660,138 @@ const DenunciasSeguimientosModal = ({
 												}}
 											/>
 										</label>
+										<button
+											type="button"
+											className="btn btn-primary opacity-75 btn-sm ml-auto"
+											data-card-widget="collapse"
+											title="Collapse">
+											<i className="fas fa-minus"></i>
+										</button>
 									</div>
-								</div>
-								<div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-3 mb-3">
-									{selectedFiles &&
-										selectedFiles.map((file, index) => {
-											const fileIcon = file.type.includes(
-												"pdf"
-											)
-												? "../../../assets/img/icon_pdf_512.png"
-												: "../../../assets/img/icon_img_512.png";
-											return (
-												<div
-													className="col-12 col-md-6 col-lg-4 col-xl-4"
-													key={file.url}>
-													<div className="card shadow h-100">
-														<div className="row g-0 h-100">
-															<div className="col-md-2 p-1 justify-content-center align-items-center">
-																<img
-																	style={{
-																		borderRadius:
-																			".25rem",
-																		maxWidth:
-																			"3rem",
-																		maxHeight:
-																			"3rem",
-																		objectFit:
-																			"cover",
-																	}}
-																	className="img-fluid rounded-start"
-																	src={
-																		fileIcon
-																	}
-																	alt={
-																		file.type.includes(
-																			"pdf"
-																		)
-																			? "PDF icon"
-																			: "IMG icon"
-																	}
-																/>
-															</div>
-															<div className="col-md-10 d-flex flex-column">
-																<div className="card-body p-2 flex-grow-1">
-																	<div className="d-flex justify-content-between align-items-center">
-																		<h6
-																			className="card-title"
-																			style={{
-																				overflow:
-																					"hidden",
-																				textOverflow:
-																					"ellipsis",
-																				whiteSpace:
-																					"nowrap",
-																				fontSize:
-																					"smaller",
-																			}}
-																			title={
-																				file.name
-																			}>
-																			{
-																				file.name
-																			}
-																		</h6>
+									<div className="card-body bg-secondary py-0">
+										{selectedFiles &&
+											selectedFiles.length > 0 && (
+												<div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-3 mt-0 mb-3">
+													{selectedFiles &&
+														selectedFiles.map(
+															(file, index) => {
+																const fileIcon =
+																	file.type.includes(
+																		"pdf"
+																	)
+																		? "../../../assets/img/icon_pdf_512.png"
+																		: "../../../assets/img/icon_img_512.png";
+																return (
+																	<div
+																		className="col-12 col-md-6 col-lg-4 col-xl-4"
+																		key={
+																			file.url
+																		}>
+																		<div className="card shadow h-100">
+																			<div className="row g-0 h-100">
+																				<div className="col-md-2 p-1 justify-content-center align-items-center">
+																					<img
+																						style={{
+																							borderRadius:
+																								".25rem",
+																							maxWidth:
+																								"3rem",
+																							maxHeight:
+																								"3rem",
+																							objectFit:
+																								"cover",
+																						}}
+																						className="img-fluid rounded-start"
+																						src={
+																							fileIcon
+																						}
+																						alt={
+																							file.type.includes(
+																								"pdf"
+																							)
+																								? "PDF Icon"
+																								: "IMG Icon"
+																						}
+																					/>
+																				</div>
+																				<div className="col-md-10 d-flex flex-column">
+																					<div className="card-body p-2 flex-grow-1">
+																						<div className="d-flex justify-content-between align-items-center">
+																							<h6
+																								className="card-title"
+																								style={{
+																									overflow:
+																										"hidden",
+																									textOverflow:
+																										"ellipsis",
+																									whiteSpace:
+																										"nowrap",
+																									fontSize:
+																										"smaller",
+																								}}
+																								title={
+																									file.name
+																								}>
+																								{
+																									file.name
+																								}
+																							</h6>
 
-																		<span
-																			className="badge rounded-circle bg-danger d-flex justify-content-center align-items-center mb-2"
-																			style={{
-																				width: "1.65rem",
-																				height: "1.65rem",
-																				cursor: "pointer",
-																			}}
-																			onClick={() =>
-																				deleteHandler(
-																					file.url
-																				)
-																			}>
-																			<i className="fa-solid fa-trash text-white fa-lg"></i>
-																		</span>
+																							<span
+																								className="badge rounded-circle bg-danger d-flex justify-content-center align-items-center mb-2"
+																								style={{
+																									width: "1.65rem",
+																									height: "1.65rem",
+																									cursor: "pointer",
+																								}}
+																								onClick={() =>
+																									deleteFilesSelectedHandler(
+																										file.url
+																									)
+																								}>
+																								<i className="fa-solid fa-trash text-white fa-lg"></i>
+																							</span>
+																						</div>
+																						<textarea
+																							className="form-control"
+																							id={`descripcion${index}`}
+																							{...register(
+																								`descripcion${index}`
+																							)}
+																							value={
+																								file.descripcion
+																							}
+																							onChange={(
+																								e
+																							) =>
+																								updateDescripcion(
+																									index,
+																									e
+																										.target
+																										.value
+																								)
+																							}
+																							style={{
+																								minHeight:
+																									"3.5rem",
+																								maxHeight:
+																									"3.5rem",
+																								resize: "none",
+																								fontSize:
+																									"smaller",
+																							}}
+																							placeholder="Descripción"></textarea>
+																					</div>
+																				</div>
+																			</div>
+																		</div>
 																	</div>
-																	<textarea
-																		className="form-control"
-																		id={`descripcion${index}`}
-																		{...register(
-																			`descripcion${index}`
-																		)}
-																		value={
-																			file.descripcion
-																		}
-																		onChange={(
-																			e
-																		) =>
-																			updateDescripcion(
-																				index,
-																				e
-																					.target
-																					.value
-																			)
-																		}
-																		style={{
-																			minHeight:
-																				"3.5rem",
-																			maxHeight:
-																				"3.5rem",
-																			resize: "none",
-																			fontSize:
-																				"smaller",
-																		}}
-																		placeholder="Descripción"></textarea>
-																</div>
-															</div>
-														</div>
-													</div>
+																);
+															}
+														)}
 												</div>
-											);
-										})}
+											)}
+									</div>
 								</div>
 								<div className="modal-footer text-end">
 									<button
@@ -530,7 +805,9 @@ const DenunciasSeguimientosModal = ({
 										onClick={() => {
 											reset(initialState);
 											setSelectedFiles([]);
-											closeModalSeguimiento();
+											setArchivosSeguimiento([]);
+											setData([]);
+											closeModalSeguimiento(true);
 										}}>
 										Cancelar
 									</button>

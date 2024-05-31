@@ -34,6 +34,11 @@ const Layout = ({ children }) => (
 	</>
 );
 
+const API_ENDPOINT =
+	process.env.NODE_ENV === "production"
+		? "https://cocofyc.neoit.com.ar/api"
+		: "http://localhost:5000/api";
+
 const App = () => {
 	const [currentUser, setCurrentUser] = useState(
 		JSON.parse(localStorage.getItem("user"))
@@ -51,7 +56,7 @@ const App = () => {
 						element={
 							<AuthHandler>
 								<Layout>
-									<Home />
+									<Home API_ENDPOINT={API_ENDPOINT} />
 								</Layout>
 							</AuthHandler>
 						}
@@ -61,7 +66,9 @@ const App = () => {
 						element={
 							<AuthHandler>
 								<Layout>
-									<Profesionales />
+									<Profesionales
+										API_ENDPOINT={API_ENDPOINT}
+									/>
 								</Layout>
 							</AuthHandler>
 						}
@@ -71,7 +78,7 @@ const App = () => {
 						element={
 							<AuthHandler>
 								<Layout>
-									<Perfil />
+									<Perfil API_ENDPOINT={API_ENDPOINT} />
 								</Layout>
 							</AuthHandler>
 						}
@@ -81,7 +88,9 @@ const App = () => {
 						element={
 							<AuthHandler>
 								<Layout>
-									<Establecimientos />
+									<Establecimientos
+										API_ENDPOINT={API_ENDPOINT}
+									/>
 								</Layout>
 							</AuthHandler>
 						}
@@ -91,7 +100,7 @@ const App = () => {
 						element={
 							<AuthHandler>
 								<Layout>
-									<Usuarios />
+									<Usuarios API_ENDPOINT={API_ENDPOINT} />
 								</Layout>
 							</AuthHandler>
 						}
@@ -101,7 +110,7 @@ const App = () => {
 						element={
 							<AuthHandler>
 								<Layout>
-									<Parametros />
+									<Parametros API_ENDPOINT={API_ENDPOINT} />
 								</Layout>
 							</AuthHandler>
 						}
@@ -111,7 +120,7 @@ const App = () => {
 						element={
 							<AuthHandler>
 								<Layout>
-									<Cuotas />
+									<Cuotas API_ENDPOINT={API_ENDPOINT} />
 								</Layout>
 							</AuthHandler>
 						}
@@ -121,7 +130,7 @@ const App = () => {
 						element={
 							<AuthHandler>
 								<Layout>
-									<Denuncias />
+									<Denuncias API_ENDPOINT={API_ENDPOINT} />
 								</Layout>
 							</AuthHandler>
 						}
@@ -131,7 +140,7 @@ const App = () => {
 						element={
 							<AuthHandler>
 								<Layout>
-									<Pagos />
+									<Pagos API_ENDPOINT={API_ENDPOINT} />
 								</Layout>
 							</AuthHandler>
 						}
@@ -141,13 +150,19 @@ const App = () => {
 						element={
 							<AuthHandler>
 								<Layout>
-									<Informes />
+									<Informes API_ENDPOINT={API_ENDPOINT} />
 								</Layout>
 							</AuthHandler>
 						}
 					/>
-					<Route path="/register" element={<UserRegister />} />
-					<Route path="/login" element={<LoginForm />} />
+					<Route
+						path="/register"
+						element={<UserRegister API_ENDPOINT={API_ENDPOINT} />}
+					/>
+					<Route
+						path="/login"
+						element={<LoginForm API_ENDPOINT={API_ENDPOINT} />}
+					/>
 				</Routes>
 			</Router>
 		</div>

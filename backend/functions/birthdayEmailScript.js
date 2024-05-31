@@ -3,12 +3,15 @@ import nodemailer from "nodemailer";
 // import moment from "moment";
 import moment from "moment-timezone";
 import fs from "fs";
+import { config } from "dotenv";
+config();
+
+const API_ENDPOINT = process.env.API_ENDPOINT;
 
 // Configuración del momento de ejecución del script
 // Segundos (0-59) Minutos (0-59) Horas (0-23) Días del mes (1-31) Meses (1-12) Días de la semana (0-7, donde 0 y 7 representan Domingo)
 // "0 8 * * *" // se ejecutara a las 08.00
 // "0 1 * * *" // se ejecutara a las 01.00
-
 // const momento = "00 00 09 * * *"; // se ejecutara a las 09.00
 
 // Zona horaria local deseada
@@ -35,7 +38,6 @@ const desiredTime = moment()
 	.add(minutoDeseado, "minutes")
 	.add(segundoDeseado, "seconds");
 
-
 // Extraer los componentes de hora, minutos y segundos de la hora deseada
 const year = "*";
 const month = "*"; // Los meses en JavaScript empiezan en 0
@@ -47,9 +49,12 @@ const second = "00";
 // Formatear los componentes en una cadena cron
 const cronTime = `${second} ${minute} ${hour} ${day} ${month} ${year}`;
 
+console.log("Cron time: ", cronTime);
+
 // Lee la imagen como base64
 const imgLogo = fs.readFileSync(
 	"./../frontend/assets/img/LogoCOCOFYC_horizontal.png",
+	// "./public/assets/img/LogoCOCOFYC_horizontal.png",
 	{ encoding: "base64" }
 );
 

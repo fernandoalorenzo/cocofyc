@@ -18,13 +18,13 @@ Font.register({
 	src: "https://fonts.gstatic.com/s/oswald/v13/Y_TKV6o8WovbUd3m_X9aAA.ttf",
 });
 
-const ProfesionalesInactivosReport = ({ title, nombreInforme }) => {
+const ProfesionalesInactivosReport = ({ title, nombreInforme, API_ENDPOINT }) => {
 	const [data, setData] = useState([]);
 
 	useEffect(() => {
 		const fetchProfesionalesInactivos = async () => {
 			try {
-				const endpoint = "http://localhost:5000/api/profesionales";
+				const endpoint = `${API_ENDPOINT}/profesionales`;
 				const direction = "";
 				const method = "GET";
 				const body = false;
