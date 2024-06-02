@@ -8,7 +8,7 @@ const TotalMorosos = ( { API_ENDPOINT } ) => {
 	useEffect(() => {
 		const fetchProfesionalesMorosos = async () => {
 			try {
-				const endpoint = `${API_ENDPOINT}/profesionales/profesionales-morosos`;
+				const endpoint = `${API_ENDPOINT}/profesionales/profesionales-morosos/`;
 				const direction = "";
 				const method = "GET";
 				const body = false;

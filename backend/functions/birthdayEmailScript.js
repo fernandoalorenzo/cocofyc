@@ -1,6 +1,5 @@
 import cron from "node-cron";
 import nodemailer from "nodemailer";
-// import moment from "moment";
 import moment from "moment-timezone";
 import fs from "fs";
 import { config } from "dotenv";
@@ -44,17 +43,20 @@ const month = "*"; // Los meses en JavaScript empiezan en 0
 const day = "*";
 const hour = desiredTime.hours().toString().padStart(2, "0"); // Formatear a dos dígitos
 const minute = desiredTime.minutes().toString().padStart(2, "0"); // Formatear a dos dígitos
-const second = "00";
+const second = desiredTime.seconds().toString().padStart(2, "0"); // Formatear a dos dígitos
 
 // Formatear los componentes en una cadena cron
 const cronTime = `${second} ${minute} ${hour} ${day} ${month} ${year}`;
 
-console.log("Cron time: ", cronTime);
-
 // Lee la imagen como base64
 const imgLogo = fs.readFileSync(
-	"./../frontend/assets/img/LogoCOCOFYC_horizontal.png",
-	// "./public/assets/img/LogoCOCOFYC_horizontal.png",
+	// "./../frontend/assets/img/LogoCOCOFYC_horizontal.png",
+	//"./public/assets/img/LogoCOCOFYC_horizontal.png",
+	process.env.NODE_ENV === "production"
+		?
+			`${process.env.PROD_IMAGES_PATH}/LogoCOCOFYC_horizontal.png`
+		:
+			`${process.env.DEV_IMAGES_PATH}/LogoCOCOFYC_horizontal.png`,
 	{ encoding: "base64" }
 );
 
@@ -77,7 +79,7 @@ const getprofesionalesCumpleHoy = async () => {
 
 		// Realizar la solicitud a la API
 		const response = await fetch(
-			`http://localhost:5000/api/profesionales/${month}/${day}`
+			`${API_ENDPOINT}/profesionales/${month}/${day}`
 		);
 
 		if (!response.ok) {
@@ -96,20 +98,37 @@ const getprofesionalesCumpleHoy = async () => {
 
 // Función para enviar correos electrónicos
 const transporter = nodemailer.createTransport({
-	service: "Gmail",
-	host: "smtp.gmail.com",
-	port: 465,
+	//service: "Gmail",
+	//host: "smtp.gmail.com",
+	//port: 465,
+	//auth: {
+	//	user: "fernando.a.lorenzo@gmail.com",
+	//	pass: "estfibwgrbaihvxm",
+	//},
+
+	service: "NeoIt",
+	host: 'neoit.com.ar',
+	port: 25, // Puerto seguro SMTP
+	secure: false, // Habilitar el uso de SSL/TLS
 	auth: {
-		user: "fernando.a.lorenzo@gmail.com",
-		pass: "estfibwgrbaihvxm",
+	   user: 'info@neoit.com.ar', // Nombre de usuario del servidor de correo
+		pass: "8uwC8^4o6",
 	},
+
+	// service: "NeoIt",
+	// host: "smtp.gmail.com",
+	// port: 465,
+	// auth: {
+	// 	user: "neoit.powermind@gmail.com",
+	// 	pass: "duuurnxzldtzwqqx",
+	// },
 });
 
 // Función para enviar el correo electrónico
 const sendEmail = async (profesional) => {
 	try {
 		const mailOptions = {
-			from: nombreInstitucion + " <" + emailInstitucion + ">",
+			from: `${nombreInstitucion} <${emailInstitucion}>`,
 			to: profesional.email,
 			subject: "Feliz Cumpleaños!",
 			text: `¡Feliz cumpleaños, ${profesional.nombre}! Esperamos que tengas un día maravilloso.`,
@@ -119,13 +138,12 @@ const sendEmail = async (profesional) => {
                     <h1 style="color: #336699;">¡Feliz cumpleaños, ${profesional.nombre}!</h1>
                     <p style="font-size: 16px;">Esperamos que tengas un día maravilloso y lleno de alegría.</p>
                     <p style="font-size: 16px;">Atentamente,</p>
-                    <p style="font-size: 16px;">Equipo de ${nombreInstitucion}</p>
+                    <p style="font-size: 16px;">Equipo de <strong>${nombreInstitucion}</strong></p>
                 </div>
             `,
 		};
 
 		const info = await transporter.sendMail(mailOptions);
-		// console.log("Email sent to", profesional.nombre, ":", info.response);
 	} catch (error) {
 		console.error("Error sending email to", profesional.nombre, ":", error);
 	}
@@ -133,7 +151,8 @@ const sendEmail = async (profesional) => {
 
 const fetchParametros = async () => {
 	try {
-		const endpoint = "http://localhost:5000/api/parametros/sinToken/1";
+		const endpoint = `${API_ENDPOINT}/parametros/sinToken/1`;
+		console.log("endpoint: ", endpoint);
 		const method = "GET";
 		const headers = {
 			"Content-Type": "application/json",

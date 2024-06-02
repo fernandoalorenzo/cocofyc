@@ -39,6 +39,9 @@ const API_ENDPOINT =
 		? "https://cocofyc.neoit.com.ar/api"
 		: "http://localhost:5000/api";
 
+const SERVER_PATH =
+	process.env.NODE_ENV === "production" ? "./public" : "./../frontend";
+
 const App = () => {
 	const [currentUser, setCurrentUser] = useState(
 		JSON.parse(localStorage.getItem("user"))
@@ -130,7 +133,7 @@ const App = () => {
 						element={
 							<AuthHandler>
 								<Layout>
-									<Denuncias API_ENDPOINT={API_ENDPOINT} />
+									<Denuncias API_ENDPOINT={API_ENDPOINT} SERVER_PATH={SERVER_PATH} />
 								</Layout>
 							</AuthHandler>
 						}

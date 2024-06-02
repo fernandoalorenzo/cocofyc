@@ -7,7 +7,7 @@ const MatriculasActivas = ( { API_ENDPOINT }) => {
 	useEffect(() => {
 		const fetchMatriculasActivas = async () => {
 			try {
-				const endpoint = `${API_ENDPOINT}/profesionales/profesionales-morosos`;
+				const endpoint = `${API_ENDPOINT}/profesionales/profesionales-morosos/`;
 				const direction = "";
 				const method = "GET";
 				const body = false;

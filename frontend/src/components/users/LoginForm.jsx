@@ -68,7 +68,7 @@ const LoginForm = ( {API_ENDPOINT} ) => {
 
 				const fetchParametros = async () => {
 					try {
-						const endpoint = `${API_ENDPOINT}/parametros`;
+						const endpoint = `${API_ENDPOINT}/parametros/`;
 						const direction = "1";
 						const method = "GET";
 						const body = false;

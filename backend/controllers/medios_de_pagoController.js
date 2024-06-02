@@ -39,7 +39,6 @@ const getMedios = async (request, response) => {
 
 // Obtener medio por Id
 const getMedioById = async (request, response) => {
-	console.log("ID: " + request.params.id);
 	authenticateToken(request, response, async () => {
 		const id = request.params.id;
 		try {

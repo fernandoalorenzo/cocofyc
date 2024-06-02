@@ -38,28 +38,29 @@ app.use("/api/parametros", parametrosRouter);
 app.use("/api/movimientos", movimientosRouter);
 app.use("/api/mediosdepago", medios_de_pagoRouter);
 
-// Ruta para enviar las variables de entorno al frontend
-app.get("/apiendpoint", (req, res) => {
-	res.json({
-		API_ENDPOINT: process.env.API_ENDPOINT,
-	});
-});
 
 // FUNCIONES AUTOMÁTICAS DE COMUNICACIÓN
 import "./functions/birthdayEmailScript.js";
 import "./functions/vencimientoCuotaEmailScript.js";
 //import "./functions/birthdayWspScript.js";
 
+// ESTABLECE PATH PARA SUBIR ARCHIVOS
+let pathUploads = null;
+process.env.NODE_ENV === "production"
+	? pathUploads = process.env.PROD_UPLOAD_PATH
+	: pathUploads = process.env.DEV_UPLOAD_PATH,
+	{ encoding: "base64" };
+
 // FUNCION PARA RENOMBRAR EL ARCHIVO
 function saveFile(file) {
-	const newPath = `./../frontend/public/uploads/${file.originalname}`;
+	const newPath = `${pathUploads}/${file.originalname}`;
 	fs.renameSync(file.path, newPath);
 	return newPath;
 }
 
 const storage = multer.diskStorage({
 	destination: function (req, file, cb) {
-		return cb(null, "./../frontend/public/uploads");
+		return cb(null, `${pathUploads}`);
 	},
 	filename: function (req, file, cb) {
 		// return cb(null, `${Date.now()}_${file.originalname}`);
@@ -71,6 +72,8 @@ const upload = multer({ storage });
 
 // Ruta para subir una imagen
 app.post("/api/loadimage/", upload.single("file"), (req, res) => {
+	console.log("File:", req.file);
+	console.log("Filename:", req.file.originalname);
 	return res.send("Archivo subido");
 });
 
@@ -78,7 +81,7 @@ app.post("/api/loadimage/", upload.single("file"), (req, res) => {
 app.delete("/api/deleteimage/:filename", (req, res) => {
 	const filename = req.params.filename;
 
-	fs.unlink(`./../frontend/public/uploads/${filename}`, (err) => {
+	fs.unlink(`${pathUploads}/${filename}`, (err) => {
 		if (err) {
 			console.error("Error al eliminar el archivo:", err);
 			return res
@@ -98,7 +101,7 @@ app.get("/api/checkimage/:filename", (req, res) => {
 	const filename = req.params.filename;
 
 	fs.access(
-		`./../frontend/public/uploads/${filename}`,
+		`${pathUploads}/${filename}`,
 		fs.constants.F_OK,
 		(err) => {
 			if (err) {

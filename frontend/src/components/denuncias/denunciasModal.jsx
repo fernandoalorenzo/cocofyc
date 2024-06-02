@@ -154,11 +154,7 @@ const DenunciasModal = ({
 			}
 			reset(data);
 		}
-		if (
-			modalMode !== "agregar" &&
-			data
-			&& data.establecimiento_id
-		) {
+		if (modalMode !== "agregar" && data && data.establecimiento_id) {
 			fetchEstablecimientos(data.profesional_id)
 				.then((establecimientos) => {
 					if (establecimientos) {

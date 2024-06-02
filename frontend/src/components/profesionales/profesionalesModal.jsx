@@ -264,7 +264,7 @@ const ProfesionalesModal = ({
 	};
 
 	function deleteHandler(image) {
-		if (image === `http://localhost:5173/uploads/${currentImage}`) {
+		if (image === `/uploads/${currentImage}`) {
 			setCurrentImage(null);
 		} else {
 			setSelectedImages(selectedImages.filter((e) => e !== image));
@@ -356,7 +356,7 @@ const ProfesionalesModal = ({
 	};
 
 	const combinedImages = currentImage
-		? [`http://localhost:5173/uploads/${currentImage}`]
+		? [`/uploads/${currentImage}`]
 		: selectedImages;
 	// ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 

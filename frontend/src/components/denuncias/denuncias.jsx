@@ -4,7 +4,7 @@ import apiConnection from "../../../../backend/functions/apiConnection";
 import DenunciasModal from "./denunciasModal";
 import DenunciasSeguimientosListaModal from "./denunciasSeguimientosListaModal";
 
-const DenunciasTabla = ( { API_ENDPOINT } ) => {
+const DenunciasTabla = ({ API_ENDPOINT, SERVER_PATH }) => {
 	const [showDenunciasModal, setShowDenunciasModal] = useState(false);
 	const [selectedDenuncia, setSelectedDenuncia] = useState(null);
 	const [selectedDenunciaSeguimiento, setSelectedDenunciaSeguimiento] = useState(null);
@@ -557,12 +557,13 @@ const DenunciasTabla = ( { API_ENDPOINT } ) => {
 				data={selectedDenuncia}
 				modalMode={modalMode}
 				API_ENDPOINT={API_ENDPOINT}
-			/>
+				/>
 			<DenunciasSeguimientosListaModal
 				showModalSeguimientoLista={showDenunciasSeguimientosListaModal}
 				closeModalSeguimientoLista={closeDenunciasSeguimientosListaModal}
 				dataSeguimientoLista={selectedDenunciaSeguimiento}
 				API_ENDPOINT={API_ENDPOINT}
+				SERVER_PATH={SERVER_PATH}
 			/>
 		</>
 	);

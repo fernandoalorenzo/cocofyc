@@ -580,7 +580,7 @@ const ProfesionalesTabla = ( {API_ENDPOINT} ) => {
 						<div className="card-header bg-white">
 							<div className="row d-flex m-0 mb-2 align-items-center justify-content-between">
 								<div className="col-auto">
-									<div className="border border-4 bg-primary bg-opacity-50 text-white border-primary rounded cd p-2">
+									<div className="bg-primary bg-opacity-50 text-white rounded cd p-2">
 										<div className="row align-items-center">
 											<div className="col-auto text-start align-items-center">
 												<label

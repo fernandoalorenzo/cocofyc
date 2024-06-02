@@ -16,11 +16,6 @@ parametrosRouter.get("/:id", authenticateToken, getParametroById);
 parametrosRouter.post("/", authenticateToken, createParametro);
 parametrosRouter.patch("/:id", authenticateToken, patchParametro);
 
-// parametrosRouter.get("/", getParametros);
-// parametrosRouter.get("/:id", getParametroById);
-// parametrosRouter.post("/", createParametro);
-// parametrosRouter.patch("/:id", patchParametro);
-
 parametrosRouter.get("/sinToken/:id", getParametroSinToken);
 
 export default parametrosRouter;

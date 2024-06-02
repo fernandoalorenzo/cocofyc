@@ -9,6 +9,7 @@ const DenunciasSeguimientosListaModal = ({
 	closeModalSeguimientoLista,
 	dataSeguimientoLista,
 	API_ENDPOINT,
+	SERVER_PATH,
 }) => {
 	const {
 		register,
@@ -26,9 +27,12 @@ const DenunciasSeguimientosListaModal = ({
 	const [isBotonAgregarEnabled, setIsBotonAgregarEnabled] = useState(true);
 	const [modalSeguimientoMode, setModalSeguimientoMode] = useState("");
 
-	const [selectedDenunciaSeguimiento, setSelectedDenunciaSeguimiento] = useState(null);
-	const [showDenunciasSeguimientosModal, setShowDenunciasSeguimientosModal] = useState(false);
-	const closeDenunciasSeguimientosModal = () => setShowDenunciasSeguimientosModal(false);
+	const [selectedDenunciaSeguimiento, setSelectedDenunciaSeguimiento] =
+		useState(null);
+	const [showDenunciasSeguimientosModal, setShowDenunciasSeguimientosModal] =
+		useState(false);
+	const closeDenunciasSeguimientosModal = () =>
+		setShowDenunciasSeguimientosModal(false);
 
 	const tablaSeguimientosRef = useRef(null);
 	const dataTableRefSeguimiento = useRef(null);
@@ -212,7 +216,6 @@ const DenunciasSeguimientosListaModal = ({
 							return `
                             <button class="btn btn-warning btn-sm editar-seguimiento-btn" data-id="${row.id}"><i class="fa-regular fa-pen-to-square"></i> Editar</button>
                             <button class="btn btn-danger btn-sm eliminar-seguimiento-btn" data-id="${row.id}"><i class="fa-regular fa-trash-can"></i>  Eliminar</button>
-							<button class="btn  btn-sm archivos-seguimiento-btn color-morado" data-id="${row.id}"><i class="fa-regular fa-folder-open"></i>  Archivos</button>
                         `;
 						},
 						orderable: false,
@@ -486,6 +489,7 @@ const DenunciasSeguimientosListaModal = ({
 				updateSeguimientos={updateSeguimientos}
 				denunciaId={denunciaId}
 				API_ENDPOINT={API_ENDPOINT}
+				SERVER_PATH={SERVER_PATH}
 			/>
 		</>
 	);

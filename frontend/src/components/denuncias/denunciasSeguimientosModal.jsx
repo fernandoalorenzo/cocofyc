@@ -11,6 +11,7 @@ const DenunciasSeguimientosModal = ({
 	updateSeguimientos,
 	denunciaId,
 	API_ENDPOINT,
+	SERVER_PATH,
 }) => {
 	const {
 		register,
@@ -265,10 +266,10 @@ const DenunciasSeguimientosModal = ({
 				if (archivo) {
 					// Crear un objeto FormData para enviar la archivo al servidor
 					// const fileExtension = archivo.name.split(".").pop();
-                    const fileName = `seguimiento_${id_seguimiento}_${normalizeFileName(
-                        archivo.name
-                    )}`;
-                    const formData = new FormData();
+					const fileName = `seguimiento_${id_seguimiento}_${normalizeFileName(
+						archivo.name
+					)}`;
+					const formData = new FormData();
 					formData.append("file", archivo.file, fileName);
 
 					const endpoint = `${API_ENDPOINT}/loadimage/`;
@@ -364,9 +365,10 @@ const DenunciasSeguimientosModal = ({
 		}
 	};
 
-    const normalizeFileName = (originalName) => {
+	const normalizeFileName = (originalName) => {
 		// Reemplazar caracteres acentuados y espacios
-		const normalized = originalName.toLowerCase()
+		const normalized = originalName
+			.toLowerCase()
 			.replace(/[áÁ]/g, "a")
 			.replace(/[éÉ]/g, "e")
 			.replace(/[íÍ]/g, "i")
@@ -375,7 +377,7 @@ const DenunciasSeguimientosModal = ({
 			.replace(/[ñÑ]/g, "n")
 			.replace(/ /g, "_");
 
-        return normalized;
+		return normalized;
 	};
 	// ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ ARCHIVOS ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 
@@ -520,8 +522,9 @@ const DenunciasSeguimientosModal = ({
 														const fileIcon =
 															fileExtension !==
 															"pdf"
-																? `http://localhost:5173/uploads/${nombreArchivo}`
-																: "../../../assets/img/icon_pdf_512.png";
+																? `/uploads/${nombreArchivo}`
+														// : "../../../assets/img/icon_pdf_512.png";
+																: `/assets/img/icon_pdf_512.png`;
 														return (
 															<div
 																className="col-12 col-md-6 col-lg-4 col-xl-4"
@@ -577,7 +580,7 @@ const DenunciasSeguimientosModal = ({
 																					}}
 																					onClick={() =>
 																						window.open(
-																							`http://localhost:5173/uploads/${nombreArchivo}`,
+																							`/uploads/${nombreArchivo}`,
 																							"_blank"
 																						)
 																					}>
