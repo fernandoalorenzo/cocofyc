@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import apiConnection from "../../../../backend/functions/apiConnection";
-// import backgroundImage from "./../../assets/img/login.jpg";
 import backgroundImage from "./../../../assets/img/login.jpg";
 import viewImage from "./../../../assets/img/view.png";
 import hideImage from "./../../../assets/img/hide.png";
 
-const LoginForm = ( {API_ENDPOINT} ) => {
+const LoginForm = ({ API_ENDPOINT }) => {
 	const [loginData, setLoginData] = useState({
 		email: "",
 		password: "",
@@ -14,12 +13,17 @@ const LoginForm = ( {API_ENDPOINT} ) => {
 
 	// Estado de error en los datos de logueo
 	const [error, setError] = useState(null);
-
 	const [loading, setLoading] = useState(false); // Nuevo estado para indicar carga
-
 	const [showPassword, setShowPassword] = useState(false); // Estado para mostrar u ocultar la contraseña
-
 	const navigate = useNavigate();
+
+	useEffect(() => {
+		const token = localStorage.getItem("token");
+		if (token) {
+			// Si hay un token guardado, redirigir al usuario a la página principal
+			navigate("/");
+		}
+	}, [navigate]);
 
 	const onInputChange = (event) => {
 		setLoginData({
@@ -49,16 +53,13 @@ const LoginForm = ( {API_ENDPOINT} ) => {
 		setLoading(true);
 
 		try {
-			const response = await fetch(
-				`${API_ENDPOINT}/usuarios/login`,
-				{
-					method: "POST",
-					headers: {
-						"Content-Type": "application/json",
-					},
-					body: JSON.stringify(loginData),
-				}
-			);
+			const response = await fetch(`${API_ENDPOINT}/usuarios/login`, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(loginData),
+			});
 
 			if (response.ok) {
 				const { token, user } = await response.json();
@@ -127,7 +128,6 @@ const LoginForm = ( {API_ENDPOINT} ) => {
 				"Error en el inicio de sesión. Inténtalo de nuevo más tarde."
 			);
 
-			// Ocultar el mensaje de error después de 3 segundos
 			setTimeout(() => {
 				setError(null);
 			}, 3000);

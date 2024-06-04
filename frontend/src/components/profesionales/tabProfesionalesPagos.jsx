@@ -9,19 +9,21 @@ const CargarPagosTab = ({
 	updateMovimientos,
 	API_ENDPOINT,
 }) => {
-	const [archivoSeleccionado, setArchivoSeleccionado] = useState(null);
-	const [mediosDePago, setMediosDePago] = useState([]);
-	const [selectedCuota, setSelectedCuota] = useState("");
-	const [cuotasGeneradas, setCuotasGeneradas] = useState([]);
-
-	const user = JSON.parse(localStorage.getItem("user"));
-
 	const {
 		register,
 		handleSubmit,
 		reset,
 		formState: { errors },
+		watch,
 	} = useForm();
+
+	const [mediosDePago, setMediosDePago] = useState([]);
+	const [aranceles, setAranceles] = useState([]);
+	const [selectedCuota, setSelectedCuota] = useState("");
+	const [cuotasGeneradas, setCuotasGeneradas] = useState([]);
+	const [tipoAsignacion, setTipoAsignacion] = useState("");
+
+	const user = JSON.parse(localStorage.getItem("user"));
 
 	// Obtener la fecha actual en formato YYYY-MM-DD
 	const getCurrentDate = () => {
@@ -54,7 +56,6 @@ const CargarPagosTab = ({
 			);
 
 			if (response) {
-				// Ordenar los medios de pago alfabéticamente por su nombre
 				const mediosOrdenados = response.data.sort((a, b) =>
 					a.medio.localeCompare(b.medio)
 				);
@@ -70,27 +71,12 @@ const CargarPagosTab = ({
 		}
 	};
 
-	useEffect(() => {
-		fetchMediosDePago();
-	}, []);
-
-	useEffect(() => {
-		fetchCuotasGeneradas();
-	}, [profesionalId]);
-
-	const onSubmitCargarPago = async (data) => {
-		// Agregar el campo tipo_operacion con el valor "INGRESO"
-		const newData = {
-			...data,
-			tipo_operacion: "INGRESO",
-			user_id: user.id,
-			profesional_id: profesionalId,
-		};
+	const fetchAranceles = async () => {
 		try {
-			const endpoint = `${API_ENDPOINT}/movimientos`;
+			const endpoint = `${API_ENDPOINT}/aranceles`;
 			const direction = "";
-			const method = "POST";
-			const body = newData;
+			const method = "GET";
+			const body = false;
 			const headers = {
 				"Content-Type": "application/json",
 				Authorization: localStorage.getItem("token"),
@@ -104,24 +90,80 @@ const CargarPagosTab = ({
 				headers
 			);
 
+			if (response) {
+				const arancelesOrdenados = response.data.sort((a, b) =>
+					a.arancel.localeCompare(b.arancel)
+				);
+				setAranceles(arancelesOrdenados);
+			} else {
+				console.error(
+					"Error al obtener los datos de los aranceles de pago:",
+					response.statusText
+				);
+			}
+		} catch (error) {
+			console.error("Error:", error.message);
+		}
+	};
+
+	useEffect(() => {
+		fetchMediosDePago();
+		fetchAranceles();
+	}, []);
+
+	useEffect(() => {
+		if (profesionalId) {
+			fetchCuotasGeneradas(profesionalId);
+		}
+	}, [profesionalId]);
+
+	const onSubmitCargarPago = async (data) => {
+		const newData = {
+			...data,
+			tipo_operacion: "INGRESO",
+			user_id: user.id,
+			profesional_id: profesionalId,
+		};
+
+		try {
+			const endpoint = `${API_ENDPOINT}/movimientos`;
+			const direction = "";
+			const method = "POST";
+			const body = newData;
+			const headers = {
+				"Content-Type": "application/json",
+				Authorization: localStorage.getItem("token"),
+			};
+			
+			const response = await apiConnection(
+				endpoint,
+				direction,
+				method,
+				body,
+				headers
+			);
+
 			Swal.fire({
-				title: "Éxito",
+				title: "Operación exitosa",
 				text: "El registro fue creado exitosamente",
 				icon: "success",
+				showConfirmButton: false,
 				timer: 2500,
 			});
 
 			// Asignar el ID del movimiento al campo movimiento_id de la cuota seleccionada
-			if (selectedCuota) {
-				await asignarMovimientoACuota(selectedCuota, response.data.id);
+			// if (selectedCuota) {
+			// 	await asignarMovimientoACuota(selectedCuota, response.data.id);
+			// }
+			if (newData.cuotasGeneradas) {
+				await asignarMovimientoACuota(newData.cuotasGeneradas, response.data.id);
 			}
+				// Forzar la actualización del componente MovimientosTab
+				updateMovimientos();
 
-			// Forzar la actualización del componente MovimientosTab
-			updateMovimientos();
-			
 			// Resetear el formulario después de guardar los cambios
 			reset();
-			
+
 			// Ocultar el formulario
 			toggleCardBodyForm(false);
 		} catch (error) {
@@ -153,9 +195,7 @@ const CargarPagosTab = ({
 				headers
 			);
 
-			if (response) {
-				console.log("Asignación exitosa");
-			} else {
+			if (!response.ok) {
 				console.error(
 					"Error al asignar movimiento a cuota: ",
 					response.statusText
@@ -164,11 +204,6 @@ const CargarPagosTab = ({
 		} catch (error) {
 			console.error("Error al asignar movimiento a cuota: ", error);
 		}
-	};
-
-	const handleFileChange = (event) => {
-		const file = event.target.files[0];
-		setArchivoSeleccionado(file);
 	};
 
 	useEffect(() => {
@@ -264,6 +299,10 @@ const CargarPagosTab = ({
 		toggleCardBodyForm(false);
 	};
 
+	const handleTipoAsignacionChange = (e) => {
+		setTipoAsignacion(e.target.value);
+	};
+
 	return (
 		<div className="container-fluid">
 			<div className="card">
@@ -272,12 +311,10 @@ const CargarPagosTab = ({
 						Cargar nuevo pago
 					</h5>
 				</div>
-
 				<form
 					id="cargar-pago"
 					onSubmit={handleSubmit(onSubmitCargarPago)}>
 					<div className="card-body">
-						{/* user_id obtenido del localStorage */}
 						<input
 							type="hidden"
 							{...register("user_id")}
@@ -355,7 +392,7 @@ const CargarPagosTab = ({
 						</div>
 						<div className="row mt-2">
 							{/* concepto */}
-							<div className="col">
+							<div className="col-5">
 								<label htmlFor="concepto">
 									Concepto{" "}
 									<span className="text-danger"> *</span>
@@ -374,8 +411,95 @@ const CargarPagosTab = ({
 									</span>
 								)}
 							</div>
-							<div className="col">
-								{/* cuotas generadas para asignar al pago */}
+							{/* Seleccionar tipo de asignación */}
+							<div className="col-4">
+								<label htmlFor="tipoAsignacion">
+									Asignar a
+								</label>
+								<select
+									className="form-select"
+									id="tipoAsignacion"
+									{...register("tipoAsignacion", {
+										onChange: handleTipoAsignacionChange,
+									})}>
+									<option value="">
+										Seleccione una opción
+									</option>
+									<option value="cuota">Cuota</option>
+									<option value="arancel">
+										Arancel Extraordinario
+									</option>
+								</select>
+							</div>
+							{/* cuotas para asignar al pago */}
+							{tipoAsignacion === "cuota" && (
+								<div className="col-3">
+									<label htmlFor="cuotasGeneradas">
+										Seleccione una cuota
+									</label>
+									<select
+										className="form-select"
+										id="cuotasGeneradas"
+										{...register("cuotasGeneradas", {
+											required:
+												tipoAsignacion === "cuota",
+										})}>
+										<option value="">
+											Seleccione una opción
+										</option>
+										{cuotasGeneradas.map(
+											(cuotaGenerada) => (
+												<option
+													key={cuotaGenerada.id}
+													value={
+														cuotaGenerada.id
+													}>
+													{cuotaGenerada.cuota}
+												</option>
+											)
+										)}
+									</select>
+									{errors.cuotasGeneradas && (
+										<span className="row text-danger m-1">
+											El campo es requerido
+										</span>
+									)}
+								</div>
+							)}
+							{/* arancel extraordinario para aplicar pago*/}
+
+							{tipoAsignacion === "arancel" && (
+								<div className="col-3">
+									<label htmlFor="arancel_id">
+										Seleccionar Arancel
+									</label>
+									<select
+										className="form-select"
+										id="arancel_id"
+										{...register("arancel_id", {
+											required:
+												tipoAsignacion === "arancel",
+										})}>
+										<option value="">
+											Seleccione una opción
+										</option>
+										{aranceles.map((arancel) => (
+											<option
+												key={arancel.id}
+												value={arancel.id}>
+												{arancel.arancel}
+											</option>
+										))}
+									</select>
+									{errors.arancel_id && (
+										<span className="row text-danger m-1">
+											El campo es requerido
+										</span>
+									)}
+								</div>
+							)}
+
+							{/* <div className="col">
 								<div className="col-6">
 									<label htmlFor="cuotas">
 										Asignar Pago a Cuota
@@ -389,7 +513,7 @@ const CargarPagosTab = ({
 										value={selectedCuota}
 										{...register("cuotasGeneradas")}>
 										<option value="">
-											Seleccione una Cuota
+											Seleccione una opción
 										</option>
 										{cuotasGeneradas.map(
 											(cuotaGenerada) => (
@@ -407,7 +531,7 @@ const CargarPagosTab = ({
 										</span>
 									)}
 								</div>
-							</div>
+							</div> */}
 						</div>
 					</div>
 					<div className="card-footer text-muted">

@@ -1,10 +1,9 @@
-/* eslint-disable no-unused-vars */
 import React, { useState } from "react";
 import {
 	BrowserRouter as Router,
 	Routes,
 	Route,
-	useNavigate,
+	Navigate,
 } from "react-router-dom";
 
 import AuthHandler from "./utils/AuthHandler.jsx";
@@ -133,7 +132,10 @@ const App = () => {
 						element={
 							<AuthHandler>
 								<Layout>
-									<Denuncias API_ENDPOINT={API_ENDPOINT} SERVER_PATH={SERVER_PATH} />
+									<Denuncias
+										API_ENDPOINT={API_ENDPOINT}
+										SERVER_PATH={SERVER_PATH}
+									/>
 								</Layout>
 							</AuthHandler>
 						}
@@ -166,6 +168,7 @@ const App = () => {
 						path="/login"
 						element={<LoginForm API_ENDPOINT={API_ENDPOINT} />}
 					/>
+					<Route path="/*" element={<Navigate to="/" replace />} />
 				</Routes>
 			</Router>
 		</div>

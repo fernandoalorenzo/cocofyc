@@ -3,27 +3,28 @@ import apiConnection from "../../../../backend/functions/apiConnection";
 import Swal from "sweetalert2";
 
 const GenerarCuotaTab = ({ profesionalId, userId, API_ENDPOINT }) => {
-	const tablaCuotasGeneradasRef = useRef(null);
+	const tablaCuotasAdeudadasRef = useRef(null);
 	const dataTableRef = useRef(null);
 
 	const [cuotas, setCuotas] = useState([]);
 	const [selectedCuota, setSelectedCuota] = useState("");
 	const [cuotasGeneradas, setCuotasGeneradas] = useState([]);
+	const [cuotasAdeudadas, setCuotasAdeudadas] = useState([]);
 
 	useEffect(() => {
-		// Lógica para obtener los registros disponibles desde la API
 		if (profesionalId) {
+			fetchCuotasAdeudadas();
 			fetchCuotasGeneradas();
 		}
 	}, [profesionalId]);
 
 	useEffect(() => {
 		if (dataTableRef.current) {
-			dataTableRef.current.clear().rows.add(cuotasGeneradas).draw();
-		} else if (cuotasGeneradas.length && tablaCuotasGeneradasRef.current) {
-			dataTableRef.current = $(tablaCuotasGeneradasRef.current).DataTable(
+			dataTableRef.current.clear().rows.add(cuotasAdeudadas).draw();
+		} else if (cuotasAdeudadas.length && tablaCuotasAdeudadasRef.current) {
+			dataTableRef.current = $(tablaCuotasAdeudadasRef.current).DataTable(
 				{
-					data: cuotasGeneradas,
+					data: cuotasAdeudadas,
 					language: {
 						// url: "//cdn.datatables.net/plug-ins/2.0.3/i18n/es-AR.json",
 						buttons: {
@@ -110,8 +111,8 @@ const GenerarCuotaTab = ({ profesionalId, userId, API_ENDPOINT }) => {
 						},
 					],
 					dom:
-						"<'row mb-2'<'col-md-6'B><'col-md-6'f>>" + // Agregamos contenedor para botones y cont para búsqueda
-						"<'row'<'col-md-12'tr>>" + // Agregamos contenedor para tabla
+						"<'row mb-2'<'col-md-6'B><'col-md-6'f>>" + 
+						"<'row'<'col-md-12'tr>>" +
 						"<'row mt-2'<'col-md-6'i><'col-md-6 d-flex justify-content-end'p>>",
 					columns: [
 						{ data: "cuota", width: "33%" },
@@ -170,7 +171,7 @@ const GenerarCuotaTab = ({ profesionalId, userId, API_ENDPOINT }) => {
 			);
 		}
 		fetchCuotas();
-	}, [cuotasGeneradas]);
+	}, [cuotasAdeudadas]);
 
 	const fetchCuotas = async () => {
 		try {
@@ -204,7 +205,6 @@ const GenerarCuotaTab = ({ profesionalId, userId, API_ENDPOINT }) => {
 				// Ordenar los registros alfabéticamente por nombre de forma DESCENDENTE
 				const sortedRegistros = filteredCuotas.sort(
 					(a, b) =>
-						// a.cuota.localeCompare(b.cuota) // Ordenar por el campo "cuota" ascendente
 						b.cuota.localeCompare(a.cuota) // Ordenar por el campo "cuota" descendente
 				);
 				setCuotas(sortedRegistros);
@@ -216,6 +216,63 @@ const GenerarCuotaTab = ({ profesionalId, userId, API_ENDPOINT }) => {
 			}
 		} catch (error) {
 			console.error("Error fetching registros: ", error);
+		}
+	};
+
+	const fetchCuotasAdeudadas = async () => {
+		try {
+			const endpoint = `${API_ENDPOINT}/profesionales/cuotas-generadas-profesional/${profesionalId}`;
+			const direction = "";
+			const method = "GET";
+			const body = false;
+			const headers = {
+				"Content-Type": "application/json",
+				Authorization: localStorage.getItem("token"),
+			};
+
+			const response = await apiConnection(
+				endpoint,
+				direction,
+				method,
+				body,
+				headers
+			);
+
+			if (response && response.data) {
+				// // Filtrar las cuotas generadas que tienen movimiento_id asignado
+				// const cuotasFiltradas = response.data.filter(
+				// 	(cuotaAdeudada) => cuotaAdeudada.movimiento_id
+				// );
+
+				// Filtrar las cuotas generadas que NO tienen movimiento_id asignado
+				const cuotasFiltradas = response.data.filter(
+					(cuotaAdeudada) => !cuotaAdeudada.movimiento_id
+				);
+
+				// Para cada cuota generada con movimiento_id, obtenemos los detalles de la cuota
+				const cuotasWithDetails = await Promise.all(
+					cuotasFiltradas.map(async (cuotaAdeudada) => {
+						const cuotaDetails = await fetchCuotaDetails(
+							cuotaAdeudada.cuota_id
+						);
+						return { ...cuotaAdeudada, ...cuotaDetails };
+					})
+				);
+
+				// Ordenar los registros alfabéticamente por nombre de forma DESCENDENTE
+				const sortedRegistros = cuotasWithDetails.sort(
+					(a, b) => b.cuota.localeCompare(a.cuota) // Ordenar por el campo "cuota" descendente
+				);
+
+				setCuotasAdeudadas(sortedRegistros);
+			} else {
+				console.error(
+					"Error fetching cuotas generadas: ",
+					response ? response.statusText : "No hay respuesta"
+				);
+			}
+		} catch (error) {
+			console.error("Error fetching cuotas generadas: ", error);
 		}
 	};
 
@@ -239,7 +296,17 @@ const GenerarCuotaTab = ({ profesionalId, userId, API_ENDPOINT }) => {
 			);
 
 			if (response && response.data) {
-				// Para cada cuota generada, obtenemos los detalles de la cuota
+				// // Filtrar las cuotas generadas que tienen movimiento_id asignado
+				// const cuotasFiltradas = response.data.filter(
+				// 	(cuotaGenerada) => cuotaGenerada.movimiento_id
+				// );
+
+				// Filtrar las cuotas generadas que NO tienen movimiento_id asignado
+				// const cuotasFiltradas = response.data.filter(
+				// 	(cuotaGenerada) => !cuotaGenerada.movimiento_id
+				// );
+
+				// Para cada cuota generada con movimiento_id, obtenemos los detalles de la cuota
 				const cuotasWithDetails = await Promise.all(
 					response.data.map(async (cuotaGenerada) => {
 						const cuotaDetails = await fetchCuotaDetails(
@@ -253,6 +320,7 @@ const GenerarCuotaTab = ({ profesionalId, userId, API_ENDPOINT }) => {
 				const sortedRegistros = cuotasWithDetails.sort(
 					(a, b) => b.cuota.localeCompare(a.cuota) // Ordenar por el campo "cuota" descendente
 				);
+
 				setCuotasGeneradas(sortedRegistros);
 			} else {
 				console.error(
@@ -346,7 +414,7 @@ const GenerarCuotaTab = ({ profesionalId, userId, API_ENDPOINT }) => {
 				});
 				
 				// Volver a dibujar la tabla y poblar el select con los nuevos datos
-				fetchCuotasGeneradas();
+				fetchCuotasAdeudadas();
 				fetchCuotas();
 
 				setSelectedCuota("");
@@ -431,8 +499,8 @@ const GenerarCuotaTab = ({ profesionalId, userId, API_ENDPOINT }) => {
 							</div>
 							<div className="card-body">
 								<table
-									ref={tablaCuotasGeneradasRef}
-									id="tablaCuotasGeneradas"
+									ref={tablaCuotasAdeudadasRef}
+									id="tablaCuotasAdeudadas"
 									className="table table-hover table-sm">
 									<thead className="table-warning">
 										<tr>

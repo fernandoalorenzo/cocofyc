@@ -4,7 +4,14 @@ import MovimientosTab from "./tabProfesionalesMovimientos";
 import EstablecimientosTab from "./tabProfesionalesEstablecimientos.jsx";
 import GenerarCuotaTab from "./tabProfesionalesCuotas.jsx";
 
-const GestionesModal = ({ showModal, closeModal, data, movimientos, fetchMovimientos, API_ENDPOINT }) => {
+const GestionesModal = ({
+	showModal,
+	closeModal,
+	data,
+	movimientos,
+	fetchMovimientos,
+	API_ENDPOINT,
+}) => {
 	const profesionalId = data ? data.id : null;
 	const [activeTab, setActiveTab] = useState("cargarPago"); // Estado local para controlar la pestaña activa
 	const user = JSON.parse(localStorage.getItem("user")) || {};
@@ -172,7 +179,7 @@ const GestionesModal = ({ showModal, closeModal, data, movimientos, fetchMovimie
 												updateMovimientos
 											} // Pasamos la función de actualización como prop
 											API_ENDPOINT={API_ENDPOINT}
-											/>
+										/>
 									</div>
 									<div
 										className="card-body"
@@ -188,21 +195,23 @@ const GestionesModal = ({ showModal, closeModal, data, movimientos, fetchMovimie
 								</div>
 							</div>
 							{/* ********************* GENERAR CUOTA ********************* */}
-							<div
-								className={`tab-pane fade ${
-									activeTab === "generar-cuota"
-										? "show active"
-										: ""
-								} bg-dark-subtle p-2`}
-								id="generar-cuota"
-								role="tabpanel"
-								aria-labelledby="generar-cuota-tab">
-								<GenerarCuotaTab
-									profesionalId={profesionalId}
-									userId={user.id}
-									API_ENDPOINT={API_ENDPOINT}
-								/>
-							</div>
+							{activeTab === "generar-cuota" && (
+								<div
+									className={`tab-pane fade ${
+										activeTab === "generar-cuota"
+											? "show active"
+											: ""
+									} bg-dark-subtle p-2`}
+									id="generar-cuota"
+									role="tabpanel"
+									aria-labelledby="generar-cuota-tab">
+									<GenerarCuotaTab
+										profesionalId={profesionalId}
+										userId={user.id}
+										API_ENDPOINT={API_ENDPOINT}
+									/>
+								</div>
+							)}
 							{/* ********************* ESTABLECIMIENTOS ********************* */}
 							<div
 								className={`tab-pane fade ${

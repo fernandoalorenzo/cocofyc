@@ -3,6 +3,8 @@ import cors from "cors";
 import multer from "multer"; // Middleware para manejar archivos multipart/form-data
 import fs, { exists } from "fs";
 
+import path from "path"; // Importa la librería path para trabajar con rutas de archivos
+
 import profesionalesRouter from "./routes/profesionalesRoute.js";
 import establecimientosRouter from "./routes/establecimientosRoute.js";
 import estadosRouter from "./routes/estadosMatriculaRoute.js";
@@ -13,6 +15,7 @@ import parametrosRouter from "./routes/parametrosRoute.js";
 import cuotasRouter from "./routes/cuotasRoute.js";
 import movimientosRouter from "./routes/movimientosRoute.js";
 import medios_de_pagoRouter from "./routes/medios_de_pagoRoute.js";
+import arancelesRouter from "./routes/arancelesRoute.js";
 
 import connect from "./config/db.js";
 
@@ -25,8 +28,8 @@ app.use(express.json());
 app.use(cors());
 
 // RUTAS
-app.use("/api/profesionales", profesionalesRouter);
 app.use("/api/profesionales/asignados", profesionalesRouter);
+app.use("/api/profesionales", profesionalesRouter);
 app.use("/api/establecimientos", establecimientosRouter);
 app.use("/api/estados", estadosRouter);
 app.use("/api/usuarios", usuariosRouter);
@@ -37,6 +40,7 @@ app.use("/api/cuotas", cuotasRouter);
 app.use("/api/parametros", parametrosRouter);
 app.use("/api/movimientos", movimientosRouter);
 app.use("/api/mediosdepago", medios_de_pagoRouter);
+app.use("/api/aranceles", arancelesRouter);
 
 
 // FUNCIONES AUTOMÁTICAS DE COMUNICACIÓN
@@ -72,8 +76,6 @@ const upload = multer({ storage });
 
 // Ruta para subir una imagen
 app.post("/api/loadimage/", upload.single("file"), (req, res) => {
-	console.log("File:", req.file);
-	console.log("Filename:", req.file.originalname);
 	return res.send("Archivo subido");
 });
 
@@ -88,7 +90,6 @@ app.delete("/api/deleteimage/:filename", (req, res) => {
 				.status(500)
 				.json({ error: "Error al eliminar el archivo" });
 		}
-
 		console.log("Archivo eliminado correctamente");
 		return res
 			.status(200)
@@ -112,6 +113,20 @@ app.get("/api/checkimage/:filename", (req, res) => {
 			return res.status(200).json({ exists: true }); // El archivo existe
 		}
 	);
+});
+
+// SERVE STATIC FILES
+const __dirname = path.resolve();
+app.use(express.static(path.join(__dirname, "frontend/build")));
+
+// Manejador de rutas para todas las rutas que no coincidan con las rutas API
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "frontend/build/index.html"));
+});
+
+// Redirección de direcciones inexistentes
+app.use((req, res) => {
+  res.redirect("/"); // Redirige cualquier dirección que no existe a la dirección base ("/")
 });
 
 // SERVIDOR

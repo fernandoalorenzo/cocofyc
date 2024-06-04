@@ -152,7 +152,6 @@ const sendEmail = async (profesional) => {
 const fetchParametros = async () => {
 	try {
 		const endpoint = `${API_ENDPOINT}/parametros/sinToken/1`;
-		console.log("endpoint: ", endpoint);
 		const method = "GET";
 		const headers = {
 			"Content-Type": "application/json",
@@ -198,9 +197,13 @@ const sendBirthdayEmails = async () => {
 			console.log("Correo enviado a ", profesional.nombre);
 		}
 
-		console.log(
-			"¡Correos electrónicos de saludos por cumpleaños enviados satisfactoriamente!"
-		);
+		if (profesionales.length > 0) {
+			console.log(
+				"¡Correos electrónicos de saludos por cumpleaños enviados satisfactoriamente!"
+			);
+		} else {
+			console.log("No se encontraron profesionales con cumpleaños hoy.");
+		}
 	} catch (error) {
 		console.error("Error sending birthday emails:", error);
 	}

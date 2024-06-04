@@ -13,14 +13,22 @@ const Parametros = ( {API_ENDPOINT} ) => {
 	} = useForm();
 
 	const [registro, setRegistro] = useState(null);
+	// Medios de pago
 	const [mediosDePago, setMediosDePago] = useState([]);
 	const [nuevoMedioPago, setNuevoMedioPago] = useState("");
 	const [mostrarNuevoMedio, setMostrarNuevoMedio] = useState(false);
 	const [editandoMedioPago, setEditandoMedioPago] = useState(false);
 	const [selectedMedioPago, setSelectedMedioPago] = useState("");
+	// Aranceles
+	const [aranceles, setAranceles] = useState([]);
+	const [nuevoArancel, setNuevoArancel] = useState("");
+	const [mostrarNuevoArancel, setMostrarNuevoArancel] = useState(false);
+	const [editandoArancel, setEditandoArancel] = useState(false);
+	const [selectedArancel, setSelectedArancel] = useState("");
 
 	const importeCuotaModicado = watch("importe_cuota", "");
 
+	/////////////////////////////////// Medios de Pago //////////////////////////////////////////
 	const fetchMediosDePago = async () => {
 		try {
 			const endpoint = `${API_ENDPOINT}/mediosdepago`;
@@ -115,49 +123,6 @@ const Parametros = ( {API_ENDPOINT} ) => {
 		}
 	};
 
-	const fetchParametros = async () => {
-		try {
-			const endpoint = `${API_ENDPOINT}/parametros/sinToken/`;
-			const direction = "1";
-			const method = "GET";
-			const body = false;
-			const headers = {
-				"Content-Type": "application/json",
-				Authorization: localStorage.getItem("token"),
-			};
-
-			const response = await apiConnection(
-				endpoint,
-				direction,
-				method,
-				body,
-				headers
-			);
-
-			if (response) {
-				setRegistro(response.data); // Guarda los datos del registro en el estado
-				// Setea los valores de los inputs usando setValue
-				setValue("titular", response.data.titular);
-				setValue("domicilio", response.data.domicilio);
-				setValue("localidad", response.data.localidad);
-				setValue("cuit", response.data.cuit);
-				setValue("telefono", response.data.telefono);
-				setValue("email", response.data.email);
-				setValue("importe_cuota", response.data.importe_cuota);
-			} else {
-				console.error(
-					"Error al obtener los datos de los parametros:",
-					response.statusText
-				);
-			}
-		} catch (error) {
-			console.error(
-				"Error al obtener los datos de los parametros:",
-				error
-			);
-		}
-	};
-
 	const handleMedioPagoChange = (event) => {
 		const selectedId = event.target.value;
 		if (selectedId === "") {
@@ -247,6 +212,188 @@ const Parametros = ( {API_ENDPOINT} ) => {
 		}
 	};
 
+	/////////////////////////////////// ARANCELES ///////////////////////////////////
+	const fetchAranceles = async () => {
+		try {
+			const endpoint = `${API_ENDPOINT}/aranceles`;
+			const direction = "";
+			const method = "GET";
+			const body = false;
+			const headers = {
+				"Content-Type": "application/json",
+				Authorization: localStorage.getItem("token"),
+			};
+
+			const response = await apiConnection(
+				endpoint,
+				direction,
+				method,
+				body,
+				headers
+			);
+
+			if (response) {
+				const arancelesOrdenados = response.data.sort((a, b) =>
+					a.arancel.localeCompare(b.arancel)
+				);
+				setAranceles(arancelesOrdenados);
+			} else {
+				console.error(
+					"Error al obtener los datos de los aranceles:",
+					response.statusText
+				);
+			}
+		} catch (error) {
+			console.error("Error:", error.message);
+		}
+	};
+
+	const agregarArancel = async () => {
+		try {
+			// Verificar si se está editando un arancel existente
+			if (editandoArancel) {
+				await handleActualizarArancel();
+			} else {
+				const endpoint = `${API_ENDPOINT}/aranceles`;
+				const method = "POST";
+				const body = { arancel: nuevoArancel };
+
+				const headers = {
+					"Content-Type": "application/json",
+					Authorization: localStorage.getItem("token"),
+				};
+
+				const response = await apiConnection(
+					endpoint,
+					"",
+					method,
+					body,
+					headers
+				);
+
+				if (response.data) {
+					// Agregar el nuevo arancel al estado local
+					const nuevosAranceles = [...aranceles, response.data];
+
+					const arancelesOrdenados = nuevosAranceles.sort((a, b) =>
+						a.arancel.localeCompare(b.arancel)
+					);
+
+					Swal.fire({
+						icon: "success",
+						title: "Arancel agregado!",
+						text: "El nuevo arancel ha sido agregado exitosamente.",
+						timer: 2500,
+						showConfirmButton: false,
+					});
+
+					setTimeout(() => {
+						setAranceles(arancelesOrdenados);
+						setNuevoArancel("");
+						setMostrarNuevoArancel(false);
+					}, 2500);
+				} else {
+					console.error(
+						"Error al agregar el arancel:",
+						response.error
+					);
+				}
+			}
+		} catch (error) {
+			console.error("Error al agregar el arancel:", error.message);
+		}
+	};
+
+	const handleArancelChange = (event) => {
+		const selectedIdArancel = event.target.value;
+		if (selectedIdArancel === "") {
+			setMostrarNuevoArancel(true);
+			setSelectedArancel(null);
+			setEditandoArancel(false);
+		} else {
+			const selectedArancel = aranceles.find(
+				(arancel) =>arancel.id === selectedIdArancel
+			);
+			setSelectedArancel(selectedArancel);
+			setMostrarNuevoArancel(false);
+		}
+	};
+
+	const handleEditarArancel = (event) => {
+		setMostrarNuevoArancel(true);
+		setNuevoArancel(selectedArancel?.arancel);
+		setEditandoArancel(true);
+	};
+
+	const handleActualizarArancel = async () => {
+		try {
+			const endpoint = `${API_ENDPOINT}/aranceles/${selectedArancel.id}`;
+			const method = "PATCH";
+			const body = { arancel: nuevoArancel };
+
+			const headers = {
+				"Content-Type": "application/json",
+				Authorization: localStorage.getItem("token"),
+			};
+
+			const response = await apiConnection(
+				endpoint,
+				"",
+				method,
+				body,
+				headers
+			);
+
+			if (response.data) {
+				// Actualizar el arancel en la lista local
+				const arancelesActualizados = aranceles.map((arancel) =>
+					arancel.id === selectedArancel.id
+						? { ...arancel, arancel: nuevoArancel }
+						: arancel
+				);
+
+				// Ordenar los aranceles actualizados alfabéticamente por su nombre
+				const arancelesOrdenados = arancelesActualizados.sort((a, b) =>
+					a.arancel.localeCompare(b.arancel)
+				);
+
+				Swal.fire({
+					icon: "success",
+					title: "Cambios guardados!",
+					text: "Los cambios del arancel han sido guardados exitosamente.",
+					timer: 2500,
+					showConfirmButton: false,
+				});
+
+				setTimeout(() => {
+					setAranceles(arancelesOrdenados);
+					setNuevoArancel("");
+					setMostrarNuevoArancel(false);
+					setEditandoArancel(false);
+
+					// Resetear el estado del select y el input
+					setSelectedArancel(null);
+					setMostrarNuevoArancel(false);
+					setNuevoArancel("");
+					// Establecer el valor del select como vacío
+					const selectElement = document.getElementById("arancel");
+					selectElement.value = ""; // Esto restablece el valor seleccionado del select
+				}, 2500);
+			} else {
+				console.error(
+					"Error al guardar los cambios del arancel:",
+					response.error
+				);
+			}
+		} catch (error) {
+			console.error(
+				"Error al guardar los cambios del arancel:",
+				error.message
+			);
+		}
+	};
+	/////////////////////////////////////////////////////////////////////////////
+
 	const handleGuardarImporteCuota = async () => {
 		try {
 			const formData = {
@@ -293,9 +440,53 @@ const Parametros = ( {API_ENDPOINT} ) => {
 		}
 	};
 
+	const fetchParametros = async () => {
+		try {
+			const endpoint = `${API_ENDPOINT}/parametros/sinToken/`;
+			const direction = "1";
+			const method = "GET";
+			const body = false;
+			const headers = {
+				"Content-Type": "application/json",
+				Authorization: localStorage.getItem("token"),
+			};
+
+			const response = await apiConnection(
+				endpoint,
+				direction,
+				method,
+				body,
+				headers
+			);
+
+			if (response) {
+				setRegistro(response.data); // Guarda los datos del registro en el estado
+				// Setea los valores de los inputs usando setValue
+				setValue("titular", response.data.titular);
+				setValue("domicilio", response.data.domicilio);
+				setValue("localidad", response.data.localidad);
+				setValue("cuit", response.data.cuit);
+				setValue("telefono", response.data.telefono);
+				setValue("email", response.data.email);
+				setValue("importe_cuota", response.data.importe_cuota);
+			} else {
+				console.error(
+					"Error al obtener los datos de los parametros:",
+					response.statusText
+				);
+			}
+		} catch (error) {
+			console.error(
+				"Error al obtener los datos de los parametros:",
+				error
+			);
+		}
+	};
+
 	useEffect(() => {
 		fetchParametros();
 		fetchMediosDePago();
+		fetchAranceles();
 	}, []);
 
 	// Manejador de cambios para el campo CUIT
@@ -599,7 +790,7 @@ const Parametros = ( {API_ENDPOINT} ) => {
 											</div>
 										</div>
 										{/* MEDIOS DE PAGO */}
-										<div className="col-4 ms-3">
+										<div className="col-4 border-right ms-3">
 											<div className="row">
 												<div className="col-md-8">
 													<label
@@ -670,7 +861,7 @@ const Parametros = ( {API_ENDPOINT} ) => {
 														}
 													/>
 												</div>
-												<div className="col-3 d-flex align-items-end justify-content-start ps-0">
+												<div className="col-md-4 d-flex align-items-end justify-content-start ps-0">
 													{mostrarNuevoMedio && (
 														<>
 															<button
@@ -721,6 +912,138 @@ const Parametros = ( {API_ENDPOINT} ) => {
 																		null
 																	);
 																	setNuevoMedioPago(
+																		""
+																	);
+																}}>
+																<i className="fa-regular fa-plus"></i>
+															</button>
+														)}
+												</div>
+											</div>
+										</div>
+										{/* ARANCELES */}
+										<div className="col-4 ms-3">
+											<div className="row">
+												<div className="col-md-8">
+													<label
+														htmlFor="arancel"
+														className="form-label mb-0">
+														Aranceles
+													</label>
+													<select
+														className="form-select"
+														id="arancel"
+														onChange={(e) => {
+															handleArancelChange(
+																e
+															);
+															// Restablecer los estados de los botones al seleccionar "Seleccionar"
+															if (
+																e.target
+																	.value ===
+																""
+															) {
+																setMostrarNuevoArancel(
+																	false
+																);
+																setSelectedArancel(
+																	null
+																);
+																setNuevoArancel(
+																	""
+																);
+															}
+														}}
+														hidden={
+															mostrarNuevoArancel
+														}>
+														<option
+															value=""
+															className="fst-italic">
+															Añadir nuevo...
+														</option>
+														{aranceles.map(
+															(arancel) => (
+																<option
+																	key={
+																		arancel.id
+																	}
+																	value={
+																		arancel.id
+																	}>
+																	{
+																		arancel.arancel
+																	}
+																</option>
+															)
+														)}
+													</select>
+													<input
+														type="text"
+														className="form-control"
+														id="nuevo_arancel"
+														value={nuevoArancel}
+														onChange={(e) =>
+															setNuevoArancel(
+																e.target.value
+															)
+														}
+														hidden={
+															!mostrarNuevoArancel
+														}
+													/>
+												</div>
+												<div className="col-3 d-flex align-items-end justify-content-start ps-0">
+													{mostrarNuevoArancel && (
+														<>
+															<button
+																type="button"
+																title="Guardar"
+																className="btn btn-primary me-2"
+																onClick={
+																	agregarArancel
+																}>
+																<i className="fa-regular fa-save"></i>
+															</button>
+															<button
+																type="button"
+																title="Cancelar"
+																className="btn btn-secondary"
+																onClick={() =>
+																	setMostrarNuevoArancel(
+																		false
+																	)
+																}>
+																<i className="fa-solid fa-ban"></i>
+															</button>
+														</>
+													)}
+													{!mostrarNuevoArancel &&
+														selectedArancel && (
+															<button
+																type="button"
+																title="Editar"
+																className="btn btn-warning"
+																onClick={
+																	handleEditarArancel
+																}>
+																<i className="fa-solid fa-edit"></i>
+															</button>
+														)}
+													{!mostrarNuevoArancel &&
+														!selectedArancel && (
+															<button
+																type="button"
+																title="Agregar"
+																className="btn btn-primary me-2"
+																onClick={() => {
+																	setMostrarNuevoArancel(
+																		true
+																	);
+																	setSelectedArancel(
+																		null
+																	);
+																	setNuevoArancel(
 																		""
 																	);
 																}}>

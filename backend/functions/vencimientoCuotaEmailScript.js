@@ -67,7 +67,6 @@ let emailInstitucion;
 const fetchParametros = async () => {
 	try {
 		const endpoint = `${API_ENDPOINT}/parametros/sinToken/1`;
-		console.log("endpoint: ", endpoint);
 		const method = "GET";
 		const headers = {
 			"Content-Type": "application/json",

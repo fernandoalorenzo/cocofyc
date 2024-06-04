@@ -7,8 +7,8 @@ config();
 import moment from "moment-timezone";
 
 import sequelize from "./../config/sequelizeConfig.js";
-import { Op } from "sequelize";
-import { literal } from "sequelize";
+// import { Op } from "sequelize";
+// import { literal } from "sequelize";
 
 // Genera cuotas para los profesionales activos
 const generarProfesionalesCuotas = async (request, response) => {
