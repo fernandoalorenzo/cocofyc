@@ -34,7 +34,7 @@ const profesionalesRouter = express.Router();
 // Ruta para obtener las cuotas generadas por un id de un profesional
 	profesionalesRouter.get("/cuotas-generadas-profesional/:id", authenticateToken, getCuotasGeneradasByProfesional);
 // Ruta para asignar un movimiento a una cuota
-profesionalesRouter.patch("/asignar-movimiento-a-cuota/:id_cuota/:id_movimiento", authenticateToken, asignarMovimientoACuota);
+	profesionalesRouter.patch("/asignar-movimiento-a-cuota/:id_cuota/:id_movimiento", authenticateToken, asignarMovimientoACuota);
 // Ruta para desvincular un profesional de un establecimiento
 	profesionalesRouter.delete("/desvincular-profesional/:profesionalId/:establecimientoId", authenticateToken, desvincularProfesional);
 // Ruta para obtener profesionales que estan activos 
@@ -70,8 +70,5 @@ profesionalesRouter.patch("/asignar-movimiento-a-cuota/:id_cuota/:id_movimiento"
 	profesionalesRouter.delete("/:id", authenticateToken, deleteProfesional);
 // Ruta para asignar un profesional a un establecimiento
 	profesionalesRouter.post("/asignar-profesional", authenticateToken, asignarProfesional);
-
-	
-
 
 export default profesionalesRouter;

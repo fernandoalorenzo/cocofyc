@@ -22,13 +22,4 @@ cuotasRouter.get("/:id", authenticateToken, getCuotaById);
 cuotasRouter.get("/", authenticateToken, getCuotas);
 cuotasRouter.patch("/:id", authenticateToken, patchCuota);
 
-// cuotasRouter.get("/cuotas-generadas/:id", getCuotasGeneradasById);
-// cuotasRouter.get("/cuotas-generadas-profesional/:id", getCuotasGeneradasByProfesional);
-// cuotasRouter.get("/cuota/:cuota", getCuotaByCuota);
-// cuotasRouter.post("/", createCuota);
-// cuotasRouter.delete("/:id", deleteCuota);
-// cuotasRouter.get("/:id", getCuotaById);
-// cuotasRouter.get("/", getCuotas);
-// cuotasRouter.patch("/:id", patchCuota);
-
 export default cuotasRouter;

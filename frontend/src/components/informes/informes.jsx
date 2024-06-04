@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import moment from "moment"; // Importar moment
+import apiConnection from "../../../../backend/functions/apiConnection";
 import { PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
 import ProfesionalesActivosReport from "./profesionales/profesionalesActivosReport";
 import ProfesionalesMatriculadosReport from "./profesionales/profesionalesMatriculadosReport";
@@ -13,14 +14,17 @@ import DenunciasProximosSeguimientosReport from "./denuncias/denunciasProximosSe
 import MovimientosPorFechaReport from "./movimientos/MovimientosPorFechaReport";
 import PagosRealizadosPorFechaReport from "./movimientos/PagosRealizadosPorFechaReport";
 import CobranzasPorFechaReport from "./movimientos/CobranzaPorFechaReport";
+import ArancelesExtraordinariosReport from "./aranceles/arancelesExtraordinariosReport";
 
-const Informes = ( { API_ENDPOINT } ) => {
+const Informes = ({ API_ENDPOINT }) => {
 	const [showInforme, setShowInforme] = useState(false);
 	const [nombreInforme, setNombreInforme] = useState("");
 	const [informeComponent, setInformeComponent] = useState(null);
 	const [fechaDesde, setFechaDesde] = useState("");
 	const [fechaHasta, setFechaHasta] = useState("");
 	const [refreshKey, setRefreshKey] = useState(0); // Para detectar click en boton y refrescar componente
+	const [aranceles, setAranceles] = useState([]);
+	const [selectedArancel, setSelectedArancel] = useState("");
 
 	useEffect(() => {
 		// Establecer las fechas por defecto como el primer y último día del mes actual
@@ -28,6 +32,7 @@ const Informes = ( { API_ENDPOINT } ) => {
 		const lastDayOfMonth = moment().endOf("month").format("YYYY-MM-DD");
 		setFechaDesde(firstDayOfMonth);
 		setFechaHasta(lastDayOfMonth);
+		fetchAranceles();
 	}, []);
 
 	const tabs = [
@@ -164,6 +169,34 @@ const Informes = ( { API_ENDPOINT } ) => {
 				},
 			],
 		},
+		{
+			id: "aranceles-tab",
+			target: "#aranceles",
+			label: "Aranceles",
+			selected: false,
+			reports: [
+				{
+					type: "select",
+					label: "Aranceles Extraordinarios",
+				},
+				{
+					label: "Aranceles Extraordinarios",
+					reportComponent: (
+						<ArancelesExtraordinariosReport
+							refreshKey={refreshKey}
+							subtitle={`${
+								aranceles.find(
+									(arancel) => arancel.id === selectedArancel
+								)?.arancel || ""
+							}`}
+							selectedArancel={selectedArancel}
+							API_ENDPOINT={API_ENDPOINT}
+						/>
+					),
+					title: "Aranceles Extraordinarios",
+				},
+			],
+		},
 	];
 
 	const handleGenerateReport = (
@@ -174,9 +207,36 @@ const Informes = ( { API_ENDPOINT } ) => {
 		setRefreshKey((prevKey) => prevKey + 1);
 		setNombreInforme(props.title);
 		setInformeComponent(
-			React.cloneElement(componenteInforme, { ...props, nombreInforme })
+			React.cloneElement(componenteInforme, {
+				...props,
+				nombreInforme,
+			})
 		);
 		setShowInforme(true);
+	};
+
+	const fetchAranceles = async () => {
+		try {
+			const endpoint = `${API_ENDPOINT}/aranceles`;
+			const direction = "";
+			const method = "GET";
+			const body = false;
+			const headers = {
+				"Content-Type": "application/json",
+				Authorization: localStorage.getItem("token"),
+			};
+
+			const data = await apiConnection(
+				endpoint,
+				direction,
+				method,
+				body,
+				headers
+			);
+			setAranceles(data.data);
+		} catch (error) {
+			console.error("Error:", error.message);
+		}
 	};
 
 	const renderInforme = () => {
@@ -322,21 +382,81 @@ const Informes = ( { API_ENDPOINT } ) => {
 												(report, reportIndex) => (
 													<div
 														key={reportIndex}
-														className="col flex-grow-1">
-														<button
-															type="button"
-															className="btn btn-primary w-100"
-															onClick={() =>
-																handleGenerateReport(
-																	report.label,
-																	report.reportComponent,
-																	{
-																		title: report.title,
+														className={`${
+															report.type ===
+															"select"
+																? "col-4"
+																: "col flex-grow-1"
+														}`}>
+														{report.type ===
+														"select" ? (
+															<>
+																<select
+																	className="form-select"
+																	id="aranceles"
+																	value={
+																		selectedArancel
 																	}
-																)
-															}>
-															{report.label}
-														</button>
+																	onChange={(
+																		e
+																	) =>
+																		setSelectedArancel(
+																			e
+																				.target
+																				.value
+																		)
+																	}>
+																	<option value="">
+																		Seleccionar
+																		arancel
+																	</option>
+																	{aranceles.map(
+																		(
+																			arancel
+																		) => (
+																			<option
+																				key={
+																					arancel.id
+																				}
+																				value={
+																					arancel.id
+																				}>
+																				{
+																					arancel.arancel
+																				}
+																			</option>
+																		)
+																	)}
+																</select>
+															</>
+														) : (
+															<button
+																type="button"
+																className={`btn btn-primary ${
+																	tab.label ===
+																	"Aranceles"
+																		? "justify-content-start"
+																		: "w-100"
+																}`}
+																onClick={() =>
+																	handleGenerateReport(
+																		report.label,
+																		report.reportComponent,
+																		{
+																			title: report.title,
+																			arancelId:
+																				selectedArancel,
+																		}
+																	)
+																}
+																disabled={
+																	tab.label ===
+																		"Aranceles" &&
+																	!selectedArancel
+																}>
+																{report.label}
+															</button>
+														)}
 													</div>
 												)
 											)}

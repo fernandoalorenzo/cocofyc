@@ -58,6 +58,27 @@ const getMovimientoById = async (request, response) => {
 	});
 };
 
+// Obtener un movimiento por Id
+const getMovimientoByArancel = async (request, response) => {
+	authenticateToken(request, response, async () => {
+		const arancelId = request.params.id;
+		try {
+			const movimientos = await Movimiento.findAll({
+				where: { arancel_id: arancelId },
+			});
+
+			response.status(201).json({
+				message:
+					"Los datos de los movimientos fueron obtenidos exitosamente!",
+				data: movimientos,
+			});
+		} catch (error) {
+			console.error("Error: " + error.message);
+			response.status(500).send({ message: error.message });
+		}
+	});
+};
+
 // Actualizar movimientos
 const updateMovimiento = async (request, response) => {
 	authenticateToken(request, response, async () => {
@@ -151,6 +172,7 @@ export {
 	createMovimiento,
 	getMovimientos,
 	getMovimientoById,
+	getMovimientoByArancel,
 	updateMovimiento,
 	deleteMovimiento,
 	patchMovimiento,
