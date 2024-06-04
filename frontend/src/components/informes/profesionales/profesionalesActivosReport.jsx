@@ -4,8 +4,6 @@ import {
 	Page,
 	View,
 	Text,
-	StyleSheet,
-	Image,
 	Font,
 } from "@react-pdf/renderer";
 import apiConnection from "../../../../../backend/functions/apiConnection";

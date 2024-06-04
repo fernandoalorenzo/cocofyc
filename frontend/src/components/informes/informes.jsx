@@ -44,32 +44,54 @@ const Informes = ({ API_ENDPOINT }) => {
 			reports: [
 				{
 					label: "Activos",
-					reportComponent: <ProfesionalesActivosReport />,
+					reportComponent: (
+						<ProfesionalesActivosReport
+							API_ENDPOINT={API_ENDPOINT}
+						/>
+					),
 					title: "Profesionales Activos",
 				},
 				{
 					label: "Inactivos",
-					reportComponent: <ProfesionalesInactivosReport />,
+					reportComponent: (
+						<ProfesionalesInactivosReport
+							API_ENDPOINT={API_ENDPOINT}
+						/>
+					),
 					title: "Profesionales Inactivos",
 				},
 				{
 					label: "Matriculados",
-					reportComponent: <ProfesionalesMatriculadosReport />,
+					reportComponent: (
+						<ProfesionalesMatriculadosReport
+							API_ENDPOINT={API_ENDPOINT}
+						/>
+					),
 					title: "Profesionales Matriculados",
 				},
 				{
 					label: "Sin Matricular",
-					reportComponent: <ProfesionalesSinMatricularReport />,
+					reportComponent: (
+						<ProfesionalesSinMatricularReport
+							API_ENDPOINT={API_ENDPOINT}
+						/>
+					),
 					title: "Profesionales Sin Matricular",
 				},
 				{
 					label: "Morosos",
-					reportComponent: <ProfesionalesMorososReport />,
+					reportComponent: (
+						<ProfesionalesMorososReport
+							API_ENDPOINT={API_ENDPOINT}
+						/>
+					),
 					title: "Profesionales Morosos",
 				},
 				{
 					label: "Al Día",
-					reportComponent: <ProfesionalesAlDiaReport />,
+					reportComponent: (
+						<ProfesionalesAlDiaReport API_ENDPOINT={API_ENDPOINT} />
+					),
 					title: "Profesionales Al Día",
 				},
 			],
@@ -359,7 +381,12 @@ const Informes = ({ API_ENDPOINT }) => {
 											aria-controls={tab.target.substring(
 												1
 											)}
-											aria-selected={tab.selected}>
+											aria-selected={tab.selected}
+											onClick={() => {
+												setShowInforme(false);
+												setSelectedArancel("");
+											}
+											}>
 											{tab.label}
 										</button>
 									</li>
