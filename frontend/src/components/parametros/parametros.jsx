@@ -400,7 +400,7 @@ const Parametros = ( {API_ENDPOINT} ) => {
 				importe_cuota: importeCuotaModicado,
 			};
 
-			const endpoint = `${API_ENDPOINT}/parametros`;
+			const endpoint = `${API_ENDPOINT}/parametros/`;
 			const direction = "1";
 			const method = "PATCH";
 
@@ -513,7 +513,7 @@ const Parametros = ( {API_ENDPOINT} ) => {
 	// FUNCION PARA ACTUALIZAR LOS DATOS
 	const onSubmit = async (formData) => {
 		try {
-			const endpoint = `${API_ENDPOINT}/parametros`;
+			const endpoint = `${API_ENDPOINT}/parametros/`;
 			const direction = "1";
 			const method = "PATCH";
 			const body = formData;
@@ -748,7 +748,7 @@ const Parametros = ( {API_ENDPOINT} ) => {
 						<div className="container-fluid container-md pt-3">
 							<div className="card">
 								<div className="card-header text-center bg-secondary fst-italic">
-									<strong>Parámetros Generales</strong>
+									<strong>Variables Generales</strong>
 								</div>
 								<div className="card-body">
 									<div className="row gx-5">

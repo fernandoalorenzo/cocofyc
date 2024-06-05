@@ -70,7 +70,6 @@ export default function SideBar() {
 							</div>
 						</div>
 					</div>
-
 					{/* Sidebar Menu */}
 					<nav className="mt-2">
 						<ul
@@ -122,7 +121,6 @@ export default function SideBar() {
 									<p>Dashboard</p>
 								</NavLink>
 							</li>
-							{/*---------- CARGA DE DATOS ----------*/}
 							<li className="nav-header text-warning">GESTIÓN</li>
 							<li className="nav-item">
 								<NavLink
