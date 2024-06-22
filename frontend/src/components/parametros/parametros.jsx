@@ -3,7 +3,7 @@ import Swal from "sweetalert2";
 import apiConnection from "../../../../backend/functions/apiConnection";
 import { useForm } from "react-hook-form";
 
-const Parametros = ( {API_ENDPOINT} ) => {
+const Parametros = ({ API_ENDPOINT }) => {
 	const {
 		register,
 		handleSubmit,
@@ -26,7 +26,7 @@ const Parametros = ( {API_ENDPOINT} ) => {
 	const [editandoArancel, setEditandoArancel] = useState(false);
 	const [selectedArancel, setSelectedArancel] = useState("");
 
-	const importeCuotaModicado = watch("importe_cuota", "");
+	const importeCuotaModificado = watch("importe_cuota", "");
 
 	/////////////////////////////////// Medios de Pago //////////////////////////////////////////
 	const fetchMediosDePago = async () => {
@@ -212,7 +212,6 @@ const Parametros = ( {API_ENDPOINT} ) => {
 		}
 	};
 
-	/////////////////////////////////// ARANCELES ///////////////////////////////////
 	const fetchAranceles = async () => {
 		try {
 			const endpoint = `${API_ENDPOINT}/aranceles`;
@@ -312,7 +311,7 @@ const Parametros = ( {API_ENDPOINT} ) => {
 			setEditandoArancel(false);
 		} else {
 			const selectedArancel = aranceles.find(
-				(arancel) =>arancel.id === selectedIdArancel
+				(arancel) => arancel.id === selectedIdArancel
 			);
 			setSelectedArancel(selectedArancel);
 			setMostrarNuevoArancel(false);
@@ -370,14 +369,11 @@ const Parametros = ( {API_ENDPOINT} ) => {
 					setNuevoArancel("");
 					setMostrarNuevoArancel(false);
 					setEditandoArancel(false);
-
-					// Resetear el estado del select y el input
 					setSelectedArancel(null);
 					setMostrarNuevoArancel(false);
 					setNuevoArancel("");
-					// Establecer el valor del select como vacío
 					const selectElement = document.getElementById("arancel");
-					selectElement.value = ""; // Esto restablece el valor seleccionado del select
+					selectElement.value = "";
 				}, 2500);
 			} else {
 				console.error(
@@ -392,12 +388,11 @@ const Parametros = ( {API_ENDPOINT} ) => {
 			);
 		}
 	};
-	/////////////////////////////////////////////////////////////////////////////
 
 	const handleGuardarImporteCuota = async () => {
 		try {
 			const formData = {
-				importe_cuota: importeCuotaModicado,
+				importe_cuota: importeCuotaModificado,
 			};
 
 			const endpoint = `${API_ENDPOINT}/parametros/`;
@@ -469,6 +464,10 @@ const Parametros = ( {API_ENDPOINT} ) => {
 				setValue("telefono", response.data.telefono);
 				setValue("email", response.data.email);
 				setValue("importe_cuota", response.data.importe_cuota);
+				setValue("birthday_hora", response.data.birthday_hora);
+				setValue("birthday_minutos", response.data.birthday_minutos);
+				setValue("aviso_cuota_hora", response.data.aviso_cuota_hora);
+				setValue("aviso_cuota_minutos", response.data.aviso_cuota_minutos);
 			} else {
 				console.error(
 					"Error al obtener los datos de los parametros:",
@@ -589,23 +588,14 @@ const Parametros = ( {API_ENDPOINT} ) => {
 													htmlFor="titular"
 													className="form-label mb-0">
 													Titular{" "}
-													<span className="text-danger">
-														*
-													</span>
 												</label>
 												<input
 													type="text"
 													className="form-control"
 													id="titular"
 													{...register("titular", {
-														required: true,
 													})}
 												/>
-												{errors.titular && (
-													<span className="text-danger">
-														Este campo es requerido
-													</span>
-												)}
 											</div>
 											{/* Domicilio */}
 											<div className="col mb-3">
@@ -724,6 +714,169 @@ const Parametros = ( {API_ENDPOINT} ) => {
 											</div>
 										</div>
 									</div>
+									<span className="text-center fst-italic bg-secondary d-flex py-2 justify-content-center align-items-center">
+										<strong>
+											Configuración Horarios de Envíos
+										</strong>
+									</span>
+									<div className="card-body">
+										<div className="row">
+											{/* Saludo de Cumpleaños */}
+											<div className="col-2 align-self-center text-center justify-content-center">
+												<label
+													htmlFor="birthday_hora"
+													className="form-label mb-0">
+													Saludo de Cumpleaños
+												</label>
+												<div className="input-group mb-3 align-self-center">
+													<select
+														style={{
+															minWidth: "5em",
+															maxWidth: "5em",
+															textAlign: "center",
+														}}
+														className="form-select"
+														id="birthday_hora"
+														defaultValue="00"
+														{...register(
+															"birthday_hora"
+														)}>
+														{[
+															...Array(24).keys(),
+														].map((hour) => (
+															<option
+																key={hour}
+																value={String(
+																	hour
+																).padStart(
+																	2,
+																	"0"
+																)}>
+																{String(
+																	hour
+																).padStart(
+																	2,
+																	"0"
+																)}
+															</option>
+														))}
+													</select>
+													<span className="input-group-text bg-white py-0">
+														:
+													</span>
+													<select
+														style={{
+															minWidth: "5em",
+															maxWidth: "5em",
+															textAlign: "center",
+														}}
+														className="form-select"
+														id="birthday_minutos"
+														defaultValue="00"
+														{...register(
+															"birthday_minutos"
+														)}>
+														{[
+															...Array(60).keys(),
+														].map((minute) => (
+															<option
+																key={minute}
+																value={String(
+																	minute
+																).padStart(
+																	2,
+																	"0"
+																)}>
+																{String(
+																	minute
+																).padStart(
+																	2,
+																	"0"
+																)}
+															</option>
+														))}
+													</select>
+												</div>
+											</div>
+											{/* Aviso de Vencimiento de	Cuotas */}
+											<div className="col-2 align-self-center text-center justify-content-center">
+												<label
+													htmlFor="aviso_cuota_hora"
+													className="form-label mb-0">
+													Aviso Venc. Cuotas
+												</label>
+												<div className="input-group mb-3 align-self-center text-center justify-content-center">
+													<select
+														style={{
+															minWidth: "5em",
+															maxWidth: "5em",
+															textAlign: "center",
+														}}
+														className="form-select"
+														id="aviso_cuota_hora"
+														defaultValue="00"
+														{...register(
+															"aviso_cuota_hora"
+														)}>
+														{[
+															...Array(24).keys(),
+														].map((hour) => (
+															<option
+																key={hour}
+																value={String(
+																	hour
+																).padStart(
+																	2,
+																	"0"
+																)}>
+																{String(
+																	hour
+																).padStart(
+																	2,
+																	"0"
+																)}
+															</option>
+														))}
+													</select>
+													<span className="input-group-text bg-white py-0">
+														:
+													</span>
+													<select
+														style={{
+															minWidth: "5em",
+															maxWidth: "5em",
+															textAlign: "center",
+														}}
+														className="form-select"
+														id="aviso_cuota_minutos"
+														defaultValue="00"
+														{...register(
+															"aviso_cuota_minutos"
+														)}>
+														{[
+															...Array(60).keys(),
+														].map((minute) => (
+															<option
+																key={minute}
+																value={String(
+																	minute
+																).padStart(
+																	2,
+																	"0"
+																)}>
+																{String(
+																	minute
+																).padStart(
+																	2,
+																	"0"
+																)}
+															</option>
+														))}
+													</select>
+												</div>
+											</div>
+										</div>
+									</div>
 									<div className="card-footer text-muted text-end">
 										<button
 											type="button"
@@ -742,9 +895,7 @@ const Parametros = ( {API_ENDPOINT} ) => {
 								</form>
 							</div>
 						</div>
-
 						{/* ********************************************************* */}
-
 						<div className="container-fluid container-md pt-3">
 							<div className="card">
 								<div className="card-header text-center bg-secondary fst-italic">

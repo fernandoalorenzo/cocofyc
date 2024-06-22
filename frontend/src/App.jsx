@@ -35,7 +35,8 @@ const Layout = ({ children }) => (
 
 const API_ENDPOINT =
 	process.env.NODE_ENV === "production"
-		? "https://cocofyc.neoit.com.ar/api"
+// ? "https://cocofyc.neoit.com.ar/api"
+		? "https://gestioncocofyc1.com.ar/api"
 		: "http://localhost:5000/api";
 
 const SERVER_PATH =

@@ -13,14 +13,13 @@ const GestionesModal = ({
 	API_ENDPOINT,
 }) => {
 	const profesionalId = data ? data.id : null;
-	const [activeTab, setActiveTab] = useState("cargarPago"); // Estado local para controlar la pestaña activa
+	const [activeTab, setActiveTab] = useState("cargarPago");
 	const user = JSON.parse(localStorage.getItem("user")) || {};
 	const [cardBodyFormToggle, setCardBodyFormToggle] = useState(false);
 	const [isBotonAgregarEnabled, setIsBotonAgregarEnabled] = useState(true);
 
 	useEffect(() => {
 		if (showModal) {
-			// Cuando el modal se muestra, establece la pestaña "Cargar Pago" como activa
 			setActiveTab("cargarPago");
 		}
 	}, [showModal]);
@@ -30,7 +29,6 @@ const GestionesModal = ({
 	};
 
 	const updateMovimientos = () => {
-		// Actualizar los movimientos, por ejemplo, volviendo a llamar a fetchMovimientos
 		fetchMovimientos(data);
 	};
 
@@ -177,8 +175,9 @@ const GestionesModal = ({
 											}
 											updateMovimientos={
 												updateMovimientos
-											} // Pasamos la función de actualización como prop
+											}
 											API_ENDPOINT={API_ENDPOINT}
+											activeTab={activeTab}
 										/>
 									</div>
 									<div
@@ -234,5 +233,4 @@ const GestionesModal = ({
 		</div>
 	);
 };
-
 export default GestionesModal;

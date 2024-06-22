@@ -49,15 +49,18 @@ const Parametros = sequelize.define(
 		importe_cuota: {
 			type: DataTypes.DECIMAL(20, 2),
 		},
-		mensaje_cumpleanos: {
-			type: DataTypes.TEXT,
+		birthday_hora: {
+			type: DataTypes.STRING(2),
 		},
-		mensaje_vencimiento_cuota: {
-			type: DataTypes.TEXT,
+		birthday_minutos: {
+			type: DataTypes.STRING(2),
 		},
-		mensaje_cuotas_adeudadas: {
-			type: DataTypes.TEXT,
-		}
+		aviso_cuota_hora: {
+			type: DataTypes.STRING(2),
+		},
+		aviso_cuota_minutos: {
+			type: DataTypes.STRING(2),
+		},
 	},
 	{
 		timestamps: true,

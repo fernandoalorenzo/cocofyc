@@ -198,15 +198,26 @@ const DenunciasSeguimientosModal = ({
 		const selectedFiles = event.target.files;
 		const selectedFilesArray = Array.from(selectedFiles);
 
-		const filesArray = selectedFilesArray.map((file) => {
-			return {
-				file: file,
-				url: URL.createObjectURL(file),
-				name: file.name,
-				type: file.type,
-				descripcion: "",
-			};
-		});
+		const filesArray = selectedFilesArray
+			.map((file) => {
+				if (file.size <= 3 * 1024 * 1024) {	// 3 MB (mismo límite que en el servidor)
+					return {
+						file: file,
+						url: URL.createObjectURL(file),
+						name: file.name,
+						type: file.type,
+						descripcion: "",
+					};
+				} else {
+					Swal.fire({
+						icon: "error",
+						title: "Archivo demasiado grande",
+						text: "El archivo seleccionado es demasiado grande. Por favor, seleccione un archivo más pequeño. El tamaño maximo permitido es de 3 MB.",
+					})
+					return null;
+				}
+			})
+			.filter(Boolean);
 
 		setSelectedFiles((previousFiles) => previousFiles.concat(filesArray));
 
@@ -523,8 +534,8 @@ const DenunciasSeguimientosModal = ({
 															fileExtension !==
 															"pdf"
 																? `/uploads/${nombreArchivo}`
-														// : "../../../assets/img/icon_pdf_512.png";
-																: `/assets/img/icon_pdf_512.png`;
+																: // : "../../../assets/img/icon_pdf_512.png";
+																  `/assets/img/icon_pdf_512.png`;
 														return (
 															<div
 																className="col-12 col-md-6 col-lg-4 col-xl-4"

@@ -8,6 +8,7 @@ const CargarPagosTab = ({
 	toggleCardBodyForm,
 	updateMovimientos,
 	API_ENDPOINT,
+	activeTab,
 }) => {
 	const {
 		register,
@@ -19,9 +20,10 @@ const CargarPagosTab = ({
 
 	const [mediosDePago, setMediosDePago] = useState([]);
 	const [aranceles, setAranceles] = useState([]);
-	const [selectedCuota, setSelectedCuota] = useState("");
 	const [cuotasGeneradas, setCuotasGeneradas] = useState([]);
 	const [tipoAsignacion, setTipoAsignacion] = useState("");
+	const [importeCuotaSeleccionada, setImporteCuotaSeleccionada] =
+		useState(null);
 
 	const user = JSON.parse(localStorage.getItem("user"));
 
@@ -70,6 +72,14 @@ const CargarPagosTab = ({
 			console.error("Error:", error.message);
 		}
 	};
+
+	useEffect(() => {
+		if (activeTab === "cargarPago") {
+			setImporteCuotaSeleccionada(null);
+			setTipoAsignacion("");
+			reset();
+		}
+	}, [activeTab]);
 
 	const fetchAranceles = async () => {
 		try {
@@ -134,7 +144,7 @@ const CargarPagosTab = ({
 				"Content-Type": "application/json",
 				Authorization: localStorage.getItem("token"),
 			};
-			
+
 			const response = await apiConnection(
 				endpoint,
 				direction,
@@ -151,15 +161,14 @@ const CargarPagosTab = ({
 				timer: 2500,
 			});
 
-			// Asignar el ID del movimiento al campo movimiento_id de la cuota seleccionada
-			// if (selectedCuota) {
-			// 	await asignarMovimientoACuota(selectedCuota, response.data.id);
-			// }
 			if (newData.cuotasGeneradas) {
-				await asignarMovimientoACuota(newData.cuotasGeneradas, response.data.id);
+				await asignarMovimientoACuota(
+					newData.cuotasGeneradas,
+					response.data.id
+				);
 			}
-				// Forzar la actualización del componente MovimientosTab
-				updateMovimientos();
+			// Forzar la actualización del componente MovimientosTab
+			updateMovimientos();
 
 			// Resetear el formulario después de guardar los cambios
 			reset();
@@ -205,12 +214,6 @@ const CargarPagosTab = ({
 			console.error("Error al asignar movimiento a cuota: ", error);
 		}
 	};
-
-	useEffect(() => {
-		if (profesionalId) {
-			fetchCuotasGeneradas(profesionalId);
-		}
-	}, [profesionalId]);
 
 	const fetchCuotasGeneradas = async (profesionalId) => {
 		try {
@@ -299,8 +302,21 @@ const CargarPagosTab = ({
 		toggleCardBodyForm(false);
 	};
 
-	const handleTipoAsignacionChange = (e) => {
+	const handleTipoAsignacionChange = async (e) => {
 		setTipoAsignacion(e.target.value);
+		setImporteCuotaSeleccionada(null);
+		if (e.target.value === "cuota" && profesionalId) {
+			await fetchCuotasGeneradas(profesionalId);
+		}
+	};
+
+	const handleCuotaChange = (e) => {
+		const selectedCuota = cuotasGeneradas.find(
+			(cuota) => cuota.id === e.target.value
+		);
+		setImporteCuotaSeleccionada(
+			selectedCuota ? selectedCuota.importe : null
+		);
 	};
 
 	return (
@@ -443,6 +459,7 @@ const CargarPagosTab = ({
 										{...register("cuotasGeneradas", {
 											required:
 												tipoAsignacion === "cuota",
+											onChange: handleCuotaChange,
 										})}>
 										<option value="">
 											Seleccione una opción
@@ -451,9 +468,7 @@ const CargarPagosTab = ({
 											(cuotaGenerada) => (
 												<option
 													key={cuotaGenerada.id}
-													value={
-														cuotaGenerada.id
-													}>
+													value={cuotaGenerada.id}>
 													{cuotaGenerada.cuota}
 												</option>
 											)
@@ -464,10 +479,17 @@ const CargarPagosTab = ({
 											El campo es requerido
 										</span>
 									)}
+									{importeCuotaSeleccionada && (
+										<span className="badge bg-warning mt-2 d-block w-100">
+											<strong>
+												Importe: $
+												{importeCuotaSeleccionada}
+											</strong>
+										</span>
+									)}
 								</div>
 							)}
 							{/* arancel extraordinario para aplicar pago*/}
-
 							{tipoAsignacion === "arancel" && (
 								<div className="col-3">
 									<label htmlFor="arancel_id">
@@ -498,40 +520,6 @@ const CargarPagosTab = ({
 									)}
 								</div>
 							)}
-
-							{/* <div className="col">
-								<div className="col-6">
-									<label htmlFor="cuotas">
-										Asignar Pago a Cuota
-									</label>
-									<select
-										className="form-select"
-										id="cuotasGeneradas"
-										onChange={(e) =>
-											setSelectedCuota(e.target.value)
-										}
-										value={selectedCuota}
-										{...register("cuotasGeneradas")}>
-										<option value="">
-											Seleccione una opción
-										</option>
-										{cuotasGeneradas.map(
-											(cuotaGenerada) => (
-												<option
-													key={cuotaGenerada.id}
-													value={cuotaGenerada.id}>
-													{cuotaGenerada.cuota}
-												</option>
-											)
-										)}
-									</select>
-									{errors.concepto?.type === "required" && (
-										<span className="row text-danger m-1">
-											El campo es requerido
-										</span>
-									)}
-								</div>
-							</div> */}
 						</div>
 					</div>
 					<div className="card-footer text-muted">

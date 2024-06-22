@@ -248,8 +248,18 @@ const ProfesionalesModal = ({
 
 	// ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ IMAGEN ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
 	const onSelectFile = (event) => {
-		const selectedFile = event.target.files[0]; // 
-		
+		const selectedFile = event.target.files[0]; //
+
+		const maxSize = 2 * 1024 * 1024; // 2 MB (puedes ajustar este valor según tus necesidades)
+		if (selectedFile.size > maxSize) {
+			Swal.fire({
+				icon: "error",
+				title: "Archivo demasiado grande",
+				text: "El archivo seleccionado es demasiado grande. Por favor, seleccione un archivo más pequeño. El tamaño maximo permitido es de 2 MB.",
+			})
+			return; // Detener el proceso si el archivo es demasiado grande
+		}
+
 		//Obtener el archivo seleccionado
 		setFile(selectedFile);
 
