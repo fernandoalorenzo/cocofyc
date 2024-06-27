@@ -18,6 +18,7 @@ import {
 	generarProfesionalesCuotas,
 	getCuotasGeneradasById,
 	getCuotasGeneradasByProfesional,
+	deleteCuotaGeneradaById,
 	generarProfesionalesCuota,
 	asignarMovimientoACuota,
 	getProfesionalesMorosos,
@@ -43,6 +44,10 @@ const profesionalesRouter = express.Router();
 	profesionalesRouter.get("/profesionales-morosos/",authenticateToken,getProfesionalesMorosos);
 // Ruta para obtener profesionales que estan al dia con cuotas
 	profesionalesRouter.get("/profesionales-aldia/",authenticateToken,getProfesionalesAlDia);
+// Ruta para obtener las cuotas generadas por un id de una cuota
+profesionalesRouter.get("/cuotas-generadas/:id", authenticateToken, getCuotasGeneradasById);
+// Ruta para eliminar una cuota generadas por id
+profesionalesRouter.delete("/cuotas-generadas/:id", authenticateToken, deleteCuotaGeneradaById);
 // Ruta para obtener los profesionales asignados a un establecimiento específico
 	profesionalesRouter.get("/asignados/:id", authenticateToken, getProfesionalesAsignados);
 // Ruta para obtener un profesional por cumpleaños
@@ -51,8 +56,6 @@ const profesionalesRouter = express.Router();
 	profesionalesRouter.post("/generar-cuotas/", authenticateToken, generarProfesionalesCuotas);
 // Ruta para generar una cuota a un profesional
 	profesionalesRouter.post("/generar-cuota/", authenticateToken, generarProfesionalesCuota);
-// Ruta para obtener las cuotas generadas por un id de una cuota
-	profesionalesRouter.get("/cuotas-generadas/:id", authenticateToken, getCuotasGeneradasById);
 	
 /////////////////////////////////////////// RUTAS GENERALES ///////////////////////////////////////////
 // Ruta para profesionales

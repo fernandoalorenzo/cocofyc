@@ -112,8 +112,6 @@ const ProfesionalesTabla = ( {API_ENDPOINT} ) => {
 					Authorization: localStorage.getItem("token"),
 				};
 			
-				console.log("id: ", id);
-
 				const data = await apiConnection(
 					endpoint,
 					direction,
@@ -242,7 +240,8 @@ const ProfesionalesTabla = ( {API_ENDPOINT} ) => {
 			dataTableRef.current = $(tablaProfesionalesRef.current).DataTable({
 				data: data,
 				language: datatableLanguageConfig,
-				buttons: datatableButtonsConfig, ...datatableDomConfig,
+				buttons: datatableButtonsConfig,
+				...datatableDomConfig,
 				columnDefs: [
 					{
 						targets: 0,
@@ -282,18 +281,23 @@ const ProfesionalesTabla = ( {API_ENDPOINT} ) => {
 					},
 					{
 						data: "dni",
+						width: "8%",
 					},
 					{
 						data: "matricula",
+						width: "5%",
 					},
 					{
 						data: "telefono",
+						width: "10%",
 					},
 					{
 						data: "email",
+						width: "12%",
 					},
 					{
 						data: "localidad",
+						width: "12%",
 					},
 					{
 						data: "estado_matricula_id",
@@ -306,6 +310,7 @@ const ProfesionalesTabla = ( {API_ENDPOINT} ) => {
 							}
 							return data;
 						},
+						width: "8%",
 					},
 					{
 						data: "activo",
@@ -325,6 +330,7 @@ const ProfesionalesTabla = ( {API_ENDPOINT} ) => {
 							}
 							return data;
 						},
+						width: "3%",
 					},
 					{
 						// Columna de acciones
@@ -332,14 +338,15 @@ const ProfesionalesTabla = ( {API_ENDPOINT} ) => {
 						className: "text-center",
 						render: function (data, type, row) {
 							return `
-                            <button class="btn btn-info btn-sm mostrar-btn" data-id="${row.id}"><i class="fa-regular fa-eye"></i> Mostrar</button>
-                            <button class="btn btn-warning btn-sm editar-btn" data-id="${row.id}"><i class="fa-regular fa-pen-to-square"></i> Editar</button>
-                            <button class="btn btn-danger btn-sm eliminar-btn" data-id="${row.id}"><i class="fa-regular fa-trash-can"></i>  Eliminar</button>
+                            <button class="btn btn-info btn-sm mostrar-btn" title="Mostrar" data-id="${row.id}"><i class="fa-regular fa-eye"></i></button>
+                            <button class="btn btn-warning btn-sm editar-btn" title="Editar" data-id="${row.id}"><i class="fa-regular fa-pen-to-square"></i>r</button>
+                            <button class="btn btn-danger btn-sm eliminar-btn" title="Eliminar" data-id="${row.id}"><i class="fa-regular fa-trash-can"></i></button>
 							<button class="btn btn-success btn-sm gestion-btn" data-id="${row.id}"><i class="fa-solid fa-money-check-dollar"></i>  Gestión</button>
                         `;
 						},
 						orderable: false,
 						searchable: false,
+						width: "17%",
 					},
 				],
 				lengthChange: true,

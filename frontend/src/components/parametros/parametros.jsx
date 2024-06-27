@@ -918,6 +918,7 @@ const Parametros = ({ API_ENDPOINT }) => {
 														</span>
 														<input
 															type="text"
+															step="0.01"
 															className="form-control"
 															id="importe_cuota"
 															{...register(

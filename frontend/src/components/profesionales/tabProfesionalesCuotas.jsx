@@ -6,7 +6,6 @@ import {
 	datatableDomConfig,
 } from "../../utils/dataTableConfig";
 
-
 const GenerarCuotaTab = ({ profesionalId, userId, API_ENDPOINT }) => {
 	const tablaCuotasAdeudadasRef = useRef(null);
 	const dataTableRef = useRef(null);
@@ -43,13 +42,12 @@ const GenerarCuotaTab = ({ profesionalId, userId, API_ENDPOINT }) => {
 							titleAttr: "Copia de datos al portapapeles",
 						},
 					],
-					... datatableDomConfig,
+					...datatableDomConfig,
 					columns: [
-						{ data: "cuota", width: "33%" },
+						{ data: "cuota", width: "31%" },
 						{
 							data: "vencimiento",
 							render: function (data) {
-								// Formatear la fecha en formato DD/MM/AAAA
 								const date = new Date(data);
 								const day = date
 									.getDate()
@@ -61,12 +59,11 @@ const GenerarCuotaTab = ({ profesionalId, userId, API_ENDPOINT }) => {
 								const year = date.getFullYear();
 								return `${day}/${month}/${year}`;
 							},
-							width: "33%",
+							width: "31%",
 						},
 						{
 							data: "importe",
 							render: function (data) {
-								// Dar formato de moneda al importe
 								return parseFloat(data).toLocaleString(
 									"es-AR",
 									{
@@ -75,8 +72,22 @@ const GenerarCuotaTab = ({ profesionalId, userId, API_ENDPOINT }) => {
 									}
 								);
 							},
-							width: "33%",
+							width: "31%",
 							className: "text-end pe-4",
+						},
+
+						{
+							data: null,
+							className: "text-center",
+							render: function (data, type, row) {
+								return `
+                            <button class="btn btn-danger btn-sm eliminar-btn" title="Eliminar" data-id="${row.id}"><i class="fa-regular fa-trash-can"></i></button>
+							
+                        `;
+							},
+							orderable: false,
+							searchable: false,
+							width: "2%",
 						},
 					],
 					lengthChange: true,
@@ -100,6 +111,18 @@ const GenerarCuotaTab = ({ profesionalId, userId, API_ENDPOINT }) => {
 				}
 			);
 		}
+
+		$(tablaCuotasAdeudadasRef.current).on(
+			"click",
+			".eliminar-btn",
+			function () {
+				const rowData = dataTableRef.current
+					.row($(this).closest("tr"))
+					.data();
+				handleEliminar(rowData.id);
+			}
+		);
+
 		fetchCuotas();
 	}, [cuotasAdeudadas]);
 
@@ -134,8 +157,7 @@ const GenerarCuotaTab = ({ profesionalId, userId, API_ENDPOINT }) => {
 
 				// Ordenar los registros alfabéticamente por nombre de forma DESCENDENTE
 				const sortedRegistros = filteredCuotas.sort(
-					(a, b) =>
-						b.cuota.localeCompare(a.cuota) // Ordenar por el campo "cuota" descendente
+					(a, b) => b.cuota.localeCompare(a.cuota) // Ordenar por el campo "cuota" descendente
 				);
 				setCuotas(sortedRegistros);
 			} else {
@@ -327,8 +349,9 @@ const GenerarCuotaTab = ({ profesionalId, userId, API_ENDPOINT }) => {
 					showConfirmButton: true,
 					timer: 2500,
 				});
-				
+
 				// Volver a dibujar la tabla y poblar el select con los nuevos datos
+				fetchCuotasGeneradas();
 				fetchCuotasAdeudadas();
 				fetchCuotas();
 
@@ -352,6 +375,54 @@ const GenerarCuotaTab = ({ profesionalId, userId, API_ENDPOINT }) => {
 				// Manejar otros errores
 				console.error("Error al generar la cuota: ", error.message);
 			}
+		}
+	};
+
+	const handleEliminar = async (id) => {
+		try {
+			const endpoint = `${API_ENDPOINT}/profesionales/cuotas-generadas/${id}`;
+			const method = "DELETE";
+			const headers = {
+				"Content-Type": "application/json",
+				Authorization: localStorage.getItem("token"),
+			};
+
+			const response = await apiConnection(
+				endpoint,
+				"",
+				method,
+				false,
+				headers
+			);
+
+			if (response.result) {
+				Swal.fire({
+					title: "Eliminado",
+					text: "El registro ha sido eliminado correctamente",
+					icon: "success",
+					showConfirmButton: false,
+					timer: 2500,
+				});
+
+				setTimeout(() => {
+					fetchCuotas();
+					fetchCuotasAdeudadas();
+					fetchCuotasGeneradas();
+				}, 2500);
+			} else {
+				Swal.fire({
+					title: "Error",
+					text: "Ha ocurrido un error al intentar eliminar el registro",
+					icon: "error",
+				});
+			}
+		} catch (error) {
+			console.error("Error al eliminar el registro:", error.message);
+			Swal.fire({
+				title: "Error",
+				text: "Ha ocurrido un error al intentar eliminar el registro",
+				icon: "error",
+			});
 		}
 	};
 
@@ -422,6 +493,7 @@ const GenerarCuotaTab = ({ profesionalId, userId, API_ENDPOINT }) => {
 											<th>Cuota</th>
 											<th>Vencimiento</th>
 											<th>Importe</th>
+											<th></th>
 										</tr>
 									</thead>
 								</table>

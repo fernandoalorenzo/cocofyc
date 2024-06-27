@@ -7,8 +7,6 @@ config();
 import moment from "moment-timezone";
 
 import sequelize from "./../config/sequelizeConfig.js";
-// import { Op } from "sequelize";
-// import { literal } from "sequelize";
 
 // Genera cuotas para los profesionales activos
 const generarProfesionalesCuotas = async (request, response) => {
@@ -41,6 +39,36 @@ const generarProfesionalesCuotas = async (request, response) => {
 			);
 			response.status(500).json({
 				message: "Error al agregar registros en profesionales_cuotas",
+			});
+		}
+	});
+};
+
+// Eliminar una cuota generada por id de profesionales_cuotas
+const deleteCuotaGeneradaById = async (request, response) => {
+	authenticateToken(request, response, async () => {
+		try {
+			const id_profesionales_cuotas = request.params.id;
+
+			const profesionales_cuotasDelete =
+				await Profesionales_Cuotas.destroy({
+					where: { id: id_profesionales_cuotas },
+				});
+
+			response.status(201).json({
+				message:
+					"La cuota generada al profesional fue eliminada exitosamente!",
+				data: profesionales_cuotasDelete,
+				result: true,
+			});
+
+		} catch (error) {
+			console.error(
+				"Error al eliminar la cuota generada al profesional:",
+				error.message
+			);
+			response.status(500).json({
+				message: "Error al eliminar la cuota generada al profesional",
 			});
 		}
 	});
@@ -346,6 +374,7 @@ export {
 	generarProfesionalesCuotas,
 	getCuotasGeneradasById,
 	getCuotasGeneradasByProfesional,
+	deleteCuotaGeneradaById,
 	generarProfesionalesCuota,
 	asignarMovimientoACuota,
 	getProfesionalesMorosos,
