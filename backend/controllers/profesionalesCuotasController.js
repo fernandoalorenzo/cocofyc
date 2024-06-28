@@ -12,25 +12,24 @@ import sequelize from "./../config/sequelizeConfig.js";
 const generarProfesionalesCuotas = async (request, response) => {
 	authenticateToken(request, response, async () => {
 		try {
-			// Extrae el ID de la cuota seleccionada de la solicitud
-			const { cuotaId } = request.body;
-
-			// Busca todos los profesionales activos
+			const { id } = request.body;
+			
+			// Obtener la lista de profesionales activos
 			const profesionalesActivos = await Profesional.findAll({
 				where: { activo: true },
 			});
 
-			// Itera sobre cada profesional activo y agrega un registro en profesionales_cuotas
+			// Generar cuotas para cada profesional activo
 			for (const profesional of profesionalesActivos) {
 				await Profesionales_Cuotas.create({
 					profesional_id: profesional.id,
-					cuota_id: cuotaId,
+					cuota_id: id,
 				});
 			}
 
-			response.status(201).json({
+			response.status(200).json({
 				message:
-					"Registros agregados correctamente en profesionales_cuotas",
+					"Cuotas generadas correctamente para todos los profesionales activos",
 			});
 		} catch (error) {
 			console.error(
@@ -61,7 +60,6 @@ const deleteCuotaGeneradaById = async (request, response) => {
 				data: profesionales_cuotasDelete,
 				result: true,
 			});
-
 		} catch (error) {
 			console.error(
 				"Error al eliminar la cuota generada al profesional:",

@@ -29,17 +29,11 @@ const ProfesionalesModal = ({ showModal, closeModal, data, API_ENDPOINT, }) => {
 				headers
 			);
 
-			if (response) {
-				// Ordenar los profesionales asignados alfabéticamente por nombre antes de establecer el estado
+			if (response && Array.isArray(response)) {
 				const sortedProfesionalesAsignados = response.sort((a, b) =>
 					a.nombre.localeCompare(b.nombre)
 				);
 				setProfesionalesAsignados(sortedProfesionalesAsignados);
-			} else {
-				console.error(
-					"Error al obtener profesionales asignados:",
-					response.statusText
-				);
 			}
 		} catch (error) {
 			console.error(

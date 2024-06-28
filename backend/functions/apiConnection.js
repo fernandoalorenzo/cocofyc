@@ -9,15 +9,7 @@ const apiConnection = async (endpoint, direction, method, body, headers) => {
 			throw new Error("Token no encontrado en los encabezados");
 		}
 
-		// Verifica si existe la propiedad 'Authorization' en el objeto de headers
-		// if (
-		// 	!/usuarios|roles/.test(endpoint) &&
-		// 	(!headers || !headers.Authorization)
-		// ) {
-		// 	throw new Error("Token no encontrado en los encabezados");
-		// }
-
-		// if (endpoint == "http://localhost:5000/api/profesionales/profesionales-morosos/") {
+		// if (endpoint == "http://localhost:5000/api/profesionales/generar-cuotas/") {
 		// console.log(
 		// "***************************************************************************"
 		// );

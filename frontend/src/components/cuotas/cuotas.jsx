@@ -132,11 +132,11 @@ const Cuotas = ( {API_ENDPOINT} ) => {
 		}
 	};
 
-	const handleGenerar = async (id) => {
+	const handleGenerar = async (cuota) => {
 		// Verificar si ya estan generadas las cuotas
 		try {
 			const endpoint = `${API_ENDPOINT}/cuotas/cuotas-generadas/`;
-			const direction = id;
+			const direction = cuota;
 			const method = "GET";
 			const body = false;
 			const headers = {
@@ -176,22 +176,18 @@ const Cuotas = ( {API_ENDPOINT} ) => {
 			cancelButtonText: "Cancelar",
 		});
 
-		// Si el usuario no confirma la generación, no hace nada
 		if (!result.isConfirmed) return;
 
 		try {
 			const endpoint = `${API_ENDPOINT}/profesionales/generar-cuotas/`;
 			const direction = "";
 			const method = "POST";
-			const body = {
-				cuotaId: id, // Envía el ID de la cuota seleccionada al backend
-			};
+			const body = cuota;
 			const headers = {
 				"Content-Type": "application/json",
 				Authorization: localStorage.getItem("token"),
 			};
 
-			// Realiza la solicitud al backend
 			const response = await apiConnection(
 				endpoint,
 				direction,
@@ -200,7 +196,6 @@ const Cuotas = ( {API_ENDPOINT} ) => {
 				headers
 			);
 
-			// Muestra una notificación o mensaje de éxito
 			Swal.fire({
 				title: "Cuotas generadas",
 				text: "Los registros han sido generados correctamente",
@@ -209,7 +204,6 @@ const Cuotas = ( {API_ENDPOINT} ) => {
 				timer: 2500,
 			});
 
-			// Actualiza la tabla llamando a fetchCuotas
 			fetchCuotas();
 		} catch (error) {
 			console.error("Error al generar los registros:", error.message);

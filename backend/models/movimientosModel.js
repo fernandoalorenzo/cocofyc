@@ -13,7 +13,7 @@ const Movimientos = sequelize.define(
 			defaultValue: DataTypes.UUIDV4,
 			primaryKey: true,
 		},
-		user_id: { type: DataTypes.UUID },
+		user_id: { type: DataTypes.UUID, allowNull: true },
 		profesional_id: { type: DataTypes.UUID },
 		tipo_operacion: { type: DataTypes.STRING(7), allowNull: false },
 		fecha: { type: DataTypes.DATEONLY, allowNull: false },

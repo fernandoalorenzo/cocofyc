@@ -9,7 +9,7 @@ const Denuncia = sequelize.define(
 			defaultValue: DataTypes.UUIDV4,
 			primaryKey: true,
 		},
-		user_id: { type: DataTypes.STRING(36) },
+		user_id: { type: DataTypes.STRING(36), allowNull: true },
 		nro_acta: { type: DataTypes.STRING(10), allowNull: false },
 		fecha: { type: DataTypes.DATEONLY, allowNull: false },
 		fecha_cierre: { type: DataTypes.DATEONLY },

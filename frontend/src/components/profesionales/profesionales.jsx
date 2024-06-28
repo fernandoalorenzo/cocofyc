@@ -339,7 +339,7 @@ const ProfesionalesTabla = ( {API_ENDPOINT} ) => {
 						render: function (data, type, row) {
 							return `
                             <button class="btn btn-info btn-sm mostrar-btn" title="Mostrar" data-id="${row.id}"><i class="fa-regular fa-eye"></i></button>
-                            <button class="btn btn-warning btn-sm editar-btn" title="Editar" data-id="${row.id}"><i class="fa-regular fa-pen-to-square"></i>r</button>
+                            <button class="btn btn-warning btn-sm editar-btn" title="Editar" data-id="${row.id}"><i class="fa-regular fa-pen-to-square"></i></button>
                             <button class="btn btn-danger btn-sm eliminar-btn" title="Eliminar" data-id="${row.id}"><i class="fa-regular fa-trash-can"></i></button>
 							<button class="btn btn-success btn-sm gestion-btn" data-id="${row.id}"><i class="fa-solid fa-money-check-dollar"></i>  Gestión</button>
                         `;
