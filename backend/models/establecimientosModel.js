@@ -33,6 +33,9 @@ const Establecimiento = sequelize.define(
 		localidad: DataTypes.STRING(30),
 		fecha_inicio: { type: DataTypes.DATEONLY },
 		fecha_caducidad: { type: DataTypes.DATEONLY },
+		nro_tramite: { type: DataTypes.STRING(15) },
+		nro_habilitacion: { type: DataTypes.STRING(15) },
+		nro_resolucion: { type: DataTypes.STRING(15) },
 	},
 	{
 		timestamps: true,

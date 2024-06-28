@@ -37,6 +37,9 @@ const EstablecimientosModal = ({
 		localidad: "",
 		fecha_inicio: "",
 		fecha_caducidad: "",
+		nro_tramite: "",
+		nro_habilitacion: "",
+		nro_resolucion: "",
 	};
 
 	useEffect(() => {
@@ -377,6 +380,50 @@ const EstablecimientosModal = ({
 											id="fecha_caducidad"
 											readOnly={modalMode === "mostrar"}
 											{...register("fecha_caducidad")}
+										/>
+									</div>
+								</div>
+								<div className="row">
+									<div className="col mb-3">
+										<label
+											htmlFor="nro_tramite"
+											className="form-label mb-0">
+											N° de Trámite
+										</label>
+										<input
+											type="text"
+											className="form-control"
+											id="nro_tramite"
+											readOnly={modalMode === "mostrar"}
+											{...register("nro_tramite")}
+										/>
+									</div>
+									<div className="col mb-3">
+										<label
+											htmlFor="nro_habilitacion"
+											className="form-label mb-0">
+											N° de Habilitación
+										</label>
+										<input
+											type="text"
+											className="form-control"
+											id="nro_habilitacion"
+											readOnly={modalMode === "mostrar"}
+											{...register("nro_habilitacion")}
+										/>
+									</div>
+									<div className="col mb-3">
+										<label
+											htmlFor="nro_resolucion"
+											className="form-label mb-0">
+											N° de Resolución
+										</label>
+										<input
+											type="text"
+											className="form-control"
+											id="nro_resolucion"
+											readOnly={modalMode === "mostrar"}
+											{...register("nro_resolucion")}
 										/>
 									</div>
 								</div>
