@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import apiConnection from "../../../../backend/functions/apiConnection";
+import formatFecha from "../../utils/formatFecha";
 import { useForm } from "react-hook-form";
 
 const EstablecimientosModal = ({
@@ -17,6 +18,7 @@ const EstablecimientosModal = ({
 		handleSubmit,
 		reset,
 		setValue,
+		getValues,
 	} = useForm();
 
 	useEffect(() => {
@@ -33,15 +35,23 @@ const EstablecimientosModal = ({
 		email: "",
 		domicilio: "",
 		localidad: "",
+		fecha_inicio: "",
+		fecha_caducidad: "",
 	};
 
 	useEffect(() => {
-		if (modalMode === "agregar" ) {
+		if (modalMode === "agregar") {
 			reset(initialState);
 		} else if (data) {
+			if (data.fecha_inicio == "0000-00-00") {
+				data.fecha_inicio = "";
+			}
+			if (data.fecha_caducidad == "0000-00-00") {
+				data.fecha_caducidad = "";
+			}
 			reset(data);
 		}
-	}, [modalMode]);
+	}, [modalMode, data, reset]);
 
 	// Manejador de cambios para el campo CUIT
 	const handleCUITChange = (e) => {
@@ -62,6 +72,43 @@ const EstablecimientosModal = ({
 		}
 		// Actualizar el valor del campo CUIT en el formulario
 		setValue("cuit", formattedValue); // Utilizar setValue para actualizar el campo CUIT
+	};
+
+	// Manejador de cambios para la fecha de inicio
+	const handleFechaInicioBlur = (e) => {
+		const fechaInicio = e.target.value;
+		if (fechaInicio) {
+			const nuevaFechaCaducidad = new Date(fechaInicio);
+			nuevaFechaCaducidad.setFullYear(
+				nuevaFechaCaducidad.getFullYear() + 3
+			);
+			const nuevaFechaCaducidadStr = nuevaFechaCaducidad
+				.toISOString()
+				.split("T")[0];
+			
+			const nuevaFechaCaducidadFormatted = formatFecha(
+				nuevaFechaCaducidadStr
+			);
+
+			if (!getValues("fecha_caducidad")) {
+				setValue("fecha_caducidad", nuevaFechaCaducidadStr);
+			} else {
+				Swal.fire({
+					title: "Nueva Fecha de Caducidad",
+					text: `¿Desea reemplazar la fecha de caducidad y establecerla a ${nuevaFechaCaducidadFormatted}?`,
+					icon: "warning",
+					showCancelButton: true,
+					confirmButtonColor: "#3085d6",
+					cancelButtonColor: "#d33",
+					confirmButtonText: "Sí, reemplazar",
+					cancelButtonText: "No, mantener",
+				}).then((result) => {
+					if (result.isConfirmed) {
+						setValue("fecha_caducidad", nuevaFechaCaducidadStr);
+					}
+				});
+			}
+		}
 	};
 
 	const onSubmit = async (formData, id) => {
@@ -122,7 +169,7 @@ const EstablecimientosModal = ({
 			data-bs-keyboard="false"
 			aria-labelledby="staticBackdropLabel"
 			aria-hidden={!showModal}>
-			<div className="modal-dialog modal-lg">
+			<div className="modal-dialog modal-xl">
 				<div className="modal-content bg-secondary">
 					<div className="modal-header bg-primary">
 						<h5 className="modal-title">
@@ -204,7 +251,7 @@ const EstablecimientosModal = ({
 									</div>
 								</div>
 								<div className="row">
-									<div className="col mb-3">
+									<div className="col-2 mb-3">
 										<label
 											htmlFor="cuit"
 											className="form-label mb-0">
@@ -242,7 +289,7 @@ const EstablecimientosModal = ({
 												</span>
 											))}
 									</div>
-									<div className="col mb-3">
+									<div className="col-2 mb-3">
 										<label
 											htmlFor="telefono"
 											className="form-label mb-0">
@@ -268,7 +315,7 @@ const EstablecimientosModal = ({
 											</span>
 										)}
 									</div>
-									<div className="col-5 mb-3">
+									<div className="col-4 mb-3">
 										<label
 											htmlFor="email"
 											className="form-label mb-0">
@@ -302,6 +349,35 @@ const EstablecimientosModal = ({
 												El eMail es invalido
 											</span>
 										)}
+									</div>
+									<div className="col-2 mb-3">
+										<label
+											htmlFor="fecha_inicio"
+											className="form-label mb-0">
+											Inicio{" "}
+										</label>
+										<input
+											type="date"
+											className="form-control"
+											id="fecha_inicio"
+											readOnly={modalMode === "mostrar"}
+											{...register("fecha_inicio")}
+											onBlur={handleFechaInicioBlur}
+										/>
+									</div>
+									<div className="col-2 mb-3">
+										<label
+											htmlFor="fecha_caducidad"
+											className="form-label mb-0">
+											Caducidad{" "}
+										</label>
+										<input
+											type="date"
+											className="form-control"
+											id="fecha_caducidad"
+											readOnly={modalMode === "mostrar"}
+											{...register("fecha_caducidad")}
+										/>
 									</div>
 								</div>
 								<div className="row">

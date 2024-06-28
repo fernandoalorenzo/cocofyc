@@ -19,13 +19,20 @@ const Establecimiento = sequelize.define(
 		},
 		cuit: {
 			type: DataTypes.STRING(13),
-			allowNull: false,
+			allowNull: true,
+			defaultValue: null,
+		},
+		dni: {
+			type: DataTypes.STRING(8),
+			allowNull: true,
 			defaultValue: null,
 		},
 		telefono: { type: DataTypes.STRING(30), allowNull: false },
 		email: { type: DataTypes.STRING(255), allowNull: false },
 		domicilio: DataTypes.STRING(60),
 		localidad: DataTypes.STRING(30),
+		fecha_inicio: { type: DataTypes.DATEONLY },
+		fecha_caducidad: { type: DataTypes.DATEONLY },
 	},
 	{
 		timestamps: true,

@@ -91,7 +91,6 @@ const EstablecimientosTabla = ( { API_ENDPOINT } ) => {
 					timer: 2500,
 				});
 
-				// Actualizar la tabla llamando a fetchEstablecimientos
 				setTimeout(() => {
 					fetchEstablecimientos();
 				}, 2500);
@@ -143,14 +142,34 @@ const EstablecimientosTabla = ( { API_ENDPOINT } ) => {
 			).DataTable({
 				data: data,
 				language: datatableLanguageConfig,
-				buttons: datatableButtonsConfig, ... datatableDomConfig,
+				buttons: datatableButtonsConfig, ...datatableDomConfig,
+				columnDefs: [
+					{
+						targets: [ 5, 6], 
+						render: function (data, type, row) {
+							if (data === "0000-00-00") {
+								return "";
+							}
+							if (type === "display") {
+								// Formatear la fecha de 'aaaa-mm-dd' a 'dd/mm/aaaa'
+								if (data && typeof data === "string") {
+									const parts = data.split("-");
+									if (parts.length === 3) {
+										return `${parts[2]}/${parts[1]}/${parts[0]}`;
+									}
+								}
+							}
+							return data;
+						},
+					},
+				],
 				columns: [
 					{
 						data: "establecimiento",
 					},
-					{
-						data: "titular",
-					},
+					// {
+					// 	data: "titular",
+					// },
 					{
 						data: "cuit",
 					},
@@ -164,19 +183,26 @@ const EstablecimientosTabla = ( { API_ENDPOINT } ) => {
 						data: "localidad",
 					},
 					{
+						data: "fecha_inicio",
+					},
+					{
+						data: "fecha_caducidad",
+					},
+					{
 						// Columna de acciones
 						data: null,
 						className: "text-center",
 						render: function (data, type, row) {
 							return `
-                            <button class="btn btn-info btn-sm mostrar-btn" data-id="${row.id}"><i class="fa-regular fa-eye"></i> Mostrar</button>
-                            <button class="btn btn-warning btn-sm editar-btn" data-id="${row.id}"><i class="fa-regular fa-pen-to-square"></i> Editar</button>
-                            <button class="btn btn-danger btn-sm eliminar-btn" data-id="${row.id}"><i class="fa-regular fa-trash-can"></i>  Eliminar</button>
+                            
+                            <button class="btn btn-warning btn-sm editar-btn" data-id="${row.id}"><i class="fa-regular fa-pen-to-square"></i></button>
+                            <button class="btn btn-danger btn-sm eliminar-btn" data-id="${row.id}"><i class="fa-regular fa-trash-can"></i></button>
 							<button class="btn btn-success btn-sm asignar-btn" data-id="${row.id}"><i class="fa-solid fa-user-tie"></i>  Asignar</button>
                         `;
 						},
 						orderable: false,
 						searchable: false,
+						width: "15%",
 					},
 				],
 				lengthChange: true,
@@ -201,12 +227,12 @@ const EstablecimientosTabla = ( { API_ENDPOINT } ) => {
 		}
 
 		// Eventos
-		$(tablaEstablecimientosRef.current).on("click", ".mostrar-btn", function () {
-			const rowData = dataTableRef.current
-				.row($(this).closest("tr"))
-				.data();
-			handleMostrar(rowData, "mostrar");
-		});
+		// $(tablaEstablecimientosRef.current).on("click", ".mostrar-btn", function () {
+		// 	const rowData = dataTableRef.current
+		// 		.row($(this).closest("tr"))
+		// 		.data();
+		// 	handleMostrar(rowData, "mostrar");
+		// });
 
 		$(tablaEstablecimientosRef.current).on("click", ".editar-btn", function () {
 			const rowData = dataTableRef.current
@@ -272,11 +298,12 @@ const EstablecimientosTabla = ( { API_ENDPOINT } ) => {
 									<thead className="table-dark">
 										<tr>
 											<th>Establecimiento</th>
-											<th>Titular</th>
 											<th>CUIT</th>
 											<th>Teléfono</th>
 											<th>e-Mail</th>
 											<th>Localidad</th>
+											<th>Inicio</th>
+											<th>Caducidad</th>
 											<th className="text-center">
 												Acciones
 											</th>
