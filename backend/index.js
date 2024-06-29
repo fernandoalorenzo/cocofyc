@@ -23,6 +23,8 @@ import connect from "./config/db.js";
 import { config } from "dotenv";
 config();
 
+process.env.TZ = "America/Argentina/Buenos_Aires";
+
 const app = express();
 app.use(express.json());
 app.use(cors());

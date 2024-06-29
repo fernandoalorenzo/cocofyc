@@ -23,6 +23,7 @@ const EstablecimientosTabla = ( { API_ENDPOINT } ) => {
 		const dataTableRef = useRef(null);
 
 	const fetchEstablecimientos = async () => {
+		
 		try {
 			const endpoint = `${API_ENDPOINT}/establecimientos`;
 			const direction = "";
@@ -142,10 +143,11 @@ const EstablecimientosTabla = ( { API_ENDPOINT } ) => {
 			).DataTable({
 				data: data,
 				language: datatableLanguageConfig,
-				buttons: datatableButtonsConfig, ...datatableDomConfig,
+				buttons: datatableButtonsConfig,
+				...datatableDomConfig,
 				columnDefs: [
 					{
-						targets: [ 5, 6], 
+						targets: [5, 6],
 						render: function (data, type, row) {
 							if (data === "0000-00-00") {
 								return "";
@@ -170,9 +172,9 @@ const EstablecimientosTabla = ( { API_ENDPOINT } ) => {
 					// {
 					// 	data: "titular",
 					// },
-					{
-						data: "cuit",
-					},
+					// {
+					// 	data: "cuit",
+					// },
 					{
 						data: "telefono",
 					},
@@ -184,9 +186,23 @@ const EstablecimientosTabla = ( { API_ENDPOINT } ) => {
 					},
 					{
 						data: "fecha_inicio",
+						className: "text-center",
 					},
 					{
 						data: "fecha_caducidad",
+						className: "text-center",
+					},
+					{
+						data: "nro_tramite",
+						className: "text-center",
+					},
+					{
+						data: "nro_habilitacion",
+						className: "text-center",
+					},
+					{
+						data: "nro_resolucion",
+						className: "text-center",
 					},
 					{
 						// Columna de acciones
@@ -298,12 +314,15 @@ const EstablecimientosTabla = ( { API_ENDPOINT } ) => {
 									<thead className="table-dark">
 										<tr>
 											<th>Establecimiento</th>
-											<th>CUIT</th>
+											{/* <th>CUIT</th> */}
 											<th>Teléfono</th>
 											<th>e-Mail</th>
 											<th>Localidad</th>
 											<th>Inicio</th>
 											<th>Caducidad</th>
+											<th>Trámite</th>
+											<th>Habilitación</th>
+											<th>Resolución</th>
 											<th className="text-center">
 												Acciones
 											</th>

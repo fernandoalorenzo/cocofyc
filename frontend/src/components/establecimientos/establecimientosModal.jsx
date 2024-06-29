@@ -256,105 +256,6 @@ const EstablecimientosModal = ({
 								<div className="row">
 									<div className="col-2 mb-3">
 										<label
-											htmlFor="cuit"
-											className="form-label mb-0">
-											CUIT{" "}
-											{modalMode !== "mostrar" && (
-												<span className="text-warning">
-													*
-												</span>
-											)}
-										</label>
-										<input
-											type="text"
-											className="form-control text-center"
-											id="cuit"
-											readOnly={modalMode === "mostrar"}
-											maxLength="13"
-											{...register("cuit", {
-												required: true,
-												maxLength: 13,
-												minLength: 13,
-											})}
-											onChange={handleCUITChange}
-										/>
-										{errors.cuit?.type === "required" && (
-											<span className="row text-warning m-1">
-												El campo es requerido
-											</span>
-										)}
-										{errors.cuit?.type === "maxLength" ||
-											(errors.cuit?.type ===
-												"minLength" && (
-												<span className="row text-warning m-1">
-													El CUIT debe contener 13
-													digitos en total
-												</span>
-											))}
-									</div>
-									<div className="col-2 mb-3">
-										<label
-											htmlFor="telefono"
-											className="form-label mb-0">
-											Teléfono{" "}
-											{modalMode !== "mostrar" && (
-												<span className="text-warning">
-													*
-												</span>
-											)}
-										</label>
-										<input
-											type="text"
-											className="form-control"
-											id="telefono"
-											readOnly={modalMode === "mostrar"}
-											{...register("telefono", {
-												required: true,
-											})}
-										/>
-										{errors.telefono && (
-											<span className="row text-warning m-1">
-												El campo es requerido
-											</span>
-										)}
-									</div>
-									<div className="col-4 mb-3">
-										<label
-											htmlFor="email"
-											className="form-label mb-0">
-											E-Mail{" "}
-											{modalMode !== "mostrar" && (
-												<span className="text-warning">
-													*
-												</span>
-											)}
-										</label>
-										<input
-											type="email"
-											className="form-control"
-											id="email"
-											readOnly={modalMode === "mostrar"}
-											{...register("email", {
-												required: "required",
-												pattern: {
-													value: /\S+@\S+\.\S+/,
-												},
-											})}
-											autoComplete="off"
-										/>
-										{errors.email?.type === "required" && (
-											<span className="row text-warning m-1">
-												El campo es requerido
-											</span>
-										)}
-										{errors.email?.type === "pattern" && (
-											<span className="row text-warning m-1">
-												El eMail es invalido
-											</span>
-										)}
-									</div>
-									<div className="col-2 mb-3">
-										<label
 											htmlFor="fecha_inicio"
 											className="form-label mb-0">
 											Inicio{" "}
@@ -382,8 +283,6 @@ const EstablecimientosModal = ({
 											{...register("fecha_caducidad")}
 										/>
 									</div>
-								</div>
-								<div className="row">
 									<div className="col mb-3">
 										<label
 											htmlFor="nro_tramite"
@@ -427,6 +326,122 @@ const EstablecimientosModal = ({
 										/>
 									</div>
 								</div>
+								<div className="row">
+									<div className="col-2 mb-3">
+										<label
+											htmlFor="dni"
+											className="form-label mb-0">
+											DNI{" "}
+										</label>
+										<input
+											type="text"
+											className="form-control"
+											id="dni"
+											readOnly={modalMode === "mostrar"}
+											{...register("dni")}
+										/>
+									</div>
+									<div className="col-2 mb-3">
+										<label
+											htmlFor="cuit"
+											className="form-label mb-0">
+											CUIT{" "}
+											{modalMode !== "mostrar" && (
+												<span className="text-warning">
+													*
+												</span>
+											)}
+										</label>
+										<input
+											type="text"
+											className="form-control text-center"
+											id="cuit"
+											readOnly={modalMode === "mostrar"}
+											maxLength="13"
+											{...register("cuit", {
+												required: true,
+												maxLength: 13,
+												minLength: 13,
+											})}
+											onChange={handleCUITChange}
+										/>
+										{errors.cuit?.type === "required" && (
+											<span className="row text-warning m-1">
+												El campo es requerido
+											</span>
+										)}
+										{errors.cuit?.type === "maxLength" ||
+											(errors.cuit?.type ===
+												"minLength" && (
+												<span className="row text-warning m-1">
+													El CUIT debe contener 13
+													digitos en total
+												</span>
+											))}
+									</div>
+									<div className="col-3 mb-3">
+										<label
+											htmlFor="telefono"
+											className="form-label mb-0">
+											Teléfono{" "}
+											{modalMode !== "mostrar" && (
+												<span className="text-warning">
+													*
+												</span>
+											)}
+										</label>
+										<input
+											type="text"
+											className="form-control"
+											id="telefono"
+											readOnly={modalMode === "mostrar"}
+											{...register("telefono", {
+												required: true,
+											})}
+										/>
+										{errors.telefono && (
+											<span className="row text-warning m-1">
+												El campo es requerido
+											</span>
+										)}
+									</div>
+									<div className="col mb-3">
+										<label
+											htmlFor="email"
+											className="form-label mb-0">
+											E-Mail{" "}
+											{modalMode !== "mostrar" && (
+												<span className="text-warning">
+													*
+												</span>
+											)}
+										</label>
+										<input
+											type="email"
+											className="form-control"
+											id="email"
+											readOnly={modalMode === "mostrar"}
+											{...register("email", {
+												required: "required",
+												pattern: {
+													value: /\S+@\S+\.\S+/,
+												},
+											})}
+											autoComplete="off"
+										/>
+										{errors.email?.type === "required" && (
+											<span className="row text-warning m-1">
+												El campo es requerido
+											</span>
+										)}
+										{errors.email?.type === "pattern" && (
+											<span className="row text-warning m-1">
+												El eMail es invalido
+											</span>
+										)}
+									</div>
+								</div>
+
 								<div className="row">
 									<div className="col mb-3">
 										<label
