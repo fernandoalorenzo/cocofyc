@@ -1,0 +1,17 @@
+.row-caducado {
+    background-color: #8b0000 !important; 
+    /* Rojo oscuro */
+    color: white !important;
+}
+
+.row-hoy {
+    background-color: #ff0000 !important;
+    /* Rojo */
+    color: white !important;
+}
+
+.row-futuro {
+    background-color: #ffff00 !important;
+    /* Amarillo */
+    color: black !important;
+}

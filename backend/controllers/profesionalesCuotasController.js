@@ -189,6 +189,7 @@ const asignarMovimientoACuota = async (request, response) => {
 
 // Obtener profesionales morosos
 const getProfesionalesMorosos = async (request, response) => {
+	// const cant = 0;
 	authenticateToken(request, response, async () => {
 		try {
 			// Obtener un array (cuotasPendientes) con las cuotas movimiento_id null del modelo Profesionales_Cuotas
@@ -208,6 +209,13 @@ const getProfesionalesMorosos = async (request, response) => {
 						cuota.profesional_id
 					);
 
+					// if (cuotaDetail === !null) {
+					// 	cant = cant + 1;
+					// }
+					// console.log("cuotaDetail: ", cuotaDetail);
+					// console.log("profesionalDetail: ", profesionalDetail);
+					// return
+
 					return {
 						...cuota.toJSON(),
 						importe: cuotaDetail.importe,
@@ -221,8 +229,14 @@ const getProfesionalesMorosos = async (request, response) => {
 						telefono: profesionalDetail.telefono,
 						activo: profesionalDetail.activo,
 					};
+
 				})
 			);
+			
+			// console.log("****************************************");
+			// console.log("ENTRO AL CICLO");
+			// console.log("****************************************");
+			// console.log("cant: ", cant);
 
 			response.status(201).json({
 				message: "El listado de profesionales fue creado exitosamente!",

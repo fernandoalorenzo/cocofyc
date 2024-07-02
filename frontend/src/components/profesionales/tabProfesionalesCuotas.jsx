@@ -206,6 +206,14 @@ const GenerarCuotaTab = ({ profesionalId, userId, API_ENDPOINT }) => {
 					})
 				);
 
+				if (!cuotasWithDetails) {
+					console.error(
+						"Error fetching cuotas generadas: ",
+						response.statusText
+					);
+					return;
+				}
+
 				// Ordenar los registros alfabéticamente por nombre de forma DESCENDENTE
 				const sortedRegistros = cuotasWithDetails.sort(
 					(a, b) => b.cuota.localeCompare(a.cuota) // Ordenar por el campo "cuota" descendente
@@ -252,6 +260,14 @@ const GenerarCuotaTab = ({ profesionalId, userId, API_ENDPOINT }) => {
 						return { ...cuotaGenerada, ...cuotaDetails };
 					})
 				);
+
+				if (!cuotasWithDetails) {
+					console.error(
+						"Error fetching cuotas generadas: ",
+						response.statusText
+					);
+					return;
+				}
 
 				// Ordenar los registros alfabéticamente por nombre de forma DESCENDENTE
 				const sortedRegistros = cuotasWithDetails.sort(

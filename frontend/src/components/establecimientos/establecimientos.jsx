@@ -173,7 +173,7 @@ const EstablecimientosTabla = ( { API_ENDPOINT } ) => {
 					// 	data: "titular",
 					// },
 					// {
-					// 	data: "cuit",
+					// 	data: "dni",
 					// },
 					{
 						data: "telefono",
@@ -314,7 +314,7 @@ const EstablecimientosTabla = ( { API_ENDPOINT } ) => {
 									<thead className="table-dark">
 										<tr>
 											<th>Establecimiento</th>
-											{/* <th>CUIT</th> */}
+											{/* <th>DNI</th> */}
 											<th>Teléfono</th>
 											<th>e-Mail</th>
 											<th>Localidad</th>

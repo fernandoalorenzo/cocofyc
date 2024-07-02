@@ -9,8 +9,7 @@ import {
 	datatableDomConfig,
 } from "../../utils/dataTableConfig";
 
-
-const ProfesionalesTabla = ( {API_ENDPOINT} ) => {
+const ProfesionalesTabla = ({ API_ENDPOINT }) => {
 	const [data, setData] = useState([]);
 	const [showProfesionalesModal, setShowProfesionalesModal] = useState(false);
 	const [selectedProfesional, setSelectedProfesional] = useState(null);
@@ -111,7 +110,7 @@ const ProfesionalesTabla = ( {API_ENDPOINT} ) => {
 					"Content-Type": "application/json",
 					Authorization: localStorage.getItem("token"),
 				};
-			
+
 				const data = await apiConnection(
 					endpoint,
 					direction,
@@ -234,91 +233,61 @@ const ProfesionalesTabla = ( {API_ENDPOINT} ) => {
 
 	// DATATABLE
 	useEffect(() => {
-		if (dataTableRef.current) {
-			dataTableRef.current.clear().rows.add(data).draw();
-		} else if (data.length && tablaProfesionalesRef.current) {
-			dataTableRef.current = $(tablaProfesionalesRef.current).DataTable({
-				data: data,
-				language: datatableLanguageConfig,
-				buttons: datatableButtonsConfig,
-				...datatableDomConfig,
-				columnDefs: [
-					{
-						targets: 0,
-						render: function (data, type, row) {
-							if (type === "display") {
-								// Formatear la fecha de 'aaaa-mm-dd' a 'dd/mm/aaaa'
-								const parts = data.split("-");
-								if (parts.length === 3) {
-									return `${parts[2]}/${parts[1]}/${parts[0]}`;
+		if (data.length > 0 && estadosMatriculas.length > 0) {
+			if (dataTableRef.current) {
+				dataTableRef.current.clear().rows.add(data).draw();
+			} else if (data.length && tablaProfesionalesRef.current) {
+				dataTableRef.current = $(
+					tablaProfesionalesRef.current
+				).DataTable({
+					data: data,
+					language: datatableLanguageConfig,
+					buttons: datatableButtonsConfig,
+					...datatableDomConfig,
+					columns: [
+						{
+							data: "nombre",
+						},
+						{
+							data: "dni",
+							width: "8%",
+						},
+						{
+							data: "matricula",
+							width: "5%",
+						},
+						{
+							data: "telefono",
+							width: "10%",
+						},
+						{
+							data: "email",
+							width: "12%",
+						},
+						{
+							data: "localidad",
+							width: "12%",
+						},
+						{
+							data: "estado_matricula_id",
+							render: function (data, type, row) {
+								if (type === "display") {
+									const estado = estadosMatriculas.find(
+										(estado) => estado.id === data
+									);
+									return estado ? estado.estado : "N/D";
 								}
-							}
-							return data;
+								return data;
+							},
+							width: "8%",
 						},
-					},
-					{
-						targets: 5,
-						render: function (data, type, row) {
-							if (data === "0000-00-00") {
-								return "";
-							}
-							if (type === "display") {
-								// Formatear la fecha de 'aaaa-mm-dd' a 'dd/mm/aaaa'
-								if (data && typeof data === "string") {
-									const parts = data.split("-");
-									if (parts.length === 3) {
-										return `${parts[2]}/${parts[1]}/${parts[0]}`;
-									}
-								}
-							}
-							return data;
-						},
-					},
-				],
-				columns: [
-					{
-						data: "nombre",
-					},
-					{
-						data: "dni",
-						width: "8%",
-					},
-					{
-						data: "matricula",
-						width: "5%",
-					},
-					{
-						data: "telefono",
-						width: "10%",
-					},
-					{
-						data: "email",
-						width: "12%",
-					},
-					{
-						data: "localidad",
-						width: "12%",
-					},
-					{
-						data: "estado_matricula_id",
-						render: function (data, type, row) {
-							if (type === "display") {
-								const estado = estadosMatriculas.find(
-									(estado) => estado.id === data
-								);
-								return estado ? estado.estado : "N/D";
-							}
-							return data;
-						},
-						width: "8%",
-					},
-					{
-						data: "activo",
-						orderable: false,
-						render: function (data, type, row) {
-							if (type === "display") {
-								const switchId = `switch-${row.id}`;
-								return `
+						{
+							data: "activo",
+							orderable: false,
+							render: function (data, type, row) {
+								if (type === "display") {
+									const switchId = `switch-${row.id}`;
+									return `
 								<div class="form-check form-switch">
 									<input class="form-check-input" type="checkbox" id="${switchId}" 
 									${data ? "checked" : ""}
@@ -327,103 +296,104 @@ const ProfesionalesTabla = ( {API_ENDPOINT} ) => {
 									>
 								</div>
 								`;
-							}
-							return data;
+								}
+								return data;
+							},
+							width: "3%",
 						},
-						width: "3%",
-					},
-					{
-						// Columna de acciones
-						data: null,
-						className: "text-center",
-						render: function (data, type, row) {
-							return `
+						{
+							// Columna de acciones
+							data: null,
+							className: "text-center",
+							render: function (data, type, row) {
+								return `
                             <button class="btn btn-info btn-sm mostrar-btn" title="Mostrar" data-id="${row.id}"><i class="fa-regular fa-eye"></i></button>
                             <button class="btn btn-warning btn-sm editar-btn" title="Editar" data-id="${row.id}"><i class="fa-regular fa-pen-to-square"></i></button>
                             <button class="btn btn-danger btn-sm eliminar-btn" title="Eliminar" data-id="${row.id}"><i class="fa-regular fa-trash-can"></i></button>
 							<button class="btn btn-success btn-sm gestion-btn" data-id="${row.id}"><i class="fa-solid fa-money-check-dollar"></i>  Gestión</button>
                         `;
+							},
+							orderable: false,
+							searchable: false,
+							width: "17%",
 						},
-						orderable: false,
-						searchable: false,
-						width: "17%",
-					},
-				],
-				lengthChange: true,
-				lengthMenu: [
-					[10, 25, 50, 100, -1],
-					[
-						"10 Registros",
-						"25 Registros",
-						"50 Registros",
-						"100 Registros",
-						"Mostrar Todos",
 					],
-				],
-				responsive: true,
-				autoWidth: true,
-				paging: true,
-				searching: true,
-				ordering: true,
-				info: true,
-				order: [[0, "asc"]],
-			});
+					lengthChange: true,
+					lengthMenu: [
+						[10, 25, 50, 100, -1],
+						[
+							"10 Registros",
+							"25 Registros",
+							"50 Registros",
+							"100 Registros",
+							"Mostrar Todos",
+						],
+					],
+					responsive: true,
+					autoWidth: true,
+					paging: true,
+					searching: true,
+					ordering: true,
+					info: true,
+					order: [[0, "asc"]],
+				});
+			}
+
+			// Asignar eventos click a los botones de acción
+			$(tablaProfesionalesRef.current).on(
+				"click",
+				".mostrar-btn",
+				function () {
+					const rowData = dataTableRef.current
+						.row($(this).closest("tr"))
+						.data();
+					handleMostrar(rowData, "mostrar");
+				}
+			);
+
+			$(tablaProfesionalesRef.current).on(
+				"click",
+				".editar-btn",
+				function () {
+					const rowData = dataTableRef.current
+						.row($(this).closest("tr"))
+						.data();
+					handleMostrar(rowData, "editar");
+				}
+			);
+
+			$(tablaProfesionalesRef.current).on(
+				"click",
+				".eliminar-btn",
+				function () {
+					const rowData = dataTableRef.current
+						.row($(this).closest("tr"))
+						.data();
+					handleEliminar(rowData.id);
+				}
+			);
+
+			$(tablaProfesionalesRef.current).on(
+				"click",
+				".gestion-btn",
+				function () {
+					const rowData = dataTableRef.current
+						.row($(this).closest("tr"))
+						.data();
+					mostrarGestiones(rowData);
+				}
+			);
+
+			// Agregar evento para el cambio de filtro de activo
+			const select = document.getElementById("activoFilter");
+			select.addEventListener("change", handleActiveFilterChange);
+
+			// Limpiar el evento al desmontar el componente
+			return () => {
+				select.removeEventListener("change", handleActiveFilterChange);
+			};
 		}
-
-		// Asignar eventos click a los botones de acción
-		$(tablaProfesionalesRef.current).on(
-			"click",
-			".mostrar-btn",
-			function () {
-				const rowData = dataTableRef.current
-					.row($(this).closest("tr"))
-					.data();
-				handleMostrar(rowData, "mostrar");
-			}
-		);
-
-		$(tablaProfesionalesRef.current).on(
-			"click",
-			".editar-btn",
-			function () {
-				const rowData = dataTableRef.current
-					.row($(this).closest("tr"))
-					.data();
-				handleMostrar(rowData, "editar");
-			}
-		);
-
-		$(tablaProfesionalesRef.current).on(
-			"click",
-			".eliminar-btn",
-			function () {
-				const rowData = dataTableRef.current
-					.row($(this).closest("tr"))
-					.data();
-				handleEliminar(rowData.id);
-			}
-		);
-
-		$(tablaProfesionalesRef.current).on(
-			"click",
-			".gestion-btn",
-			function () {
-				const rowData = dataTableRef.current
-					.row($(this).closest("tr"))
-					.data();
-				mostrarGestiones(rowData);
-			}
-		);
-
-		// Agregar evento para el cambio de filtro de activo
-		const select = document.getElementById("activoFilter");
-		select.addEventListener("change", handleActiveFilterChange);
-
-		// Limpiar el evento al desmontar el componente
-		return () => {
-			select.removeEventListener("change", handleActiveFilterChange);
-		};
-	}, [data]);
+	}, [data, estadosMatriculas]);
 
 	const handleMostrar = (profesional, mode) => {
 		setSelectedProfesional(profesional);

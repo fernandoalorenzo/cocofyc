@@ -262,6 +262,7 @@ const CargarPagosTab = ({
 	};
 
 	const fetchCuotaDetails = async (cuotaId) => {
+		if (!cuotaId) return;
 		try {
 			const endpoint = `${API_ENDPOINT}/cuotas/${cuotaId}`;
 			const direction = "";

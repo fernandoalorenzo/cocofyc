@@ -19,12 +19,10 @@ const Establecimiento = sequelize.define(
 		},
 		cuit: {
 			type: DataTypes.STRING(13),
-			allowNull: true,
 			defaultValue: null,
 		},
 		dni: {
 			type: DataTypes.STRING(8),
-			allowNull: true,
 			defaultValue: null,
 		},
 		telefono: { type: DataTypes.STRING(30), allowNull: false },

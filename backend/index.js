@@ -46,8 +46,8 @@ app.use("/api/aranceles", arancelesRouter);
 
 
 // FUNCIONES AUTOMÁTICAS DE COMUNICACIÓN
-import "./functions/birthdayEmailScript.js";
-import "./functions/vencimientoCuotaEmailScript.js";
+//import "./functions/birthdayEmailScript.js";
+//import "./functions/vencimientoCuotaEmailScript.js";
 //import "./functions/birthdayWspScript.js";
 
 // ESTABLECE PATH PARA SUBIR ARCHIVOS

@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
 import CargarPagosTab from "./tabProfesionalesPagos";
+import GenerarCuotaTab from "./tabProfesionalesCuotas.jsx";
 import MovimientosTab from "./tabProfesionalesMovimientos";
 import EstablecimientosTab from "./tabProfesionalesEstablecimientos.jsx";
-import GenerarCuotaTab from "./tabProfesionalesCuotas.jsx";
 
 const GestionesModal = ({
 	showModal,

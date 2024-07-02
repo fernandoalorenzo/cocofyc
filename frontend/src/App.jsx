@@ -35,7 +35,6 @@ const Layout = ({ children }) => (
 
 const API_ENDPOINT =
 	process.env.NODE_ENV === "production"
-// ? "https://cocofyc.neoit.com.ar/api"
 		? "https://gestioncocofyc1.com.ar/api"
 		: "http://localhost:5000/api";
 
@@ -47,7 +46,7 @@ const App = () => {
 		JSON.parse(localStorage.getItem("user"))
 	);
 
-	// Obtener la información del usuario desde el localStorage
+	// Obtener la información del usuario desde el localStorae
 	const user = JSON.parse(localStorage.getItem("user"));
 
 	return (
@@ -55,13 +54,21 @@ const App = () => {
 			<Router>
 				<Routes>
 					<Route
+						path="/login"
+						element={<LoginForm API_ENDPOINT={API_ENDPOINT} />}
+					/>
+					<Route
 						path="/"
 						element={
-							<AuthHandler>
-								<Layout>
-									<Home API_ENDPOINT={API_ENDPOINT} />
-								</Layout>
-							</AuthHandler>
+							// user ? (
+								<AuthHandler>
+									<Layout>
+										<Home API_ENDPOINT={API_ENDPOINT} />
+									</Layout>
+								</AuthHandler>
+							// ) : (
+								// <Navigate to="/login" />
+							// )
 						}
 					/>
 					<Route
@@ -165,11 +172,8 @@ const App = () => {
 						path="/register"
 						element={<UserRegister API_ENDPOINT={API_ENDPOINT} />}
 					/>
-					<Route
-						path="/login"
-						element={<LoginForm API_ENDPOINT={API_ENDPOINT} />}
-					/>
-					<Route path="/*" element={<Navigate to="/" replace />} />
+					{/* <Route path="/*" element={<Navigate to="/" replace />} /> */}
+					<Route path="*" element={<Navigate to="/" />} />
 				</Routes>
 			</Router>
 		</div>
