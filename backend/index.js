@@ -122,10 +122,12 @@ const __dirname = path.resolve();
 app.use(express.static(path.join(__dirname, "frontend/build")));
 
 // Manejador de rutas para todas las rutas que no coincidan con las rutas API
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "frontend/build/index.html"));
-});
 
+
+app.get("*", (req, res) => {
+	res.sendFile(path.join(__dirname, "frontend/build/index.html"));
+});
+	
 // Redirección de direcciones inexistentes
 app.use((req, res) => {
   res.redirect("/"); // Redirige cualquier dirección que no existe a la dirección base ("/")

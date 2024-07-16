@@ -246,15 +246,15 @@ const ProfesionalesTabla = ({ API_ENDPOINT }) => {
 					...datatableDomConfig,
 					columns: [
 						{
+							data: "matricula",
+							width: "6%",
+						},
+						{
 							data: "nombre",
 						},
 						{
 							data: "dni",
 							width: "8%",
-						},
-						{
-							data: "matricula",
-							width: "5%",
 						},
 						{
 							data: "telefono",
@@ -288,7 +288,7 @@ const ProfesionalesTabla = ({ API_ENDPOINT }) => {
 								if (type === "display") {
 									const switchId = `switch-${row.id}`;
 									return `
-								<div class="form-check form-switch">
+								<div class="form-check form-switch text-center">
 									<input class="form-check-input" type="checkbox" id="${switchId}" 
 									${data ? "checked" : ""}
 									data-id="${row.id} "
@@ -300,9 +300,9 @@ const ProfesionalesTabla = ({ API_ENDPOINT }) => {
 								return data;
 							},
 							width: "3%",
+							className: "text-center",
 						},
 						{
-							// Columna de acciones
 							data: null,
 							className: "text-center",
 							render: function (data, type, row) {
@@ -498,9 +498,9 @@ const ProfesionalesTabla = ({ API_ENDPOINT }) => {
 									className="table table-hover table-sm">
 									<thead className="table-dark">
 										<tr>
+											<th>Matrícula</th>
 											<th>Nombre</th>
 											<th>DNI</th>
-											<th>Matrícula</th>
 											<th>Teléfono</th>
 											<th>e-Mail</th>
 											<th>Localidad</th>

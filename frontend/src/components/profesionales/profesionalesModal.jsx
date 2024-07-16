@@ -256,7 +256,7 @@ const ProfesionalesModal = ({
 				icon: "error",
 				title: "Archivo demasiado grande",
 				text: "El archivo seleccionado es demasiado grande. Por favor, seleccione un archivo más pequeño. El tamaño maximo permitido es de 2 MB.",
-			})
+			});
 			return; // Detener el proceso si el archivo es demasiado grande
 		}
 
@@ -553,12 +553,6 @@ const ProfesionalesModal = ({
 														htmlFor="cuit"
 														className="form-label mb-0">
 														CUIT{" "}
-														{modalMode !==
-															"mostrar" && (
-															<span className="text-warning">
-																*
-															</span>
-														)}
 													</label>
 													<input
 														type="text"
@@ -570,31 +564,12 @@ const ProfesionalesModal = ({
 														}
 														maxLength="13"
 														{...register("cuit", {
-															required: true,
 															maxLength: 13,
-															minLength: 13,
 														})}
 														onChange={
 															handleCUITChange
 														}
 													/>
-													{errors.cuit?.type ===
-														"required" && (
-														<span className="row text-warning m-1">
-															El campo es
-															requerido
-														</span>
-													)}
-													{errors.cuit?.type ===
-														"maxLength" ||
-														(errors.cuit?.type ===
-															"minLength" && (
-															<span className="row text-warning m-1">
-																El CUIT debe
-																contener 13
-																digitos en total
-															</span>
-														))}
 												</div>
 											</div>
 											<div className="row mb-3">
