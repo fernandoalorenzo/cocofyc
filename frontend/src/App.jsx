@@ -18,6 +18,7 @@ import SideBar from "./components/sidebar/SideBar";
 import Profesionales from "./components/profesionales/profesionales";
 import Usuarios from "./components/users/Usuarios.jsx";
 import Establecimientos from "./components/establecimientos/establecimientos.jsx";
+import Titulares from "./components/titulares/titulares.jsx";
 import Parametros from "./components/parametros/parametros.jsx";
 import Cuotas from "./components/cuotas/cuotas.jsx";
 import Denuncias from "./components/denuncias/denuncias.jsx";
@@ -61,13 +62,13 @@ const App = () => {
 						path="/"
 						element={
 							// user ? (
-								<AuthHandler>
-									<Layout>
-										<Home API_ENDPOINT={API_ENDPOINT} />
-									</Layout>
-								</AuthHandler>
+							<AuthHandler>
+								<Layout>
+									<Home API_ENDPOINT={API_ENDPOINT} />
+								</Layout>
+							</AuthHandler>
 							// ) : (
-								// <Navigate to="/login" />
+							// <Navigate to="/login" />
 							// )
 						}
 					/>
@@ -99,6 +100,18 @@ const App = () => {
 							<AuthHandler>
 								<Layout>
 									<Establecimientos
+										API_ENDPOINT={API_ENDPOINT}
+									/>
+								</Layout>
+							</AuthHandler>
+						}
+					/>
+					<Route
+						path="/titulares"
+						element={
+							<AuthHandler>
+								<Layout>
+									<Titulares
 										API_ENDPOINT={API_ENDPOINT}
 									/>
 								</Layout>

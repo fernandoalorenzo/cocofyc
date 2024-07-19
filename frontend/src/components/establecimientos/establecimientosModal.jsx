@@ -29,7 +29,8 @@ const EstablecimientosModal = ({
 
 	const initialState = {
 		establecimiento: "",
-		titular: "",
+		id_responsable: "",
+		es_profesional: false,
 		cuit: "",
 		telefono: "",
 		email: "",
@@ -42,9 +43,17 @@ const EstablecimientosModal = ({
 		nro_resolucion: "",
 	};
 
+	const [titulares, setTitulares] = useState([]);
+	const [profesionales, setProfesionales] = useState([]);
+	const [titularSelected, setTitularSelected] = useState(null);
+	const [profesionalSelected, setProfesionalSelected] = useState(null);
+	const [responsableDetails, setResponsableDetails] = useState(null);
+	const [esProfesional, setEsProfesional] = useState(false);
+
 	useEffect(() => {
 		if (modalMode === "agregar") {
 			reset(initialState);
+			setEsProfesional(0);
 		} else if (data) {
 			if (data.fecha_inicio == "0000-00-00") {
 				data.fecha_inicio = "";
@@ -53,6 +62,17 @@ const EstablecimientosModal = ({
 				data.fecha_caducidad = "";
 			}
 			reset(data);
+			setEsProfesional(data.es_profesional);
+
+			// Contenedor para los titulares y profesionales
+			const selectedId = data.id_responsable;
+			const responsables = data.es_profesional
+				? profesionales
+				: titulares;
+			const selectedResponsable = responsables.find(
+				(resp) => resp.id === selectedId
+			);
+			setResponsableDetails(selectedResponsable);
 		}
 	}, [modalMode, data, reset]);
 
@@ -88,7 +108,7 @@ const EstablecimientosModal = ({
 			const nuevaFechaCaducidadStr = nuevaFechaCaducidad
 				.toISOString()
 				.split("T")[0];
-			
+
 			const nuevaFechaCaducidadFormatted = formatFecha(
 				nuevaFechaCaducidadStr
 			);
@@ -114,12 +134,68 @@ const EstablecimientosModal = ({
 		}
 	};
 
+	const fetchTitulares = async () => {
+		try {
+			const endpoint = `${API_ENDPOINT}/titulares`;
+			const direction = "";
+			const method = "GET";
+			const body = false;
+			const headers = {
+				"Content-Type": "application/json",
+				Authorization: localStorage.getItem("token"),
+			};
+
+			const response = await apiConnection(
+				endpoint,
+				direction,
+				method,
+				body,
+				headers
+			);
+
+			setTitulares(response.data);
+		} catch (error) {
+			console.error("Error:", error.message);
+		}
+	};
+
+	const fetchProfesionales = async () => {
+		try {
+			const endpoint = `${API_ENDPOINT}/profesionales`;
+			const direction = "";
+			const method = "GET";
+			const body = false;
+			const headers = {
+				"Content-Type": "application/json",
+				Authorization: localStorage.getItem("token"),
+			};
+
+			const response = await apiConnection(
+				endpoint,
+				direction,
+				method,
+				body,
+				headers
+			);
+
+			setProfesionales(response.data);
+		} catch (error) {
+			console.error("Error:", error.message);
+		}
+	};
+
+	// OBTENER LISTA DE REGISTROS
+	useEffect(() => {
+		fetchTitulares();
+		fetchProfesionales();
+	}, []);
+
 	const onSubmit = async (formData, id) => {
 		try {
 			const endpoint = `${API_ENDPOINT}/establecimientos/`;
 			const direction = id ? `${id}` : "";
 			const method = id ? "PUT" : "POST";
-			const body = formData;
+			const body = { ...formData, es_profesional: esProfesional };
 			const headers = {
 				"Content-Type": "application/json",
 				Authorization: localStorage.getItem("token"),
@@ -161,6 +237,23 @@ const EstablecimientosModal = ({
 		}
 	};
 
+	const handleCheckboxChange = () => {
+		setEsProfesional(!esProfesional);
+		setResponsableDetails(null);
+		// if (!esProfesional) {
+		setValue("id_responsable", "");
+		// }
+	};
+
+	const handleResponsableChange = (e) => {
+		const selectedId = e.target.value;
+		const responsables = esProfesional ? profesionales : titulares;
+		const selectedResponsable = responsables.find(
+			(resp) => resp.id === selectedId
+		);
+		setResponsableDetails(selectedResponsable);
+	};
+
 	return (
 		<div
 			className={`modal fade ${showModal ? "show" : ""}`}
@@ -196,8 +289,8 @@ const EstablecimientosModal = ({
 						)}>
 						<div className="modal-body">
 							<div className="container-fluid">
-								<div className="row">
-									<div className="col-6 mb-3">
+								<div className="row mb-2">
+									<div className="col-5">
 										<label
 											htmlFor="establecimiento"
 											className="form-label mb-0">
@@ -225,27 +318,71 @@ const EstablecimientosModal = ({
 											</span>
 										)}
 									</div>
-									<div className="col-6 mb-3">
+									<div className="col-2 text-center">
 										<label
-											htmlFor="titular"
+											htmlFor="es_profesional"
+											className="form-label mb-0">
+											Es Profesional
+										</label>
+										<div className="form-check text-center">
+											<input
+												className="form-check-input"
+												type="checkbox"
+												value={esProfesional}
+												id="es_profesional"
+												checked={esProfesional}
+												onChange={handleCheckboxChange}
+											/>
+										</div>
+									</div>
+									<div className="col-5">
+										<label
+											htmlFor="id_responsable"
 											className="form-label mb-0">
 											Titular{" "}
 											{modalMode !== "mostrar" && (
 												<span className="text-warning">
+													{" "}
 													*
 												</span>
 											)}
 										</label>
-										<input
-											type="text"
-											className="form-control"
-											id="titular"
-											readOnly={modalMode === "mostrar"}
-											{...register("titular", {
+										<select
+											className="form-select"
+											disabled={modalMode === "mostrar"}
+											id="id_responsable"
+											{...register("id_responsable", {
 												required: true,
 											})}
-										/>
-										{errors.titular?.type ===
+											onChange={handleResponsableChange}>
+											<option value="">
+												Seleccionar
+											</option>
+											{esProfesional
+												? profesionales.map(
+														(profesional) => (
+															<option
+																key={
+																	profesional.id
+																}
+																value={
+																	profesional.id
+																}>
+																{
+																	profesional.nombre
+																}
+															</option>
+														)
+												  )
+												: titulares.map((titular) => (
+														<option
+															key={titular.id}
+															value={titular.id}>
+															{titular.nombre}
+														</option>
+												  ))}
+										</select>
+										{errors.id_responsable?.type ===
 											"required" && (
 											<span className="row text-warning m-1">
 												El campo es requerido
@@ -253,8 +390,99 @@ const EstablecimientosModal = ({
 										)}
 									</div>
 								</div>
-								<div className="row">
-									<div className="col-2 mb-3">
+								{/* Contenedor para mostrar los datos del responsable */}
+								{responsableDetails && (
+									<div className="row mb-2">
+										<div className="col">
+											<div
+												className="card collapsed-card shadow border-dark p-0 m-0"
+												style={{
+													backgroundColor: "#B7BDC8",
+												}}>
+												<div
+													className="card-header px-2 py-1 my-0 border-0"
+													style={{
+														backgroundColor:
+															"#929AAB",
+													}}>
+													<button
+														type="button"
+														className="btn btn-dark btn-sm p-0 px-1 ms-auto"
+														data-card-widget="collapse"
+														title="Collapse">
+														<i className="fas fa-plus p-0 m-0"></i>
+													</button>
+													<span className="ms-2 my-0 position-relative">
+														<strong>
+															Datos personales de{" "}
+															{
+																responsableDetails.nombre
+															}
+														</strong>
+													</span>
+												</div>
+												<div className="card-body py-0 px-2">
+													<div className="row">
+														<div className="col-6">
+															<label className="fw-normal">
+																e-Mail:{" "}
+															</label>
+															<span className="ms-2 fs-6 text-start fw-bold">
+																{
+																	responsableDetails.email
+																}
+															</span>
+														</div>
+														<div className="col-3">
+															<label className="fw-normal">
+																DNI:{" "}
+															</label>
+															<span className="ms-2 fs-6 text-start fw-bold">
+																{
+																	responsableDetails.dni
+																}
+															</span>
+														</div>
+														<div className="col-3">
+															<label className="fw-normal">
+																Teléfono:{" "}
+															</label>
+															<span className="ms-2 fs-6 text-start fw-bold">
+																{
+																	responsableDetails.telefono
+																}
+															</span>
+														</div>
+													</div>
+													<div className="row">
+														<div className="col-6">
+															<label className="fw-normal">
+																Domicilio:{" "}
+															</label>
+															<span className="ms-2 fs-6 text-start fw-bold">
+																{
+																	responsableDetails.domicilio
+																}
+															</span>
+														</div>
+														<div className="col-6">
+															<label className="fw-normal">
+																Localidad:{" "}
+															</label>
+															<span className="ms-2 fs-6 text-start fw-bold">
+																{
+																	responsableDetails.localidad
+																}
+															</span>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								)}
+								<div className="row mb-2">
+									<div className="col-2">
 										<label
 											htmlFor="fecha_inicio"
 											className="form-label mb-0">
@@ -269,7 +497,7 @@ const EstablecimientosModal = ({
 											onBlur={handleFechaInicioBlur}
 										/>
 									</div>
-									<div className="col-2 mb-3">
+									<div className="col-2">
 										<label
 											htmlFor="fecha_caducidad"
 											className="form-label mb-0">
@@ -283,7 +511,7 @@ const EstablecimientosModal = ({
 											{...register("fecha_caducidad")}
 										/>
 									</div>
-									<div className="col mb-3">
+									<div className="col">
 										<label
 											htmlFor="nro_tramite"
 											className="form-label mb-0">
@@ -297,7 +525,7 @@ const EstablecimientosModal = ({
 											{...register("nro_tramite")}
 										/>
 									</div>
-									<div className="col mb-3">
+									<div className="col">
 										<label
 											htmlFor="nro_habilitacion"
 											className="form-label mb-0">
@@ -311,7 +539,7 @@ const EstablecimientosModal = ({
 											{...register("nro_habilitacion")}
 										/>
 									</div>
-									<div className="col mb-3">
+									<div className="col">
 										<label
 											htmlFor="nro_resolucion"
 											className="form-label mb-0">
@@ -326,8 +554,8 @@ const EstablecimientosModal = ({
 										/>
 									</div>
 								</div>
-								<div className="row">
-									<div className="col-2 mb-3">
+								<div className="row mb-2">
+									<div className="col-2">
 										<label
 											htmlFor="dni"
 											className="form-label mb-0">
@@ -341,7 +569,7 @@ const EstablecimientosModal = ({
 											{...register("dni")}
 										/>
 									</div>
-									<div className="col-2 mb-3">
+									<div className="col-2">
 										<label
 											htmlFor="cuit"
 											className="form-label mb-0">
@@ -357,7 +585,7 @@ const EstablecimientosModal = ({
 											onChange={handleCUITChange}
 										/>
 									</div>
-									<div className="col-3 mb-3">
+									<div className="col-3">
 										<label
 											htmlFor="telefono"
 											className="form-label mb-0">
@@ -383,7 +611,7 @@ const EstablecimientosModal = ({
 											</span>
 										)}
 									</div>
-									<div className="col mb-3">
+									<div className="col">
 										<label
 											htmlFor="email"
 											className="form-label mb-0">
@@ -419,9 +647,8 @@ const EstablecimientosModal = ({
 										)}
 									</div>
 								</div>
-
-								<div className="row">
-									<div className="col mb-3">
+								<div className="row mb-2">
+									<div className="col">
 										<label
 											htmlFor="domicilio"
 											className="form-label mb-0">
@@ -435,7 +662,7 @@ const EstablecimientosModal = ({
 											{...register("domicilio")}
 										/>
 									</div>
-									<div className="col mb-3">
+									<div className="col">
 										<label
 											htmlFor="localidad"
 											className="form-label mb-0">

@@ -34,3 +34,10 @@
   padding-top: 7rem;
   padding-bottom: 3.5rem;
 } */
+
+.texto-truncado {
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

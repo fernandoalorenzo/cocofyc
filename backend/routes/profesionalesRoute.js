@@ -49,7 +49,7 @@ profesionalesRouter.get("/cuotas-generadas/:id", authenticateToken, getCuotasGen
 // Ruta para eliminar una cuota generadas por id
 profesionalesRouter.delete("/cuotas-generadas/:id", authenticateToken, deleteCuotaGeneradaById);
 // Ruta para obtener los profesionales asignados a un establecimiento específico
-	profesionalesRouter.get("/asignados/:id", authenticateToken, getProfesionalesAsignados);
+	profesionalesRouter.get("/profesionales-asignados/:id", authenticateToken, getProfesionalesAsignados);
 // Ruta para obtener un profesional por cumpleaños
 	profesionalesRouter.get("/:mes/:dia", getProfesionalesBirthDay);
 // Ruta para generar cuotas a todos los profesionales activos

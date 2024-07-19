@@ -13,9 +13,13 @@ const Establecimiento = sequelize.define(
 			type: DataTypes.STRING(100),
 			allowNull: false,
 		},
-		titular: {
-			type: DataTypes.STRING(50),
+		id_responsable: {
+			type: DataTypes.UUID,
 			allowNull: false,
+		},
+		es_profesional: {
+			type: DataTypes.BOOLEAN,
+			defaultValue: false,
 		},
 		cuit: {
 			type: DataTypes.STRING(13),
@@ -34,6 +38,7 @@ const Establecimiento = sequelize.define(
 		nro_tramite: { type: DataTypes.STRING(15) },
 		nro_habilitacion: { type: DataTypes.STRING(15) },
 		nro_resolucion: { type: DataTypes.STRING(15) },
+
 	},
 	{
 		timestamps: true,

@@ -251,6 +251,10 @@ const ProfesionalesTabla = ({ API_ENDPOINT }) => {
 						},
 						{
 							data: "nombre",
+							// width: "15%",
+							render: function (data, type, row) {
+								return `<span class="texto-truncado" style="max-width: 15rem;">${data}</span>`;
+							},
 						},
 						{
 							data: "dni",
@@ -262,11 +266,17 @@ const ProfesionalesTabla = ({ API_ENDPOINT }) => {
 						},
 						{
 							data: "email",
-							width: "12%",
+							// width: "12%",
+							render: function (data, type, row) {
+								return `<span class="texto-truncado" style="max-width: 15rem;">${data}</span>`;
+							},
 						},
 						{
 							data: "localidad",
-							width: "12%",
+							// width: "10%",
+							render: function (data, type, row) {
+								return `<span class="texto-truncado" style="max-width: 15rem;">${data}</span>`;
+							},
 						},
 						{
 							data: "estado_matricula_id",
@@ -287,20 +297,20 @@ const ProfesionalesTabla = ({ API_ENDPOINT }) => {
 							render: function (data, type, row) {
 								if (type === "display") {
 									const switchId = `switch-${row.id}`;
-									return `
-								<div class="form-check form-switch text-center">
-									<input class="form-check-input" type="checkbox" id="${switchId}" 
-									${data ? "checked" : ""}
-									data-id="${row.id} "
-									disabled
-									>
-								</div>
-								`;
+									const iconClass = data
+										? "fa-toggle-on text-primary"
+										: "fa-toggle-off text-secondary";
+									return `<i class="fa-solid ${iconClass} fa-xl" id="${switchId}"></i>`;
 								}
 								return data;
 							},
 							width: "3%",
 							className: "text-center",
+						},
+						{
+							data: "activo_estado",
+							className: "text-center",
+							width: "6.5%",
 						},
 						{
 							data: null,
@@ -505,7 +515,12 @@ const ProfesionalesTabla = ({ API_ENDPOINT }) => {
 											<th>e-Mail</th>
 											<th>Localidad</th>
 											<th>Estado Matr.</th>
-											<th>Activo</th>
+											<th className="text-center">
+												Activo
+											</th>
+											<th className="text-center">
+												Situación
+											</th>
 											<th className="text-center">
 												Acciones
 											</th>

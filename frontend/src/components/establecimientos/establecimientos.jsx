@@ -169,12 +169,6 @@ const EstablecimientosTabla = ( { API_ENDPOINT } ) => {
 					{
 						data: "establecimiento",
 					},
-					// {
-					// 	data: "titular",
-					// },
-					// {
-					// 	data: "dni",
-					// },
 					{
 						data: "telefono",
 					},
@@ -242,14 +236,6 @@ const EstablecimientosTabla = ( { API_ENDPOINT } ) => {
 			});
 		}
 
-		// Eventos
-		// $(tablaEstablecimientosRef.current).on("click", ".mostrar-btn", function () {
-		// 	const rowData = dataTableRef.current
-		// 		.row($(this).closest("tr"))
-		// 		.data();
-		// 	handleMostrar(rowData, "mostrar");
-		// });
-
 		$(tablaEstablecimientosRef.current).on("click", ".editar-btn", function () {
 			const rowData = dataTableRef.current
 				.row($(this).closest("tr"))
@@ -314,7 +300,6 @@ const EstablecimientosTabla = ( { API_ENDPOINT } ) => {
 									<thead className="table-dark">
 										<tr>
 											<th>Establecimiento</th>
-											{/* <th>DNI</th> */}
 											<th>Teléfono</th>
 											<th>e-Mail</th>
 											<th>Localidad</th>

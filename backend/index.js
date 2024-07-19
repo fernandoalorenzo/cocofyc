@@ -7,6 +7,7 @@ import path from "path"; // Importa la librería path para trabajar con rutas de
 
 import profesionalesRouter from "./routes/profesionalesRoute.js";
 import establecimientosRouter from "./routes/establecimientosRoute.js";
+import titularesRouter from "./routes/titularesRoute.js";
 import estadosRouter from "./routes/estadosMatriculaRoute.js";
 import usuariosRouter from "./routes/usuariosRoute.js";
 import denunciasRouter from "./routes/denunciasRoute.js";
@@ -33,6 +34,7 @@ app.use(cors());
 app.use("/api/profesionales/asignados", profesionalesRouter);
 app.use("/api/profesionales", profesionalesRouter);
 app.use("/api/establecimientos", establecimientosRouter);
+app.use("/api/titulares", titularesRouter);
 app.use("/api/estados", estadosRouter);
 app.use("/api/usuarios", usuariosRouter);
 app.use("/api/usuarios/login", usuariosRouter);

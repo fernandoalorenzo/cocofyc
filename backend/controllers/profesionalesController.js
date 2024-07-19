@@ -26,7 +26,9 @@ const createProfesional = async (request, response) => {
 const getProfesionales = async (request, response) => {
 	authenticateToken(request, response, async () => {
 		try {
-			const profesionales = await Profesional.findAll(request.body);
+			const profesionales = await Profesional.findAll({
+				order: [["nombre", "ASC"]],
+			});
 
 			response.status(201).json({
 				message: "El listado de profesionales fue creado exitosamente!",
@@ -238,6 +240,7 @@ const asignarProfesional = async (request, response) => {
 				});
 
 			if (asignacionExistente) {
+				console.log("El profesional ya está asignado al establecimiento.");
 				return response.status(400).json({
 					message:
 						"El profesional ya está asignado al establecimiento.",

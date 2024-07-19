@@ -30,7 +30,6 @@ const getEstablecimientos = async (request, response) => {
 			const establecimientos = await Establecimiento.findAll(
 				request.body
 			);
-
 			response.status(201).json({
 				message:
 					"El listado de establecimientos fue creado exitosamente!",
@@ -51,7 +50,6 @@ const getEstablecimientoById = async (request, response) => {
 			const establecimiento = await Establecimiento.findOne({
 				where: { id: id },
 			});
-
 			response.status(201).json({
 				message:
 					"Los datos del establecimiento fueron obtenidos exitosamente!",
@@ -93,7 +91,6 @@ const deleteEstablecimiento = async (request, response) => {
 			const establecimientoDelete = await Establecimiento.destroy({
 				where: { id: id },
 			});
-
 			response.status(201).json({
 				message: "El establecimiento fue eliminado exitosamente!",
 				data: establecimientoDelete,
@@ -147,20 +144,17 @@ const asignarEstablecimiento = async (request, response) => {
 						establecimiento_id: establecimientoId,
 					},
 				});
-
 			if (asignacionExistente) {
 				return response.status(400).json({
 					message:
 						"El establecimiento ya está asignado al profesional.",
 				});
 			}
-
 			// Crear la nueva asignación
 			await Profesionales_Establecimientos.create({
 				profesional_id: profesionalId,
 				establecimiento_id: establecimientoId,
 			});
-
 			response
 				.status(201)
 				.json({ message: "Establecimiento asignado correctamente." });
@@ -178,7 +172,6 @@ const desvincularEstablecimiento = async (request, response) => {
 	authenticateToken(request, response, async () => {
 		try {
 			const { profesionalId, establecimientoId } = request.params; // ID del profesional y del establecimiento pasados en la URL
-
 			// Buscar y eliminar la asignación
 			const asignacion = await Profesionales_Establecimientos.findOne({
 				where: {
@@ -186,15 +179,12 @@ const desvincularEstablecimiento = async (request, response) => {
 					establecimiento_id: establecimientoId,
 				},
 			});
-
 			if (!asignacion) {
 				return response
 					.status(404)
 					.json({ message: "La asignación no existe." });
 			}
-
 			await asignacion.destroy();
-
 			response
 				.status(200)
 				.json({

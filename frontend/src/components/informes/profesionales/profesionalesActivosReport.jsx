@@ -137,6 +137,13 @@ const ProfesionalesActivosReport = ({ title, nombreInforme, API_ENDPOINT }) => {
 							]}>
 							Localidad
 						</Text>
+						<Text
+							style={[
+								globalStyles.tableCell,
+								{ textAlign: "left" },
+							]}>
+							Estado
+						</Text>
 					</View>
 					{data.map((profesional) => (
 						<View
@@ -197,6 +204,13 @@ const ProfesionalesActivosReport = ({ title, nombreInforme, API_ENDPOINT }) => {
 									{ textAlign: "left" },
 								]}>
 								{profesional.localidad}
+							</Text>
+							<Text
+								style={[
+									globalStyles.tableCell,
+									{ textAlign: "left" },
+								]}>
+								{profesional.activo_estado}
 							</Text>
 						</View>
 					))}

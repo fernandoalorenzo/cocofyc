@@ -133,6 +133,15 @@ export default function SideBar() {
 							</li>
 							<li className="nav-item">
 								<NavLink
+									to="/titulares"
+									className="nav-link"
+									activeclassname="active">
+									<i className="nav-icon fa-solid fa-building-user" />
+									<p>Titulares</p>
+								</NavLink>
+							</li>
+							<li className="nav-item">
+								<NavLink
 									to="/establecimientos"
 									className="nav-link"
 									activeclassname="active">

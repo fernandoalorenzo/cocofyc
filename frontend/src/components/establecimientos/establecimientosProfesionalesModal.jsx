@@ -12,7 +12,7 @@ const ProfesionalesModal = ({ showModal, closeModal, data, API_ENDPOINT, }) => {
 	
 	const obtenerProfesionalesAsignados = async (establecimientoId) => {
 		try {
-			const endpoint = `${API_ENDPOINT}/profesionales/asignados/`;
+			const endpoint = `${API_ENDPOINT}/profesionales/profesionales-asignados/`;
 			const direction = `${establecimientoId}`;
 			const method = "GET";
 			const body = false;
@@ -115,6 +115,12 @@ const ProfesionalesModal = ({ showModal, closeModal, data, API_ENDPOINT, }) => {
 					establecimientoId: data.id,
 					profesionalId: selectedProfesional,
 				};
+
+				// console.log(
+				// 	"body: ",
+				// 	body
+				// );
+				// return;
 
 				const response = await apiConnection(
 					endpoint,

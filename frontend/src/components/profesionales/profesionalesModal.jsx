@@ -24,6 +24,7 @@ const ProfesionalesModal = ({
 	const [selectedImages, setSelectedImages] = useState([]);
 	const [file, setFile] = useState(null);
 	const [currentImage, setCurrentImage] = useState(null); // Estado para manejar la imagen actual
+	const [isActivo, setIsActivo] = useState(false);
 
 	// DEFINE EL TITULO DEL MODAL
 	let modalTitle = "";
@@ -48,6 +49,7 @@ const ProfesionalesModal = ({
 		fecha_nacimiento: "",
 		imagen: null,
 		activo: false,
+		activo_estado: "",
 		estado_matricula_id: "",
 	};
 
@@ -62,6 +64,9 @@ const ProfesionalesModal = ({
 				data.matricula_fecha = "";
 			}
 			reset(data);
+			// setCurrentImage(data.imagen); // Establece la imagen actual si está disponible en los datos
+			setIsActivo(data.activo); // Establece el estado de activo
+			setValue("activo_estado", data.activo_estado || "");
 		}
 	}, [modalMode]);
 
@@ -69,9 +74,12 @@ const ProfesionalesModal = ({
 		setSelectedImages([]);
 		setFile(null);
 		setCurrentImage(null);
+		setIsActivo(false);
 		if (data) {
 			reset(data);
 			setCurrentImage(data.imagen); // Establece la imagen actual si está disponible en los datos
+			setIsActivo(data.activo); // Establece el estado de activo
+			setValue("activo_estado", data.activo_estado || "");
 		}
 	}, [data, reset]);
 
@@ -94,6 +102,11 @@ const ProfesionalesModal = ({
 		}
 		// Actualizar el valor del campo CUIT en el formulario
 		setValue("cuit", formattedValue); // Utilizar setValue para actualizar el campo CUIT
+	};
+
+	const handleActivoChange = () => {
+		setIsActivo(!isActivo);
+		setValue("activo_estado", "");
 	};
 
 	// FUNCION PARA VERIFICAR SI EL DNI EXISTE
@@ -784,8 +797,71 @@ const ProfesionalesModal = ({
 															{...register(
 																"activo"
 															)}
+															onChange={
+																handleActivoChange
+															}
 														/>
 													</div>
+												</div>
+												{/* Estado Profesional */}
+												<div className="col-3">
+													<label
+														htmlFor="activo_estado"
+														className="form-label mb-0">
+														Estado Profesional{" "}
+														<span className="text-warning">
+															*
+														</span>
+													</label>
+													<select
+														id="activo_estado"
+														className="form-select"
+														disabled={
+															modalMode ===
+															"mostrar"
+														}
+														{...register(
+															"activo_estado",
+															{ required: true }
+														)}>
+														<option value="">
+															Seleccione una
+															opción
+														</option>
+														{isActivo ? (
+															<>
+																<option value="Matrícula">
+																	Matrícula
+																</option>
+																<option value="Pre Matrícula">
+																	Pre
+																	Matrícula
+																</option>
+																<option value="Pre Matrícula Provisoria">
+																	Pre
+																	Matrícula
+																	Provisoria
+																</option>
+															</>
+														) : (
+															<>
+																<option value="Baja">
+																	Baja
+																</option>
+																<option value="Suspendido">
+																	Suspendido
+																</option>
+															</>
+														)}
+													</select>
+													{errors.activo_estado
+														?.type ===
+														"required" && (
+														<span className="row text-warning m-1">
+															El campo es
+															requerido
+														</span>
+													)}
 												</div>
 											</div>
 										</div>
