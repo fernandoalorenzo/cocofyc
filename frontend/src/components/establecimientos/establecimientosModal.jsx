@@ -240,9 +240,7 @@ const EstablecimientosModal = ({
 	const handleCheckboxChange = () => {
 		setEsProfesional(!esProfesional);
 		setResponsableDetails(null);
-		// if (!esProfesional) {
 		setValue("id_responsable", "");
-		// }
 	};
 
 	const handleResponsableChange = (e) => {

@@ -75,31 +75,31 @@ const EstablecimientosCaducidad = ({ API_ENDPOINT }) => {
 					data: establecimientos,
 					language: datatableLanguageConfig,
 					buttons: [
-						{
-							extend: "excelHtml5",
-							className: "btn btn-success",
-							text: '<i class="fas fa-file-excel fa-xl"></i>',
-							titleAttr: "Exportar datos a Excel",
-						},
-						{
-							extend: "pdfHtml5",
-							className: "btn btn-danger",
-							text: '<i class="fas fa-file-pdf fa-xl"></i>',
-							titleAttr: "Exportar datos a PDF",
-						},
-						{
-							extend: "print",
-							className: "btn btn-warning",
-							text: '<i class="fas fa-print"></i>',
-							title: "Movimientos",
-							titleAttr: "Imprimir datos",
-						},
-						{
-							extend: "copy",
-							className: "btn btn-dark",
-							text: '<i class="fas fa-copy"></i>',
-							titleAttr: "Copia de datos a portapapeles",
-						},
+						// {
+						// 	extend: "excelHtml5",
+						// 	className: "btn btn-success",
+						// 	text: '<i class="fas fa-file-excel fa-xl"></i>',
+						// 	titleAttr: "Exportar datos a Excel",
+						// },
+						// {
+						// 	extend: "pdfHtml5",
+						// 	className: "btn btn-danger",
+						// 	text: '<i class="fas fa-file-pdf fa-xl"></i>',
+						// 	titleAttr: "Exportar datos a PDF",
+						// },
+						// {
+						// 	extend: "print",
+						// 	className: "btn btn-warning",
+						// 	text: '<i class="fas fa-print"></i>',
+						// 	title: "Movimientos",
+						// 	titleAttr: "Imprimir datos",
+						// },
+						// {
+						// 	extend: "copy",
+						// 	className: "btn btn-dark",
+						// 	text: '<i class="fas fa-copy"></i>',
+						// 	titleAttr: "Copia de datos a portapapeles",
+						// },
 					],
 					...datatableDomConfig,
 					columnDefs: [
