@@ -56,9 +56,11 @@ const ProfesionalesModal = ({
 	useEffect(() => {
 		if (modalMode === "agregar") {
 			reset(initialState);
+			setIsActivo(false);
 		} else if (data) {
 			if (data.fecha_nacimiento == "0000-00-00") {
 				data.fecha_nacimiento = "";
+				setValue("activo_estado", "");
 			}
 			if (data.matricula_fecha == "0000-00-00") {
 				data.matricula_fecha = "";

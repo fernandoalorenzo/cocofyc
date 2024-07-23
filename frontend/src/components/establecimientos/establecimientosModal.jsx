@@ -54,6 +54,7 @@ const EstablecimientosModal = ({
 		if (modalMode === "agregar") {
 			reset(initialState);
 			setEsProfesional(0);
+			setResponsableDetails(null);
 		} else if (data) {
 			if (data.fecha_inicio == "0000-00-00") {
 				data.fecha_inicio = "";
