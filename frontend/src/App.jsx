@@ -43,9 +43,9 @@ const SERVER_PATH =
 	process.env.NODE_ENV === "production" ? "./public" : "./../frontend";
 
 const App = () => {
-	const [currentUser, setCurrentUser] = useState(
-		JSON.parse(localStorage.getItem("user"))
-	);
+	// const [currentUser, setCurrentUser] = useState(
+	// 	JSON.parse(localStorage.getItem("user"))
+	// );
 
 	// Obtener la información del usuario desde el localStorae
 	const user = JSON.parse(localStorage.getItem("user"));

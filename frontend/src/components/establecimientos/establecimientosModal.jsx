@@ -45,8 +45,8 @@ const EstablecimientosModal = ({
 
 	const [titulares, setTitulares] = useState([]);
 	const [profesionales, setProfesionales] = useState([]);
-	const [titularSelected, setTitularSelected] = useState(null);
-	const [profesionalSelected, setProfesionalSelected] = useState(null);
+	// const [titularSelected, setTitularSelected] = useState(null);
+	// const [profesionalSelected, setProfesionalSelected] = useState(null);
 	const [responsableDetails, setResponsableDetails] = useState(null);
 	const [esProfesional, setEsProfesional] = useState(false);
 

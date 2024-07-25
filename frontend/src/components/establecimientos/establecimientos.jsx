@@ -19,8 +19,8 @@ const EstablecimientosTabla = ( { API_ENDPOINT } ) => {
 	const [modalMode, setModalMode] = useState("");
 	const [showProfesionalesModal, setShowProfesionalesModal] = useState(false);
 
-		const tablaEstablecimientosRef = useRef(null);
-		const dataTableRef = useRef(null);
+	const tablaEstablecimientosRef = useRef(null);
+	const dataTableRef = useRef(null);
 
 	const fetchEstablecimientos = async () => {
 		
@@ -52,7 +52,8 @@ const EstablecimientosTabla = ( { API_ENDPOINT } ) => {
 		fetchEstablecimientos();
 	}, []);
 
-	const handleEliminar = async (id) => {
+	const handleEliminar = async (data) => {
+		// const id = data.id;
 		const result = await Swal.fire({
 			title: "¿Estás seguro?",
 			text: "Esta acción no se puede deshacer",
@@ -68,7 +69,7 @@ const EstablecimientosTabla = ( { API_ENDPOINT } ) => {
 		if (result.isConfirmed) {
 			try {
 				const endpoint = `${API_ENDPOINT}/establecimientos/`;
-				const direction = id;
+				const direction = data.id;
 				const method = "DELETE";
 				const body = false;
 				const headers = {
@@ -76,7 +77,7 @@ const EstablecimientosTabla = ( { API_ENDPOINT } ) => {
 					Authorization: localStorage.getItem("token"),
 				};
 
-				const data = await apiConnection(
+				const response = await apiConnection(
 					endpoint,
 					direction,
 					method,
@@ -120,12 +121,15 @@ const EstablecimientosTabla = ( { API_ENDPOINT } ) => {
 
 	const closeProfesionalesModal = () => {
 		setShowProfesionalesModal(false);
+		setSelectedEstablecimiento(null);
 	};
 
 	const openEstablecimientosModal = () => setShowEstablecimientosModal(true);
 
-	const closeEstablecimientosModal = () =>
+	const closeEstablecimientosModal = () => {
 		setShowEstablecimientosModal(false);
+		setModalMode("");
+	}
 
 	useEffect(() => {
 		if (!showEstablecimientosModal) {

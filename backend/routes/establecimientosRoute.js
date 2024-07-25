@@ -20,12 +20,6 @@ establecimientosRouter.post("/", authenticateToken, createEstablecimiento);
 establecimientosRouter.put("/:id", authenticateToken, updateEstablecimiento);
 establecimientosRouter.delete("/:id", authenticateToken, deleteEstablecimiento);
 
-// establecimientosRouter.delete("/:id", deleteEstablecimiento);
-// establecimientosRouter.get("/", getEstablecimientos);
-// establecimientosRouter.get("/:id", getEstablecimientoById);
-// establecimientosRouter.post("/", createEstablecimiento);
-// establecimientosRouter.put("/:id", updateEstablecimiento);
-
 // Ruta para obtener los establecimientos asignados a un profesional específico
 establecimientosRouter.get("/asignados/:id", getEstablecimientosAsignados);
 

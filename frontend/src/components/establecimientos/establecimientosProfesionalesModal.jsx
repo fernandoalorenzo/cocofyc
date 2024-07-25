@@ -80,9 +80,15 @@ const ProfesionalesModal = ({ showModal, closeModal, data, API_ENDPOINT, }) => {
 	};
 
 	useEffect(() => {
+		setProfesionalesAsignados([]);
+	}, [showModal]);
+
+	useEffect(() => {
 		if (data) {
 			fetchProfesionales();
 			obtenerProfesionalesAsignados(data.id);
+		} else {
+			setProfesionalesAsignados([]);
 		}
 	}, [data]);
 
@@ -115,12 +121,6 @@ const ProfesionalesModal = ({ showModal, closeModal, data, API_ENDPOINT, }) => {
 					establecimientoId: data.id,
 					profesionalId: selectedProfesional,
 				};
-
-				// console.log(
-				// 	"body: ",
-				// 	body
-				// );
-				// return;
 
 				const response = await apiConnection(
 					endpoint,

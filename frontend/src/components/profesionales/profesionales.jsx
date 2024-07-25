@@ -17,6 +17,7 @@ const ProfesionalesTabla = ({ API_ENDPOINT }) => {
 	const [estadosMatriculas, setEstadosMatriculas] = useState([]);
 	const [showGestionesModal, setShowGestionesModal] = useState(false);
 	const [activeFilter, setActiveFilter] = useState("");
+	const [movimientos, setMovimientos] = useState([]);
 
 	const tablaProfesionalesRef = useRef(null);
 	const dataTableRef = useRef(null);
@@ -143,7 +144,6 @@ const ProfesionalesTabla = ({ API_ENDPOINT }) => {
 		}
 	};
 
-	const [movimientos, setMovimientos] = useState([]);
 	const fetchMovimientos = async (profesional) => {
 		const profesionalId = profesional.id;
 		try {

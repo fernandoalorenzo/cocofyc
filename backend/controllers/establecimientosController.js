@@ -85,6 +85,7 @@ const updateEstablecimiento = async (request, response) => {
 
 // Eliminar un establecimiento
 const deleteEstablecimiento = async (request, response) => {
+	console.log("ID: " + request.params.id);
 	authenticateToken(request, response, async () => {
 		const id = request.params.id;
 		try {

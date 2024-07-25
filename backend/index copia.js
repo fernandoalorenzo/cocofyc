@@ -2,7 +2,6 @@ import express from "express";
 import cors from "cors";
 import multer from "multer"; // Middleware para manejar archivos multipart/form-data
 import fs, { exists } from "fs";
-
 import path from "path"; // Importa la librería path para trabajar con rutas de archivos
 
 import profesionalesRouter from "./routes/profesionalesRoute.js";
@@ -121,16 +120,23 @@ app.get("/api/checkimage/:filename", (req, res) => {
 
 // SERVE STATIC FILES
 const __dirname = path.resolve();
-app.use(express.static(path.join(__dirname, "frontend/build")));
 
-app.get("*", (req, res) => {
-	res.sendFile(path.join(__dirname, "frontend/build/index.html"));
-});
-	
-// Redirección de direcciones inexistentes
-app.use((req, res) => {
-  res.redirect("/"); // Redirige cualquier dirección que no existe a la dirección base ("/")
-});
+if (process.env.NODE_ENV === "production") {
+	// Servir archivos estáticos desde el directorio build
+	app.use(express.static(path.join(__dirname, "frontend/build")));
+
+	// Manejar todas las demás rutas
+	app.get("*", (req, res) => {
+		res.sendFile(path.join(__dirname, "frontend/build", "index.html"));
+	});
+} else {
+	app.use(express.static(path.join(__dirname, "frontend")));
+
+	// En desarrollo, manejar rutas no encontradas
+	app.use((req, res, next) => {
+		res.status(404).send("Sorry, can't find that!");
+	});
+}
 
 // SERVIDOR
 const PORT = process.env.PORT || 5000;
