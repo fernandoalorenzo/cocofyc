@@ -51,6 +51,7 @@ const ProfesionalesModal = ({
 		activo: false,
 		activo_estado: "",
 		estado_matricula_id: "",
+		observaciones: "",
 	};
 
 	useEffect(() => {
@@ -864,6 +865,27 @@ const ProfesionalesModal = ({
 															requerido
 														</span>
 													)}
+												</div>
+											</div>
+											<div className="row mb-3">
+												{/* Observaciones */}
+												<div className="col">
+													<label
+														htmlFor="observaciones"
+														className="form-label mb-0">
+														Observaciones{" "}
+													</label>
+													<textarea
+														className="form-control"
+														id="observaciones"
+														rows="2"
+														disabled={
+															modalMode ===
+															"mostrar"
+														}
+														{...register(
+															"observaciones"
+														)}></textarea>
 												</div>
 											</div>
 										</div>

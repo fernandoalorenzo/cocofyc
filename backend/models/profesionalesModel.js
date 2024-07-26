@@ -30,6 +30,7 @@ const Profesional = sequelize.define(
 			allowNull: false,
 		},
 		estado_matricula_id: { type: DataTypes.UUID },
+		observaciones: { type: DataTypes.TEXT },
 	},
 	{
 		timestamps: true,
