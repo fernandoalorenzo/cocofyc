@@ -1,14 +1,118 @@
 import React, { useState, useEffect, useRef } from "react";
+import Swal from "sweetalert2";
+import apiConnection from "../../../../backend/functions/apiConnection";
 import {
 	datatableLanguageConfig,
 	datatableButtonsConfig,
 	datatableDomConfig,
 } from "../../utils/dataTableConfig";
 
-
-const MovimientosTab = ({ profesionalId, data, movimientos }) => {
+const MovimientosTab = ({
+	profesionalId,
+	// data,
+	API_ENDPOINT,
+	// fetchMovimientos,
+}) => {
 	const tablaMovimientosRef = useRef(null);
 	const dataTableRef = useRef(null);
+
+	const [movimientos, setMovimientos] = useState([]);
+
+	const fetchMovimientosProfesional = async () => {
+		try {
+			const endpoint = `${API_ENDPOINT}/movimientos/profesional/`;
+			const direction = profesionalId;
+			const method = "GET";
+			const body = false;
+			const headers = {
+				"Content-Type": "application/json",
+				Authorization: localStorage.getItem("token"),
+			};
+
+			const response = await apiConnection(
+				endpoint,
+				direction,
+				method,
+				body,
+				headers
+			);
+
+			if (response.data && response.data.length > 0) {
+				const movimientos = [];
+
+				// Filtrar los movimientos por tipo de operación "INGRESO"
+				const movimientosIngresos = response.data.filter(
+					(movimiento) => movimiento.tipo_operacion === "INGRESO"
+				);
+
+				// Iterar sobre los movimientos filtrados y realizar el fetch del medio de pago
+				for (const movimiento of movimientosIngresos) {
+					try {
+						const medio = await fetchMedioDePago(
+							movimiento.medio_id
+						);
+						const ingreso = {
+							id: movimiento.id,
+							fecha: movimiento.fecha,
+							importe: movimiento.importe,
+							medio: medio,
+							concepto: movimiento.concepto,
+						};
+						movimientos.push(ingreso);
+					} catch (error) {
+						console.error("Error al obtener medio de pago:", error);
+					}
+				}
+				return movimientos;
+			} else {
+				return [];
+			}
+		} catch (error) {
+			console.error("Error:", error.message);
+			Swal.fire({
+				icon: "error",
+				title: "Error al cargar datos",
+				text: "Hubo un problema al obtener los datos de los movimientos.",
+			});
+		}
+	};
+
+useEffect(() => {
+	const fetchData = async () => {
+		const movimientosData = await fetchMovimientosProfesional();
+		setMovimientos(movimientosData);
+	};
+
+	fetchData();
+}, [profesionalId]);
+
+	const fetchMedioDePago = async (medioId) => {
+		try {
+			const endpoint = `${API_ENDPOINT}/mediosdepago/${medioId}`;
+			const direction = "";
+			const method = "GET";
+			const body = false;
+			const headers = {
+				"Content-Type": "application/json",
+				Authorization: localStorage.getItem("token"),
+			};
+
+			const response = await apiConnection(
+				endpoint,
+				direction,
+				method,
+				body,
+				headers
+			);
+
+			const mediosDePago = response.data;
+
+			return mediosDePago.medio;
+		} catch (error) {
+			console.error("Error:", error.message);
+			return "Nombre de medio no encontrado";
+		}
+	};
 
 	useEffect(() => {
 		if (dataTableRef.current) {
@@ -19,7 +123,8 @@ const MovimientosTab = ({ profesionalId, data, movimientos }) => {
 				data: movimientos,
 				pageLength: 5,
 				language: datatableLanguageConfig,
-				buttons: datatableButtonsConfig, ...datatableDomConfig,
+				buttons: datatableButtonsConfig,
+				...datatableDomConfig,
 				columns: [
 					{
 						data: "fecha",
@@ -51,6 +156,18 @@ const MovimientosTab = ({ profesionalId, data, movimientos }) => {
 					},
 					{ data: "medio" },
 					{ data: "concepto" },
+					{
+						data: null,
+						className: "text-center",
+						render: function (data, type, row) {
+							return `
+                            <button class="btn btn-danger btn-sm eliminar-btn" title="Eliminar" data-id="${row.id}"><i class="fa-regular fa-trash-can"></i></button>
+                        `;
+						},
+						orderable: false,
+						searchable: false,
+						width: "7%",
+					},
 				],
 				lengthChange: true,
 				lengthMenu: [
@@ -73,7 +190,110 @@ const MovimientosTab = ({ profesionalId, data, movimientos }) => {
 				order: [[0, "desc"]], // Ordenar por la primera columna en orden descendente
 			});
 		}
+
+		$(tablaMovimientosRef.current).on(
+			"click",
+			".eliminar-btn",
+			function () {
+				const rowData = dataTableRef.current
+					.row($(this).closest("tr"))
+					.data();
+				handleEliminar(rowData.id);
+			}
+		);
 	}, [movimientos, profesionalId]);
+
+	const eliminarMovimientoDeCuota = async (movimientoId) => {
+		try {
+			const endpoint = `${API_ENDPOINT}/profesionales/eliminar-movimiento-de-cuota/`;
+			const direction = `${movimientoId}`;
+			const method = "PATCH";
+			const body = { movimiento_id: movimientoId };
+			const headers = {
+				"Content-Type": "application/json",
+				Authorization: localStorage.getItem("token"),
+			};
+
+			const response = await apiConnection(
+				endpoint,
+				direction,
+				method,
+				body,
+				headers
+			);
+
+			if (!response) {
+				console.error(
+					"Error al eliminar movimiento de cuota: ",
+					response.statusText
+				);
+			}
+		} catch (error) {
+			console.error("Error al eliminar movimiento de cuota: ", error);
+		}
+	};
+
+	const handleEliminar = async (id) => {
+		if (!profesionalId) {
+			return;
+		}
+
+		const result = await Swal.fire({
+			title: "¿Estás seguro?",
+			text: "Esta acción no se puede deshacer",
+			icon: "warning",
+			showCancelButton: true,
+			confirmButtonColor: "#FF0000",
+			cancelButtonColor: "9B9B9B",
+			confirmButtonText: "Eliminar",
+			cancelButtonText: "Cancelar",
+		});
+
+		// Si el usuario confirma la eliminación
+		if (result.isConfirmed) {
+			try {
+				const endpoint = `${API_ENDPOINT}/movimientos/`;
+				const direction = `${id}`;
+				const method = "DELETE";
+				const body = null;
+				const headers = {
+					"Content-Type": "application/json",
+					Authorization: localStorage.getItem("token"),
+				};
+
+				const response = await apiConnection(
+					endpoint,
+					direction,
+					method,
+					body,
+					headers
+				);
+
+				if (response) {
+					await eliminarMovimientoDeCuota(id);
+				const updatedMovimientos = await fetchMovimientosProfesional();
+				setMovimientos(updatedMovimientos);
+					Swal.fire({
+						title: "Operación exitosa",
+						text: "El registro fue eliminado exitosamente",
+						icon: "success",
+						showConfirmButton: false,
+						timer: 2500,
+					});
+				}
+
+				// Forzar la actualización del componente MovimientosTab
+				// await fetchMovimientos(profesionalId);
+			} catch (error) {
+				console.error("Error al guardar el registro:", error.message);
+				Swal.fire({
+					title: "Error",
+					text: "Ha ocurrido un error al intentar guardar el registro",
+					icon: "error",
+				});
+			}
+		}
+	};
 
 	return (
 		<>

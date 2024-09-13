@@ -186,9 +186,10 @@ const GestionesModal = ({
 										hidden={cardBodyFormToggle}>
 										<MovimientosTab
 											profesionalId={profesionalId}
-											data={data}
-											movimientos={movimientos}
+											// data={data}
+											// movimientos={movimientos}
 											API_ENDPOINT={API_ENDPOINT}
+											// fetchMovimientos={fetchMovimientos}
 										/>
 									</div>
 								</div>

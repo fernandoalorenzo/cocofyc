@@ -21,6 +21,7 @@ import {
 	deleteCuotaGeneradaById,
 	generarProfesionalesCuota,
 	asignarMovimientoACuota,
+	eliminarMovimientoDeCuota,
 	getProfesionalesMorosos,
 	getProfesionalesAlDia,
 } from "../controllers/profesionalesCuotasController.js";
@@ -35,7 +36,9 @@ const profesionalesRouter = express.Router();
 // Ruta para obtener las cuotas generadas por un id de un profesional
 	profesionalesRouter.get("/cuotas-generadas-profesional/:id", authenticateToken, getCuotasGeneradasByProfesional);
 // Ruta para asignar un movimiento a una cuota
-	profesionalesRouter.patch("/asignar-movimiento-a-cuota/:id_cuota/:id_movimiento", authenticateToken, asignarMovimientoACuota);
+profesionalesRouter.patch("/asignar-movimiento-a-cuota/:id_cuota/:id_movimiento", authenticateToken, asignarMovimientoACuota);
+// Ruta para eliminar un movimiento de una cuota
+profesionalesRouter.patch("/eliminar-movimiento-de-cuota/:id_movimiento", authenticateToken, eliminarMovimientoDeCuota);
 // Ruta para desvincular un profesional de un establecimiento
 	profesionalesRouter.delete("/desvincular-profesional/:profesionalId/:establecimientoId", authenticateToken, desvincularProfesional);
 // Ruta para obtener profesionales que estan activos 

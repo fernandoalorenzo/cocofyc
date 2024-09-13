@@ -179,6 +179,7 @@ const ProfesionalesTabla = ({ API_ENDPOINT }) => {
 							movimiento.medio_id
 						);
 						const ingreso = {
+							id: movimiento.id,
 							fecha: movimiento.fecha,
 							importe: movimiento.importe,
 							medio: medio,
@@ -251,7 +252,6 @@ const ProfesionalesTabla = ({ API_ENDPOINT }) => {
 						},
 						{
 							data: "nombre",
-							// width: "15%",
 							render: function (data, type, row) {
 								return `<span class="texto-truncado" style="max-width: 15rem;">${data}</span>`;
 							},
@@ -266,14 +266,12 @@ const ProfesionalesTabla = ({ API_ENDPOINT }) => {
 						},
 						{
 							data: "email",
-							// width: "12%",
 							render: function (data, type, row) {
 								return `<span class="texto-truncado" style="max-width: 15rem;">${data}</span>`;
 							},
 						},
 						{
 							data: "localidad",
-							// width: "10%",
 							render: function (data, type, row) {
 								return `<span class="texto-truncado" style="max-width: 15rem;">${data}</span>`;
 							},

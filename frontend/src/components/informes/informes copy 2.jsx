@@ -16,10 +16,6 @@ import PagosRealizadosPorFechaReport from "./movimientos/PagosRealizadosPorFecha
 import CobranzasPorFechaReport from "./movimientos/CobranzaPorFechaReport";
 import ArancelesExtraordinariosReport from "./aranceles/arancelesExtraordinariosReport";
 
-// Exportar a Excel
-import ProfesionalesActivosXLSReport from "./profesionales/profesionalesActivosXLSReport";
-import ProfesionalesInactivosXLSReport from "./profesionales/profesionalesInactivosXLSReport";
-
 const Informes = ({ API_ENDPOINT }) => {
 	const [showInforme, setShowInforme] = useState(false);
 	const [nombreInforme, setNombreInforme] = useState("");
@@ -29,8 +25,6 @@ const Informes = ({ API_ENDPOINT }) => {
 	const [refreshKey, setRefreshKey] = useState(0); // Para detectar click en boton y refrescar componente
 	const [aranceles, setAranceles] = useState([]);
 	const [selectedArancel, setSelectedArancel] = useState("");
-
-	const [reportType, setReportType] = useState(""); // Nuevo estado para el tipo de informe
 
 	useEffect(() => {
 		// Establecer las fechas por defecto como el primer y último día del mes actual
@@ -225,69 +219,22 @@ const Informes = ({ API_ENDPOINT }) => {
 				},
 			],
 		},
-		{
-			id: "exportar-tab",
-			target: "#exportar",
-			label: "Exportar",
-			selected: false,
-			reports: [
-				{
-					label: "Profesionales Activos",
-					reportComponent: (
-						<ProfesionalesActivosXLSReport
-							API_ENDPOINT={API_ENDPOINT}
-							nombreInforme="Profesionales Activos"
-						/>
-					),
-					title: "Profesionales Activos",
-					tipoInforme: "XLS",
-				},
-				{
-					label: "Profesionales Inactivos",
-					reportComponent: (
-						<ProfesionalesInactivosXLSReport
-							API_ENDPOINT={API_ENDPOINT}
-							nombreInforme="Profesionales Inactivos"
-						/>
-					),
-					title: "Profesionales Inactivos",
-					tipoInforme: "XLS",
-				},
-			],
-		},
 	];
 
 	const handleGenerateReport = (
 		nombreInforme,
 		componenteInforme,
-		props = {},
-		tipoInforme = "PDF"
+		props = {}
 	) => {
 		setRefreshKey((prevKey) => prevKey + 1);
 		setNombreInforme(props.title);
-
-		setReportType(tipoInforme);
-
-		if (tipoInforme === "PDF") {
-			setInformeComponent(
-				React.cloneElement(componenteInforme, {
-					...props,
-					nombreInforme,
-				})
-			);
-			setShowInforme(true);
-		} else {
-			// Para Excel
-			const Component = componenteInforme.type;
-			setInformeComponent(
-				<Component
-					{...props}
-					API_ENDPOINT={API_ENDPOINT}
-					nombreInforme={nombreInforme}
-				/>
-			);
-			setShowInforme(true);
-		}
+		setInformeComponent(
+			React.cloneElement(componenteInforme, {
+				...props,
+				nombreInforme,
+			})
+		);
+		setShowInforme(true);
 	};
 
 	const fetchAranceles = async () => {
@@ -319,38 +266,32 @@ const Informes = ({ API_ENDPOINT }) => {
 			return (
 				<div className="card" id="card-profesionales-report">
 					<div className="card-body">
-						{reportType === "PDF" ? (
-							<PDFViewer
-								style={{
-									width: "100%",
-									height: "300px",
-								}}
-								showToolbar={false}>
-								{informeComponent}
-							</PDFViewer>
-						) : (
-							informeComponent
-						)}
+						<PDFViewer
+							style={{
+								width: "100%",
+								height: "300px",
+							}}
+							showToolbar={false}>
+							{informeComponent}
+						</PDFViewer>
 					</div>
-					{reportType === "PDF" && (
-						<div className="card-footer">
-							<PDFDownloadLink
-								document={informeComponent}
-								fileName={`${nombreInforme}.pdf`}
-								className="btn btn-danger">
-								{({ loading }) =>
-									loading ? (
-										"Generando PDF..."
-									) : (
-										<>
-											<i className="far fa-file-pdf" />{" "}
-											Descargar
-										</>
-									)
-								}
-							</PDFDownloadLink>
-						</div>
-					)}
+					<div className="card-footer">
+						<PDFDownloadLink
+							document={informeComponent}
+							fileName={`${nombreInforme}.pdf`}
+							className="btn btn-danger">
+							{({ loading }) =>
+								loading ? (
+									"Generando PDF..."
+								) : (
+									<>
+										<i className="far fa-file-pdf" />{" "}
+										Descargar
+									</>
+								)
+							}
+						</PDFDownloadLink>
+					</div>
 				</div>
 			);
 		}
@@ -432,16 +373,6 @@ const Informes = ({ API_ENDPOINT }) => {
 											className={`nav-link ${
 												tab.selected ? "active" : ""
 											}`}
-											style={{
-												color:
-													tab.label === "Exportar"
-														? "darkorange"
-														: "",
-												fontStyle:
-													tab.label === "Exportar"
-														? "italic"
-														: "",
-											}}
 											id={tab.id}
 											data-bs-toggle="tab"
 											data-bs-target={tab.target}
@@ -541,8 +472,7 @@ const Informes = ({ API_ENDPOINT }) => {
 																			title: report.title,
 																			arancelId:
 																				selectedArancel,
-																		},
-																		report.tipoInforme
+																		}
 																	)
 																}
 																disabled={

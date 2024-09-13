@@ -125,6 +125,7 @@ const CargarPagosTab = ({
 		if (profesionalId) {
 			fetchCuotasGeneradas(profesionalId);
 		}
+
 	}, [profesionalId]);
 
 	const onSubmitCargarPago = async (data) => {
@@ -204,7 +205,7 @@ const CargarPagosTab = ({
 				headers
 			);
 
-			if (!response.ok) {
+			if (!response) {
 				console.error(
 					"Error al asignar movimiento a cuota: ",
 					response.statusText

@@ -187,6 +187,44 @@ const asignarMovimientoACuota = async (request, response) => {
 	});
 };
 
+// Eliminar un pago a una cuota
+const eliminarMovimientoDeCuota = async (request, response) => {
+	authenticateToken(request, response, async () => {
+		try {
+			const { movimiento_id } = request.body;
+			
+			// Buscar el registro por su ID
+			const registro = await Profesionales_Cuotas.findOne({
+				where: { movimiento_id: movimiento_id },
+			});
+			
+			// Verificar si el registro existe
+			if (!registro) {
+				console.log("El registro no se encontró en la base de datos.");
+				return response.status(404).json({
+					message: "El registro no se encontró en la base de datos.",
+				});
+			}
+
+			// Asignar el movimiento al registro
+			registro.movimiento_id = null;
+			await registro.save();
+
+			response.status(200).json({
+				message: "Movimiento eliminado correctamente al registro.",
+			});
+		} catch (error) {
+			console.error(
+				"Error al eliminar el movimiento al registro:",
+				error.message
+			);
+			response.status(500).json({
+				message: "Error al eliminar el movimiento al registro.",
+			});
+		}
+	});
+};
+
 // Obtener profesionales morosos
 const getProfesionalesMorosos = async (request, response) => {
 	// const cant = 0;
@@ -209,13 +247,6 @@ const getProfesionalesMorosos = async (request, response) => {
 						cuota.profesional_id
 					);
 
-					// if (cuotaDetail === !null) {
-					// 	cant = cant + 1;
-					// }
-					// console.log("cuotaDetail: ", cuotaDetail);
-					// console.log("profesionalDetail: ", profesionalDetail);
-					// return
-
 					return {
 						...cuota.toJSON(),
 						importe: cuotaDetail.importe,
@@ -233,11 +264,6 @@ const getProfesionalesMorosos = async (request, response) => {
 				})
 			);
 			
-			// console.log("****************************************");
-			// console.log("ENTRO AL CICLO");
-			// console.log("****************************************");
-			// console.log("cant: ", cant);
-
 			response.status(201).json({
 				message: "El listado de profesionales fue creado exitosamente!",
 				total: morososConDetalles.length,
@@ -389,6 +415,7 @@ export {
 	deleteCuotaGeneradaById,
 	generarProfesionalesCuota,
 	asignarMovimientoACuota,
+	eliminarMovimientoDeCuota,
 	getProfesionalesMorosos,
 	getProfesionalesAlDia,
 };

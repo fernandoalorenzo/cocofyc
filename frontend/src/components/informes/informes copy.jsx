@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import moment from "moment"; // Importar moment
 import apiConnection from "../../../../backend/functions/apiConnection";
-import { PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
+import { PDFDownloadLink, PDFViewer, Text, } from "@react-pdf/renderer";
 import ProfesionalesActivosReport from "./profesionales/profesionalesActivosReport";
 import ProfesionalesMatriculadosReport from "./profesionales/profesionalesMatriculadosReport";
 import ProfesionalesMorososReport from "./profesionales/profesionalesMorososReport";
@@ -240,7 +240,6 @@ const Informes = ({ API_ENDPOINT }) => {
 						/>
 					),
 					title: "Profesionales Activos",
-					tipoInforme: "XLS",
 				},
 				{
 					label: "Profesionales Inactivos",
@@ -251,7 +250,6 @@ const Informes = ({ API_ENDPOINT }) => {
 						/>
 					),
 					title: "Profesionales Inactivos",
-					tipoInforme: "XLS",
 				},
 			],
 		},
@@ -260,15 +258,18 @@ const Informes = ({ API_ENDPOINT }) => {
 	const handleGenerateReport = (
 		nombreInforme,
 		componenteInforme,
-		props = {},
-		tipoInforme = "PDF"
+		props = {}
 	) => {
 		setRefreshKey((prevKey) => prevKey + 1);
 		setNombreInforme(props.title);
 
-		setReportType(tipoInforme);
+		console.log("componente: ", componenteInforme);
 
-		if (tipoInforme === "PDF") {
+		const isXLSReport = componenteInforme.type.name.includes("XLSReport");
+
+		console.log("isXLSReport: ", isXLSReport);
+
+		if (!isXLSReport) {
 			setInformeComponent(
 				React.cloneElement(componenteInforme, {
 					...props,
@@ -316,35 +317,31 @@ const Informes = ({ API_ENDPOINT }) => {
 
 	const renderInforme = () => {
 		if (showInforme && informeComponent) {
+			const isXLSReport =
+				informeComponent.type.name.includes("XLSReport");
 			return (
 				<div className="card" id="card-profesionales-report">
 					<div className="card-body">
-						{reportType === "PDF" ? (
-							<PDFViewer
-								style={{
-									width: "100%",
-									height: "300px",
-								}}
-								showToolbar={false}>
-								{informeComponent}
-							</PDFViewer>
-						) : (
+						{isXLSReport ? (
 							informeComponent
+						) : (
+							<PDFViewer>
+								<Text>{informeComponent}</Text>
+							</PDFViewer>
 						)}
 					</div>
-					{reportType === "PDF" && (
+					{isXLSReport ? null : (
 						<div className="card-footer">
 							<PDFDownloadLink
-								document={informeComponent}
-								fileName={`${nombreInforme}.pdf`}
-								className="btn btn-danger">
+								document={<Text>{informeComponent}</Text>}
+								fileName={`${nombreInforme}.pdf`}>
 								{({ loading }) =>
 									loading ? (
 										"Generando PDF..."
 									) : (
 										<>
 											<i className="far fa-file-pdf" />{" "}
-											Descargar
+											<Text>Descargar</Text>
 										</>
 									)
 								}
@@ -429,18 +426,17 @@ const Informes = ({ API_ENDPOINT }) => {
 										className="nav-item"
 										role="presentation">
 										<button
-											className={`nav-link ${
-												tab.selected ? "active" : ""
-											}`}
+											className={`nav-link 
+											${tab.selected ? "active" : ""}
+											`}
 											style={{
 												color:
 													tab.label === "Exportar"
 														? "darkorange"
 														: "",
-												fontStyle:
-													tab.label === "Exportar"
-														? "italic"
-														: "",
+												fontStyle: tab.label === "Exportar"
+													? "italic"
+													: "",
 											}}
 											id={tab.id}
 											data-bs-toggle="tab"
@@ -541,8 +537,7 @@ const Informes = ({ API_ENDPOINT }) => {
 																			title: report.title,
 																			arancelId:
 																				selectedArancel,
-																		},
-																		report.tipoInforme
+																		}
 																	)
 																}
 																disabled={
