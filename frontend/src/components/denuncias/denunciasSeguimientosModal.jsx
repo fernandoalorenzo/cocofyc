@@ -165,6 +165,9 @@ const DenunciasSeguimientosModal = ({
 			fetchArchivos();
 		} else if (modalSeguimientoMode === "agregar") {
 			reset(initialState);
+			setSelectedFiles([]);
+			setArchivosSeguimiento([]);
+			setData([]);
 		}
 	}, [editingSeguimiento, modalSeguimientoMode, reset]);
 
@@ -200,7 +203,7 @@ const DenunciasSeguimientosModal = ({
 
 		const filesArray = selectedFilesArray
 			.map((file) => {
-				if (file.size <= 3 * 1024 * 1024) {	// 3 MB (mismo límite que en el servidor)
+				if (file.size <= .5 * 1024 * 1024) {	// 500 kb
 					return {
 						file: file,
 						url: URL.createObjectURL(file),
@@ -212,7 +215,7 @@ const DenunciasSeguimientosModal = ({
 					Swal.fire({
 						icon: "error",
 						title: "Archivo demasiado grande",
-						text: "El archivo seleccionado es demasiado grande. Por favor, seleccione un archivo más pequeño. El tamaño maximo permitido es de 3 MB.",
+						text: "El archivo seleccionado es demasiado grande. Por favor, seleccione un archivo más pequeño. El tamaño maximo permitido es de 500kb",
 					})
 					return null;
 				}
@@ -650,6 +653,8 @@ const DenunciasSeguimientosModal = ({
 										</div>
 									</div>
 								) : null}
+								{ modalSeguimientoMode === "editar" ? (
+									
 								<div className="card">
 									<div className="card-header bg-primary opacity-75 text-bold pt-1 pb-0 d-flex ">
 										<label
@@ -807,6 +812,7 @@ const DenunciasSeguimientosModal = ({
 											)}
 									</div>
 								</div>
+								) : null}
 								<div className="modal-footer text-end">
 									<button
 										type="submit"

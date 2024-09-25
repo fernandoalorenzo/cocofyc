@@ -65,25 +65,25 @@ const getDenunciaById = async (request, response) => {
 };
 
 // Obtener una denuncia por Id del profesional
-const getDenunciaByIdProfesional = async (request, response) => {
-	authenticateToken(request, response, async () => {
-		const profesional_id = request.params.profesional_id;
-		try {
-			const denuncia = await Denuncia.findAll({
-				where: { profesional_id: profesional_id },
-			});
+// const getDenunciaByIdProfesional = async (request, response) => {
+// 	authenticateToken(request, response, async () => {
+// 		const profesional_id = request.params.profesional_id;
+// 		try {
+// 			const denuncia = await Denuncia.findAll({
+// 				where: { profesional_id: profesional_id },
+// 			});
 
-			response.status(201).json({
-				message:
-					"Los datos de la denuncia fueron obtenidos exitosamente!",
-				data: denuncia,
-			});
-		} catch (error) {
-			console.error("Error: " + error.message);
-			response.status(500).send({ message: error.message });
-		}
-	});
-};
+// 			response.status(201).json({
+// 				message:
+// 					"Los datos de la denuncia fueron obtenidos exitosamente!",
+// 				data: denuncia,
+// 			});
+// 		} catch (error) {
+// 			console.error("Error: " + error.message);
+// 			response.status(500).send({ message: error.message });
+// 		}
+// 	});
+// };
 
 // Actualizar denuncias
 const updateDenuncia = async (request, response) => {
@@ -248,7 +248,7 @@ export {
 	createDenuncia,
 	getDenuncias,
 	getDenunciaById,
-	getDenunciaByIdProfesional,
+	// getDenunciaByIdProfesional,
 	updateDenuncia,
 	deleteDenuncia,
 	getSeguimientosByDenunciaId,

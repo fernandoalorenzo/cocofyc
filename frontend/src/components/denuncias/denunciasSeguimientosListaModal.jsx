@@ -27,7 +27,7 @@ const DenunciasSeguimientosListaModal = ({
 	const user = JSON.parse(localStorage.getItem("user")) || {};
 	const [denunciaId, setDenunciaId] = useState("");
 	const [seguimientos, setSeguimientos] = useState([]);
-	const [nroActa, setNroActa] = useState("");
+	const [nroComprobante, setNroComprobante] = useState("");
 	const [modalFormMode, setModalFormMode] = useState("");
 	const [editingSeguimiento, setEditingSeguimiento] = useState(null);
 	const [isBotonAgregarEnabled, setIsBotonAgregarEnabled] = useState(true);
@@ -91,12 +91,16 @@ const DenunciasSeguimientosListaModal = ({
 				columns: [
 					{
 						data: "fecha",
+						className: "text-center",
+						width: "12%",
 					},
 					{
 						data: "respuesta",
 					},
 					{
 						data: "proximo_seguimiento",
+						className: "text-center",
+						width: "12%",
 					},
 					{
 						// Columna de acciones
@@ -110,6 +114,7 @@ const DenunciasSeguimientosListaModal = ({
 						},
 						orderable: false,
 						searchable: false,
+						width: "20%",
 					},
 				],
 				lengthChange: true,
@@ -278,7 +283,7 @@ const DenunciasSeguimientosListaModal = ({
 		if (dataSeguimientoLista) {
 			setDenunciaId(dataSeguimientoLista.id);
 			fetchSeguimientos(dataSeguimientoLista);
-			setNroActa(dataSeguimientoLista.nro_acta);
+			setNroComprobante(dataSeguimientoLista.nro_comprobante);
 		}
 		// Bloquea el botón de agregar seguimiento si la denuncia ya tiene la denuncia cerrada
 		if (
@@ -321,9 +326,9 @@ const DenunciasSeguimientosListaModal = ({
 					<div className="modal-content bg-secondary">
 						<div className="modal-header bg-primary">
 							<h5 className="modal-title">
-								Seguimientos del Acta N°{" "}
+								Seguimientos del Comprobante N°{" "}
 								<span className="fw-bold text-warning">
-									{nroActa}
+									{nroComprobante}
 								</span>
 							</h5>
 							<button

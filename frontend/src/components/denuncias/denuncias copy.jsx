@@ -16,6 +16,7 @@ const DenunciasTabla = ({ API_ENDPOINT, SERVER_PATH }) => {
 		useState(null);
 	const [modalMode, setModalMode] = useState("");
 	const [denuncias, setDenuncias] = useState([]);
+	const [profesionales, setProfesionales] = useState({});
 	const [establecimientos, setEstablecimientos] = useState([]);
 
 	const [
@@ -46,10 +47,15 @@ const DenunciasTabla = ({ API_ENDPOINT, SERVER_PATH }) => {
 			);
 
 			if (response) {
+				const profesionales = await fetchProfesionales();
 				const establecimientos = await fetchEstablecimientos();
 
 				// Asocia el nombre del profesional y del establecimiento con cada denuncia
 				const denunciasConDatos = response.data.map((denuncia) => {
+					const profesional = profesionales.find(
+						(profesional) =>
+							profesional.id === denuncia.profesional_id
+					);
 					const establecimiento = establecimientos.find(
 						(establecimiento) =>
 							establecimiento.id === denuncia.establecimiento_id
@@ -57,6 +63,9 @@ const DenunciasTabla = ({ API_ENDPOINT, SERVER_PATH }) => {
 
 					return {
 						...denuncia,
+						profesional_nombre: profesional
+							? profesional.nombre
+							: "",
 						establecimiento_nombre: establecimiento
 							? establecimiento.establecimiento
 							: "",
@@ -110,18 +119,8 @@ const DenunciasTabla = ({ API_ENDPOINT, SERVER_PATH }) => {
 						},
 					},
 					{
-						targets: 2,
-						// width: "15%",
-						render: function (data, type, row) {
-							if (type === "display") {
-								return `<div style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${data}</div>`;
-							}
-							return data;
-						},
-					},
-					{
 						targets: 3,
-						// width: "15%",
+						width: "15%",
 						render: function (data, type, row) {
 							if (type === "display") {
 								return `<div style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${data}</div>`;
@@ -131,7 +130,7 @@ const DenunciasTabla = ({ API_ENDPOINT, SERVER_PATH }) => {
 					},
 					{
 						targets: 4,
-						// width: "15%",
+						width: "15%",
 						render: function (data, type, row) {
 							if (type === "display") {
 								return `<div style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${data}</div>`;
@@ -165,25 +164,23 @@ const DenunciasTabla = ({ API_ENDPOINT, SERVER_PATH }) => {
 						width: "8%",
 					},
 					{
-						data: "nro_comprobante",
+						data: "nro_acta",
 						className: "text-center",
 						width: "8%",
 					},
 					{
-						data: "persona",
-						className: "text-left",
-					},
-					{
-						data: "tipo_denuncia",
-						className: "text-left",
+						data: "profesional_nombre",
+						width: "15%",
 					},
 					{
 						data: "infraccion",
 						className: "text-left",
+						width: "15%",
 					},
 					{
-						data: "estado",
+						data: "comentario",
 						className: "text-left",
+						width: "15%",
 					},
 					{
 						data: "fecha_cierre",
@@ -196,7 +193,7 @@ const DenunciasTabla = ({ API_ENDPOINT, SERVER_PATH }) => {
 						className: "text-center",
 						render: function (data, type, row) {
 							return `
-                            <!-- <button class="btn btn-info btn-sm mostrar-btn" data-id="${row.id}"><i class="fa-regular fa-eye"></i> Mostrar</button> -->
+                            <button class="btn btn-info btn-sm mostrar-btn" data-id="${row.id}"><i class="fa-regular fa-eye"></i> Mostrar</button>
                             <button class="btn btn-warning btn-sm editar-btn" data-id="${row.id}"><i class="fa-regular fa-pen-to-square"></i> Editar</button>
                             <button class="btn btn-danger btn-sm eliminar-btn" data-id="${row.id}"><i class="fa-regular fa-trash-can"></i>  Eliminar</button>
 							<button class="btn btn-success btn-sm seguimientos-btn" data-id="${row.id}"><i class="fa-solid fa-road"></i>  Seguimientos</button>
@@ -204,7 +201,7 @@ const DenunciasTabla = ({ API_ENDPOINT, SERVER_PATH }) => {
 						},
 						orderable: false,
 						searchable: false,
-						width: "18%",
+						width: "20%",
 					},
 				],
 				lengthChange: true,
@@ -263,6 +260,7 @@ const DenunciasTabla = ({ API_ENDPOINT, SERVER_PATH }) => {
 
 	useEffect(() => {
 		fetchEstablecimientos(setEstablecimientos);
+		fetchProfesionales(setProfesionales);
 		fetchDenuncias(setDenuncias);
 	}, []);
 
@@ -346,6 +344,31 @@ const DenunciasTabla = ({ API_ENDPOINT, SERVER_PATH }) => {
 		setShowDenunciasModal(true);
 	};
 
+	const fetchProfesionales = async () => {
+		try {
+			const endpoint = `${API_ENDPOINT}/profesionales/`;
+			const method = "GET";
+			const headers = {
+				"Content-Type": "application/json",
+				Authorization: localStorage.getItem("token"),
+			};
+
+			const response = await apiConnection(
+				endpoint,
+				"",
+				method,
+				false,
+				headers
+			);
+
+			if (response) {
+				return response.data; // Devuelve los datos de los profesionales
+			}
+		} catch (error) {
+			console.error("Error fetching profesionales:", error.message);
+		}
+	};
+
 	const fetchEstablecimientos = async () => {
 		try {
 			const endpoint = `${API_ENDPOINT}/establecimientos/`;
@@ -422,11 +445,10 @@ const DenunciasTabla = ({ API_ENDPOINT, SERVER_PATH }) => {
 									<thead className="table-dark">
 										<tr>
 											<th>Fecha</th>
-											<th>N° Acta/Carta</th>
-											<th>Persona</th>
-											<th>Tipo Denuncia</th>
+											<th>N° de Acta</th>
+											<th>Profesional</th>
 											<th>Infracción</th>
-											<th>Estado</th>
+											<th>Comentario</th>
 											<th>Cierre</th>
 											<th className="text-center">
 												Acciones

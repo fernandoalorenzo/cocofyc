@@ -179,7 +179,7 @@ const DenunciasActivasReport = ({ title, nombreInforme, API_ENDPOINT }) => {
 								globalStyles.tableCell,
 								{ textAlign: "center" },
 							]}>
-							N° Acta
+							N° Comprobante
 						</Text>
 						<Text
 							style={[
@@ -233,7 +233,7 @@ const DenunciasActivasReport = ({ title, nombreInforme, API_ENDPOINT }) => {
 										globalStyles.tableCell,
 										{ textAlign: "center" },
 									]}>
-									{denuncia.nro_acta}
+									{denuncia.nro_comprobante}
 								</Text>
 								<Text
 									style={[

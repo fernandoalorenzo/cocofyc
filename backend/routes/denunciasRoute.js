@@ -3,7 +3,7 @@ import {
 	createDenuncia,
 	deleteDenuncia,
 	getDenunciaById,
-	getDenunciaByIdProfesional,
+	// getDenunciaByIdProfesional,
 	getDenuncias,
 	updateDenuncia,
 	getSeguimientosByDenunciaId,
@@ -20,7 +20,7 @@ const denunciasRouter = express.Router();
 denunciasRouter.post("/", authenticateToken, createDenuncia);
 denunciasRouter.get("/", authenticateToken, getDenuncias);
 denunciasRouter.get("/:id", authenticateToken, getDenunciaById);
-denunciasRouter.get("/profesional/:profesional_id", authenticateToken, getDenunciaByIdProfesional);
+// denunciasRouter.get("/profesional/:profesional_id", authenticateToken, getDenunciaByIdProfesional);
 denunciasRouter.put("/:id", authenticateToken, updateDenuncia);
 denunciasRouter.delete("/:id", authenticateToken, deleteDenuncia);
 
