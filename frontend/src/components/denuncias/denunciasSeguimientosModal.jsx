@@ -203,7 +203,7 @@ const DenunciasSeguimientosModal = ({
 
 		const filesArray = selectedFilesArray
 			.map((file) => {
-				if (file.size <= .5 * 1024 * 1024) {	// 500 kb
+				if (file.size <= 1 * 1024 * 1024) {	// 1mb
 					return {
 						file: file,
 						url: URL.createObjectURL(file),
@@ -215,7 +215,7 @@ const DenunciasSeguimientosModal = ({
 					Swal.fire({
 						icon: "error",
 						title: "Archivo demasiado grande",
-						text: "El archivo seleccionado es demasiado grande. Por favor, seleccione un archivo más pequeño. El tamaño maximo permitido es de 500kb",
+						text: "El archivo seleccionado es demasiado grande. Por favor, seleccione un archivo más pequeño. El tamaño máximo permitido es de 1 Mb",
 					})
 					return null;
 				}
